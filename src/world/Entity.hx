@@ -8,8 +8,10 @@ import openfl.display.Sprite;
  */
 class Entity extends Sprite 
 {
-	public var xv = 0;
-	public var yv = 0;
+	public var active:Bool = true;
+	public var xv:Float = 0;
+	public var yv:Float = 0;
+	public var av:Float = 0;
 	
 	public function new() 
 	{
@@ -20,5 +22,6 @@ class Entity extends Sprite
 	{
 		x += xv;
 		y += yv;
+		rotation += av;
 	}
 }

@@ -3,7 +3,7 @@ package;
 import openfl.display.Sprite;
 import flash.system.System;
 import Input;
-import menu.MainPage;
+import menu.MainMenu;
 
 /**
  * ...
@@ -11,13 +11,13 @@ import menu.MainPage;
  */
 class Menu extends Sprite 
 {
-	private var mainPage:MainPage;
+	private var mainPage:MainMenu;
 	
 	public function new()
 	{
 		super();
 		
-		mainPage = new MainPage();
+		mainPage = new MainMenu();
 		addChild(mainPage);
 	}
 	
@@ -25,7 +25,7 @@ class Menu extends Sprite
 	{
 		if (Input.KeyDown(27))
 		{
-			System.exit(0);
+			this.visible = !this.visible;
 		}
 		
 		mainPage.Update();

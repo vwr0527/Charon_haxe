@@ -110,6 +110,7 @@ class Input extends Sprite
 	private function keyUpHandler(e)
 	{
 		keyDown[e.keyCode] = 3;
+		keyBuf.push(e.keyCode);
 	}
 	
 	//============= Global Accessors =============

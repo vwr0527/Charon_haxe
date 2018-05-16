@@ -88,6 +88,7 @@ class BitmapFont extends Sprite
 	private var characterSpacingY:UInt;
 	private var characterPerRow:UInt;
 	private var grabData:Array<Rectangle>;
+	private var bitmap:Bitmap;
 	
 	/**
 	 * Constructs and returns a BitmapFont using a text file. Looks for a text file with the same name as the image.
@@ -267,10 +268,10 @@ class BitmapFont extends Sprite
 			pasteLine(temp, _text, 0, 0, customSpacingX);
 		}
 		
-		var result:Bitmap = new Bitmap(temp);
-		result.smoothing = true;
+		bitmap = new Bitmap(temp);
+		bitmap.smoothing = true;
 		
-		addChild(result);
+		addChild(bitmap);
 	}
 	
 	/**
@@ -294,6 +295,14 @@ class BitmapFont extends Sprite
 		output.bitmapData = temp;
 		
 		return output;
+	}
+	
+	/**
+	 * Sets smoothing
+	 */
+	public function setSmoothing(smooth:Bool)
+	{
+		bitmap.smoothing = smooth;
 	}
 	
 	/**

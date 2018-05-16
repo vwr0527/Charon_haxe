@@ -1,8 +1,6 @@
 package;
 
 import openfl.display.Sprite;
-import flash.system.System;
-import Input;
 import menu.MainMenu;
 
 /**
@@ -23,11 +21,6 @@ class Menu extends Sprite
 	
 	public function Update()
 	{
-		if (Input.KeyDown(27))
-		{
-			this.visible = !this.visible;
-		}
-		
 		mainPage.Update();
 	}
 }

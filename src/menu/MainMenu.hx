@@ -1,6 +1,7 @@
 package menu;
 
-import openfl.text.TextFormatAlign;
+import Input;
+import openfl.system.System;
 
 /**
  * ...
@@ -8,37 +9,56 @@ import openfl.text.TextFormatAlign;
  */
 class MainMenu extends MenuPage 
 {
-	var a:MenuElement;
-	var b:MenuElement;
-	var c:MenuElement;
-	var t:MenuElement;
-	
 	public function new() 
 	{
 		super();
 		
-		t = new MenuElement();
-		t.AddText("", "fonts/pirulen.ttf", 24, TextFormatAlign.LEFT);
+		var t = new MenuElement();
+		t.AddText("Counter: ", "fonts/pirulen.ttf", 12, 0xaabb55);
 		t.xpos = 0;
 		t.ypos = 0;
-		t.size = 0.5;
 		Add(t);
 		
-		a = new MenuElement();
-		a.AddBitmapText("BITMAP FONT", "fonts/robocop_font.png");
-		a.ypos = 0.75;
+		var g = new MenuElement();
+		g.AddBitmapText("PRESS ESC FOR MENU", "fonts/mmx.png");
+		g.ypos = 0.1;
+		Add(g);
+		
+		var a = new MenuElement();
+		a.AddBitmapText("CHARON", "fonts/robocop_font.png", "center", 8);
+		a.ypos = 0.15;
+		a.visible = false;
 		Add(a);
 		
-		b = new MenuElement();
-		b.AddBitmapText("the quick brown fox jumps over the lazy dog", "fonts/fcubef2.png");
-		b.ypos = 0.25;
+		var b = new MenuElement();
+		b.AddBitmapText("resume", "fonts/fcubef2.png");
+		b.ypos = 0.4;
+		b.visible = false;
 		Add(b);
 		
-		c = new MenuElement();
-		c.AddBitmapText("how does this font look? it's called 9085", "fonts/9085_font2.png");
-		c.ypos = 0.85;
-		c.size = 2;
+		var c = new MenuElement();
+		c.AddBitmapText("new game", "fonts/fcubef2.png");
+		c.ypos = 0.5;
+		c.visible = false;
 		Add(c);
+		
+		var d = new MenuElement();
+		d.AddBitmapText("load game", "fonts/fcubef2.png");
+		d.ypos = 0.6;
+		d.visible = false;
+		Add(d);
+		
+		var e = new MenuElement();
+		e.AddBitmapText("options", "fonts/fcubef2.png");
+		e.ypos = 0.7;
+		e.visible = false;
+		Add(e);
+		
+		var f = new MenuElement();
+		f.AddBitmapText("exit", "fonts/fcubef2.png");
+		f.ypos = 0.8;
+		f.visible = false;
+		Add(f);
 	}
 	
 	var count = 0;
@@ -46,6 +66,41 @@ class MainMenu extends MenuPage
 	{
 		super.Update();
 		++count;
-		t.textField.text = "Counter: " + count;
+		elements[0].textField.text = "Counter: " + count;
+		
+		var toggleMenu:Bool = Input.KeyDown(27);
+		
+		for (i in 3...(elements.length))
+		{
+			var elem:MenuElement = elements[i];
+			
+			if (elem.hitTestPoint(mouseX, mouseY))
+			{
+				elem.alpha = 0.5;
+				
+				if (Input.MouseDown())
+				{
+					switch (i) 
+					{
+						case 3:
+							toggleMenu = true;
+						case 7:
+							System.exit(0);
+					}
+				}
+			}
+			else
+			{
+				elem.alpha = 1.0;
+			}
+		}
+		
+		if (toggleMenu)
+		{
+			for (i in 1...(numChildren))
+			{
+				getChildAt(i).visible = !getChildAt(i).visible;
+			}
+		}
 	}
 }

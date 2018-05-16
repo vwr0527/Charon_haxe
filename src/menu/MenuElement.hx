@@ -1,13 +1,12 @@
 package menu;
 
+import openfl.display.Sprite;
 import openfl.text.Font;
 import openfl.text.TextField;
 import openfl.text.TextFormat;
-import openfl.text.TextFormatAlign;
-import util.BitmapFont;
-import openfl.display.Sprite;
-import openfl.Lib;
 import openfl.Assets;
+import openfl.Lib;
+import util.BitmapFont;
 
 /**
  * ...
@@ -36,31 +35,32 @@ class MenuElement extends Sprite
 		scaleX = scaleY = Lib.application.window.height / (480 / size);
 	}
 	
-	public function AddText(str:String, fontName:String, fontSize:UInt, align:String)
+	public function AddText(str:String, fontName:String, fontSize:UInt = 12, fontColor:Int = 0xffffff, align:String = "left")
 	{
 		var font:Font = Assets.getFont(fontName);
 		
-		textFormat = new TextFormat(font.fontName, 24, 0xaabb55, null, null, null, null, null, align);
+		textFormat = new TextFormat(font.fontName, fontSize, fontColor, null, null, null, null, null, align);
 		textField = new TextField();
 		textField.defaultTextFormat = textFormat;
 		textField.setTextFormat(textFormat);
 		textField.embedFonts = true;
-		textField.autoSize = align;
+		textField.autoSize = "left";
+		textField.text = str;
 		
-		textField.y = -textField.height / 2;
-		if (align == TextFormatAlign.CENTER)
-		{
-			textField.x = -textField.width / 2;
-		}
 		addChild(textField);
 	}
 	
-	public function AddBitmapText(str:String, bitmapName:String, multiLines:Bool = false, characterSpacing:UInt = 0, lineSpacing:UInt = 0, lineAlignment:String = "left", allowLowerCase:Bool = true)
+	public function AddBitmapText(str:String, bitmapName:String, lineAlignment:String = "left", characterSpacing:UInt = 0, lineSpacing:UInt = 0)
 	{
 		bitmapFont = BitmapFont.Load(bitmapName);
-		bitmapFont.setTextProperties(str, multiLines, characterSpacing, lineSpacing, lineAlignment, allowLowerCase);
+		bitmapFont.setTextProperties(str, true, characterSpacing, lineSpacing, lineAlignment, true);
 		bitmapFont.x = -bitmapFont.width / 2;
 		bitmapFont.y = -bitmapFont.height / 2;
 		addChild(bitmapFont);
+	}
+	
+	public function Smooth(smoothing:Bool)
+	{
+		if (bitmapFont != null) bitmapFont.setSmoothing(smoothing);
 	}
 }

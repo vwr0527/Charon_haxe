@@ -12,6 +12,8 @@ class Entity extends Sprite
 	public var xv:Float = 0;
 	public var yv:Float = 0;
 	public var av:Float = 0;
+	public var fric:Float = 0;
+	public var rfric:Float = 0;
 	
 	public function new() 
 	{
@@ -23,5 +25,9 @@ class Entity extends Sprite
 		x += xv;
 		y += yv;
 		rotation += av;
+		
+		xv *= fric;
+		yv *= fric;
+		av *= rfric;
 	}
 }

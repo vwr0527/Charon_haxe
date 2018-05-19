@@ -40,6 +40,7 @@ class World extends Sprite
 		for (ent in entities)
 		{
 			ent.Update();
+			Confine(ent, -400, 400, -240, 240);
 		}
 	}
 	
@@ -48,5 +49,29 @@ class World extends Sprite
 		this.x = -camera.x + Lib.application.window.width / 2;
 		this.y = -camera.y + Lib.application.window.height / 2;
 		this.scaleX = this.scaleY = zoom * (Lib.application.window.height / 480);
+	}
+	
+	private function Confine(ent:Entity, xmin:Float, xmax:Float, ymin:Float, ymax:Float)
+	{
+		if (ent.x < xmin)
+		{
+			ent.xv = 0;
+			ent.x = xmin;
+		}
+		if (ent.x > xmax)
+		{
+			ent.xv = 0;
+			ent.x = xmax;
+		}
+		if (ent.y < ymin)
+		{
+			ent.yv = 0;
+			ent.y = ymin;
+		}
+		if (ent.y > ymax)
+		{
+			ent.yv = 0;
+			ent.y = ymax;
+		}
 	}
 }

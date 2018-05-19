@@ -124,7 +124,7 @@ class Input extends Sprite
 	
 	public static function KeyHeld(keyCode)
 	{
-		return keyDown[keyCode] == 1;
+		return keyDown[keyCode] == 1 || keyDown[keyCode] == 2;
 	}
 	
 	public static function KeyUp(keyCode)
@@ -141,7 +141,7 @@ class Input extends Sprite
 	
 	public static function MouseHeld()
 	{
-		return mouseDown == 1;
+		return mouseDown == 1 || mouseDown == 2;
 	}
 	
 	public static function MouseUp()

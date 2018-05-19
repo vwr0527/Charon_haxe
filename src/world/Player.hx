@@ -26,13 +26,32 @@ class Player extends Entity
 		bitmap.smoothing = true;
 		
 		addChild(sprite);
+		
+		rfric = 0.8;
+		fric = 0.98;
 	}
 	
 	public override function Update()
 	{
 		super.Update();
 		
-		av *= 0.8;
+		var speed = 0.4;
+		if (Input.KeyHeld(65))
+		{
+			xv -= speed;
+		}
+		if (Input.KeyHeld(68))
+		{
+			xv += speed;
+		}
+		if (Input.KeyHeld(87))
+		{
+			yv -= speed;
+		}
+		if (Input.KeyHeld(83))
+		{
+			yv += speed;
+		}
 	}
 	
 	public function LookAt(xpos:Float, ypos:Float)
@@ -49,7 +68,6 @@ class Player extends Entity
 		var maxDiff = 90;
 		if (rotationDiff > maxDiff) rotationDiff = maxDiff;
 		if (rotationDiff < -maxDiff) rotationDiff = -maxDiff;
-		
 		rotationDiff /= maxDiff;
 		
 		av += rotationDiff * 2;

@@ -9,9 +9,9 @@ import openfl.events.Event;
  */
 class Main extends Sprite 
 {
-	private var world:World;
-	private var menu:Menu;
-	private var input:Input;
+	var world:World;
+	var menu:Menu;
+	var input:Input;
 	
 	public function new() 
 	{

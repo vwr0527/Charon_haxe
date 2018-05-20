@@ -27,15 +27,15 @@ class Player extends Entity
 		
 		addChild(sprite);
 		
-		rfric = 0.8;
-		fric = 0.98;
+		rf = 0.2;//0.8;
+		tf = 0.01;//0.98;
 	}
 	
 	public override function Update()
 	{
 		super.Update();
 		
-		var speed = 0.4;
+		var speed = 0.4 * t;
 		if (Input.KeyHeld(65))
 		{
 			xv -= speed;
@@ -70,6 +70,6 @@ class Player extends Entity
 		if (rotationDiff < -maxDiff) rotationDiff = -maxDiff;
 		rotationDiff /= maxDiff;
 		
-		av += rotationDiff * 2;
+		av += rotationDiff * 4 * t;
 	}
 }

@@ -1,5 +1,7 @@
 package menu;
 
+import Main;
+
 /**
  * ...
  * @author Victor Reynolds
@@ -7,23 +9,24 @@ package menu;
 class DebugPage extends MenuPage 
 {
 	var counter:MenuElement;
-	var count = 0;
 	
 	public function new() 
 	{
 		super();
 		
 		counter = new MenuElement();
-		counter.AddText("Counter: ", "fonts/pirulen.ttf", 12, 0xaabb55);
+		counter.AddText("FPS: 0", "fonts/pirulen.ttf", 12, 0xaabb55);
 		counter.xpos = 0;
 		counter.ypos = 0;
 		Add(counter);
+		
+		super.Update();
 	}
 	
 	public override function Update()
 	{
 		super.Update();
-		++count;
-		counter.textField.text = "Counter: " + count;
+		
+		counter.textField.text = "fps: " + Main.getFPS();
 	}
 }

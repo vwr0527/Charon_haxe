@@ -32,6 +32,8 @@ class MainMenu extends MenuPage
 		addSelection("load game", 0.6);
 		addSelection("options", 0.7);
 		addSelection("exit", 0.8);
+		
+		super.Update();
 	}
 	
 	private function addSelection(name:String, ypos:Float)

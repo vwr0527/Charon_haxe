@@ -12,8 +12,9 @@ class Entity extends Sprite
 	public var xv:Float = 0;
 	public var yv:Float = 0;
 	public var av:Float = 0;
-	public var fric:Float = 0;
-	public var rfric:Float = 0;
+	public var tf:Float = 0;
+	public var rf:Float = 0;
+	private var t:Float = 0;
 	
 	public function new() 
 	{
@@ -22,12 +23,14 @@ class Entity extends Sprite
 	
 	public function Update()
 	{
-		x += xv;
-		y += yv;
-		rotation += av;
+		t = Math.max(Math.min(60 / Main.getFPS(), 2), 0.25);
 		
-		xv *= fric;
-		yv *= fric;
-		av *= rfric;
+		x += xv * t;
+		y += yv * t;
+		rotation += av * t;
+		
+		xv *= 1 / Math.pow(10, tf * t);
+		yv *= 1 / Math.pow(10, tf * t);
+		av *= 1 / Math.pow(10, rf * t);
 	}
 }

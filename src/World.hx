@@ -12,6 +12,7 @@ import world.Player;
  */
 class World extends Sprite 
 {
+	private var paused:Bool;
 	private var player:Player;
 	private var camera:Point;
 	private var zoom:Float;
@@ -35,6 +36,8 @@ class World extends Sprite
 	{
 		MoveWorldToCamera();
 		
+		if (paused) return;
+		
 		player.LookAt(mouseX, mouseY);
 		
 		for (ent in entities)
@@ -42,6 +45,16 @@ class World extends Sprite
 			ent.Update();
 			Confine(ent, -400, 400, -240, 240);
 		}
+	}
+	
+	public function Pause()
+	{
+		paused = true;
+	}
+	
+	public function Unpause()
+	{
+		paused = false;
 	}
 	
 	private function MoveWorldToCamera()

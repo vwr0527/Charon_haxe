@@ -5,6 +5,7 @@ import openfl.geom.Point;
 import openfl.Lib;
 import world.Entity;
 import world.Player;
+import world.Shot;
 
 /**
  * ...
@@ -14,6 +15,7 @@ class World extends Sprite
 {
 	private var paused:Bool;
 	private var player:Player;
+	private var shot:Shot;
 	private var camera:Point;
 	private var zoom:Float;
 	private var entities:Array<Entity>;
@@ -22,15 +24,24 @@ class World extends Sprite
 	{
 		super();
 		
-		camera = new Point(0, 0);
-		zoom = 1;
+		entities = new Array();
+		
+		shot = new Shot();
+		addChild(shot);
+		entities.push(shot);
+		shot.x = 400;
+		shot.visible = false;
+		
 		player = new Player();
 		addChild(player);
-		entities = new Array();
 		entities.push(player);
 		
+		camera = new Point(0, 0);
+		zoom = 1;
 		MoveWorldToCamera();
 	}
+	
+	var shootCooldown:Int = 20;
 	
 	public function Update()
 	{
@@ -45,6 +56,22 @@ class World extends Sprite
 			ent.Update();
 			Confine(ent, -400, 400, -240, 240);
 		}
+		
+		if (Input.MouseDown() && shootCooldown > 20)
+		{
+			shot.x = player.x;
+			shot.y = player.y;
+			shot.xv = 50 * Math.sin((180 - player.rotation) * (Math.PI / 180));
+			shot.yv = 50 * Math.cos((180 - player.rotation) * (Math.PI / 180));
+			shot.x += shot.xv;
+			shot.y += shot.yv;
+			shot.rotation = player.rotation;
+			shootCooldown = 0;
+		}
+		
+		shootCooldown += 1;
+		
+		if (shot.x >= 400 || shot.x <= -400 || shot.y >= 240 || shot.y <= -240) shot.visible = false; else shot.visible = true;
 	}
 	
 	public function Pause()

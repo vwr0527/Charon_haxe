@@ -1,6 +1,7 @@
 package world;
 
 import openfl.display.Sprite;
+import openfl.utils.Function;
 
 /**
  * ...
@@ -21,7 +22,7 @@ class Entity extends Sprite
 		super();
 	}
 	
-	public function Update()
+	public function Update(Spawn:Function)
 	{
 		t = Math.max(Math.min(60 / Main.getFPS(), 2), 0.25);
 		

@@ -1,5 +1,6 @@
 package world;
 
+import openfl.utils.Function;
 import openfl.Assets;
 import openfl.display.Sprite;
 import openfl.display.Bitmap;
@@ -11,6 +12,7 @@ import openfl.display.Bitmap;
 class Player extends Entity 
 {
 	private var sprite:Sprite;
+	private var shootCooldown:Float = 0;
 	
 	public function new() 
 	{
@@ -31,9 +33,9 @@ class Player extends Entity
 		tf = 0.01;//0.98;
 	}
 	
-	public override function Update()
+	public override function Update(Spawn:Function)
 	{
-		super.Update();
+		super.Update(Spawn);
 		
 		var speed = 0.4 * t;
 		if (Input.KeyHeld(65))
@@ -52,6 +54,21 @@ class Player extends Entity
 		{
 			yv += speed;
 		}
+		if (Input.MouseHeld() && shootCooldown > 8)
+		{
+			var shot:Shot = new Shot();
+			shot.x = x;
+			shot.y = y;
+			shot.xv = 50 * Math.sin((180 - rotation) * (Math.PI / 180));
+			shot.yv = 50 * Math.cos((180 - rotation) * (Math.PI / 180));
+			shot.x += shot.xv;
+			shot.y += shot.yv;
+			shot.rotation = rotation;
+			Spawn(shot);
+			
+			shootCooldown = 0;
+		}
+		shootCooldown += t;
 	}
 	
 	public function LookAt(xpos:Float, ypos:Float)

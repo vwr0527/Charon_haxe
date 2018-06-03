@@ -25,7 +25,7 @@ class Input extends Sprite
 		//0 = mouse/key is up
 		//2 = mouse/key has just been pressed
 		//1 = mouse/key is holding down
-		//3 = mouse/key was pressed and released before update was called once
+		//3 = mouse/key was released
 		mouseDown = 0;
 		wheelDelta = 0;
 		keyDown = new Vector(256);

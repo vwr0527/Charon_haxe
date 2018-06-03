@@ -1,11 +1,11 @@
 package;
 
 import openfl.display.Sprite;
-import openfl.geom.Point;
 import openfl.Lib;
+import world.Camera;
 import world.Entity;
+import world.Level;
 import world.Player;
-import world.Shot;
 
 /**
  * ...
@@ -14,34 +14,39 @@ import world.Shot;
 class World extends Sprite 
 {
 	private var paused:Bool;
+	private var camera:Camera;
 	private var player:Player;
-	private var shot:Shot;
-	private var camera:Point;
-	private var zoom:Float;
-	private var entities:Array<Entity>;
+	private var entityList:Array<Entity>;
+	private var playerShots:Array<Entity>;
+	private var enemyShots:Array<Entity>;
+	private var enemyList:Array<Entity>;
+	private var itemList:Array<Entity>;
+	private var newEntities:Array<Entity>;
+	private var levelDictionary:Map<String, Level>;
+	private var level:Level;
 	
 	public function new() 
 	{
 		super();
 		
-		entities = new Array();
-		
-		shot = new Shot();
-		addChild(shot);
-		entities.push(shot);
-		shot.x = 400;
-		shot.visible = false;
+		entityList = new Array();
+		newEntities = new Array();
 		
 		player = new Player();
 		addChild(player);
-		entities.push(player);
+		entityList.push(player);
 		
-		camera = new Point(0, 0);
-		zoom = 1;
+		playerShots = new Array();
+		enemyShots = new Array();
+		enemyList = new Array();
+		itemList = new Array();
+		
+		camera = new Camera();
 		MoveWorldToCamera();
+		
+		levelDictionary = new Map();
+		LoadLevels();
 	}
-	
-	var shootCooldown:Int = 20;
 	
 	public function Update()
 	{
@@ -51,27 +56,34 @@ class World extends Sprite
 		
 		player.LookAt(mouseX, mouseY);
 		
-		for (ent in entities)
+		for (ent in entityList)
 		{
-			ent.Update();
-			Confine(ent, -400, 400, -240, 240);
+			ent.Update(Spawn);
+			level.Collide(ent);
 		}
 		
-		if (Input.MouseDown() && shootCooldown > 20)
+		for (ent in newEntities)
 		{
-			shot.x = player.x;
-			shot.y = player.y;
-			shot.xv = 50 * Math.sin((180 - player.rotation) * (Math.PI / 180));
-			shot.yv = 50 * Math.cos((180 - player.rotation) * (Math.PI / 180));
-			shot.x += shot.xv;
-			shot.y += shot.yv;
-			shot.rotation = player.rotation;
-			shootCooldown = 0;
+			entityList.push(ent);
 		}
+		newEntities = new Array();
 		
-		shootCooldown += 1;
-		
-		if (shot.x >= 400 || shot.x <= -400 || shot.y >= 240 || shot.y <= -240) shot.visible = false; else shot.visible = true;
+		var i = entityList.length - 1;
+		while (i >= 0)
+		{
+			if (entityList[i].active == false)
+			{
+				removeChild(entityList[i]);
+				entityList.splice(i, 1);
+			}
+			--i;
+		}
+	}
+	
+	private function Spawn(newEnt:Entity)
+	{
+		newEntities.push(newEnt);
+		addChild(newEnt);
 	}
 	
 	public function Pause()
@@ -88,30 +100,12 @@ class World extends Sprite
 	{
 		this.x = -camera.x + Lib.application.window.width / 2;
 		this.y = -camera.y + Lib.application.window.height / 2;
-		this.scaleX = this.scaleY = zoom * (Lib.application.window.height / 480);
+		this.scaleX = this.scaleY = camera.zoom * (Lib.application.window.height / 480);
 	}
 	
-	private function Confine(ent:Entity, xmin:Float, xmax:Float, ymin:Float, ymax:Float)
+	private function LoadLevels() 
 	{
-		if (ent.x < xmin)
-		{
-			ent.xv = 0;
-			ent.x = xmin;
-		}
-		if (ent.x > xmax)
-		{
-			ent.xv = 0;
-			ent.x = xmax;
-		}
-		if (ent.y < ymin)
-		{
-			ent.yv = 0;
-			ent.y = ymin;
-		}
-		if (ent.y > ymax)
-		{
-			ent.yv = 0;
-			ent.y = ymax;
-		}
+		levelDictionary.set("test", new Level());
+		level = levelDictionary["test"];
 	}
 }

@@ -19,6 +19,7 @@ class Main extends Sprite
 	var prevcount = 0;
 	
 	static var fps = 0;
+	public static var RecycleMode = false;
 	
 	public function new() 
 	{

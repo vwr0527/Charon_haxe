@@ -1,6 +1,7 @@
 package menu;
 
 import Main;
+import openfl.system.System;
 
 /**
  * ...
@@ -9,6 +10,8 @@ import Main;
 class DebugPage extends MenuPage 
 {
 	var counter:MenuElement;
+	
+	public static var entcount:Int = 0;
 	
 	public function new() 
 	{
@@ -28,5 +31,7 @@ class DebugPage extends MenuPage
 		super.Update();
 		
 		counter.textField.text = "fps: " + Main.getFPS();
+		counter.textField.text += "\nents: " + entcount;
+		counter.textField.text += "\nmem: " + Math.floor(System.totalMemory / 1000000.0);
 	}
 }

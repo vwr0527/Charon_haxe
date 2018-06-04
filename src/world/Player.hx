@@ -13,6 +13,7 @@ class Player extends Entity
 {
 	private var sprite:Sprite;
 	private var shootCooldown:Float = 0;
+	var recycleshot:Shot = new Shot();
 	
 	public function new() 
 	{
@@ -54,8 +55,9 @@ class Player extends Entity
 		{
 			yv += speed;
 		}
-		if (Input.MouseHeld() && shootCooldown > 8)
+		if (Input.MouseHeld() && shootCooldown > 0)
 		{
+			/*
 			var shot:Shot = new Shot();
 			shot.x = x;
 			shot.y = y;
@@ -65,7 +67,49 @@ class Player extends Entity
 			shot.y += shot.yv;
 			shot.rotation = rotation;
 			Spawn(shot);
+			*/
+			var i = 0;
+			var prevrot = rotation;
 			
+			if (Main.RecycleMode)
+			{
+				while (i < 20)
+				{
+					var basespeed = Math.random() + 9;
+					var speedmult = 0.1;
+					rotation += ((Math.random() - 0.5) * (Math.random() - 0.5)) * 25.0;
+					recycleshot.x = x;
+					recycleshot.y = y;
+					recycleshot.xv = speedmult * basespeed * Math.sin((180 - rotation) * (Math.PI / 180));
+					recycleshot.yv = speedmult * basespeed * Math.cos((180 - rotation) * (Math.PI / 180));
+					recycleshot.x += recycleshot.xv * 1;// .8;
+					recycleshot.y += recycleshot.yv * 1;// .8;
+					recycleshot.rotation = rotation;
+					Spawn(recycleshot);
+					rotation = prevrot;
+					++i;
+				}
+			}
+			else
+			{
+				while (i < 20)
+				{
+					var basespeed = Math.random() + 9;
+					var speedmult = 0.1;
+					rotation += ((Math.random() - 0.5) * (Math.random() - 0.5)) * 25.0;
+					var shot:Shot = new Shot();
+					shot.x = x;
+					shot.y = y;
+					shot.xv = speedmult * basespeed * Math.sin((180 - rotation) * (Math.PI / 180));
+					shot.yv = speedmult * basespeed * Math.cos((180 - rotation) * (Math.PI / 180));
+					shot.x += shot.xv * 1;// .8;
+					shot.y += shot.yv * 1;// .8;
+					shot.rotation = rotation;
+					Spawn(shot);
+					rotation = prevrot;
+					++i;
+				}
+			}
 			shootCooldown = 0;
 		}
 		shootCooldown += t;

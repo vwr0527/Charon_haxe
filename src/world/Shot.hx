@@ -28,7 +28,9 @@ class Shot extends Entity
 		bitmap.x -= bitmap.width * 0.5;
 		bitmap.y -= bitmap.height * 0.5;
 		bitmap.smoothing = true;
-		sprite.scaleY = 2.5;
+		//sprite.scaleY = 2.5;
+		//sprite.scaleX = 0.5;
+		sprite.scaleY = 0.5;
 		sprite.scaleX = 0.5;
 		addChild(sprite);
 	}

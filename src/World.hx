@@ -1,11 +1,13 @@
 package;
 
+import menu.DebugPage;
 import openfl.display.Sprite;
 import openfl.Lib;
 import world.Camera;
 import world.Entity;
 import world.Level;
 import world.Player;
+import world.Shot;
 
 /**
  * ...
@@ -25,6 +27,13 @@ class World extends Sprite
 	private var levelDictionary:Map<String, Level>;
 	private var level:Level;
 	
+	private var shipLayer:Sprite;
+	private var shotLayer:Sprite;
+	private var levelLayer:Sprite;
+	
+	private var recycleEntList:Array<Entity>;
+	private var entMax = 4000;
+	
 	public function new() 
 	{
 		super();
@@ -32,10 +41,19 @@ class World extends Sprite
 		entityList = new Array();
 		newEntities = new Array();
 		
+		recycleEntList = new Array();
+		
 		player = new Player();
 		addChild(player);
-		entityList.push(player);
 		
+		if (Main.RecycleMode == false)
+		{
+			entityList.push(player);
+		}
+		else
+		{
+			recycleEntList.push(player);
+		}
 		playerShots = new Array();
 		enemyShots = new Array();
 		enemyList = new Array();
@@ -46,6 +64,13 @@ class World extends Sprite
 		
 		levelDictionary = new Map();
 		LoadLevels();
+		
+		for (i in 0...entMax - 1)
+		{
+			var newshot:Shot = new Shot();
+			newshot.active = false;
+			recycleEntList.push(newshot);
+		}
 	}
 	
 	public function Update()
@@ -56,34 +81,84 @@ class World extends Sprite
 		
 		player.LookAt(mouseX, mouseY);
 		
-		for (ent in entityList)
+		if (Main.RecycleMode == false)
 		{
-			ent.Update(Spawn);
-			level.Collide(ent);
-		}
-		
-		for (ent in newEntities)
-		{
-			entityList.push(ent);
-		}
-		newEntities = new Array();
-		
-		var i = entityList.length - 1;
-		while (i >= 0)
-		{
-			if (entityList[i].active == false)
+			for (ent in entityList)
 			{
-				removeChild(entityList[i]);
-				entityList.splice(i, 1);
+				ent.Update(Spawn);
+				level.Collide(ent);
 			}
-			--i;
+			
+			for (ent in newEntities)
+			{
+				entityList.push(ent);
+			}
+			newEntities = new Array();
+			
+			var i = entityList.length - 1;
+			while (i >= 0)
+			{
+				if (entityList[i].active == false)
+				{
+					removeChild(entityList[i]);
+					entityList.splice(i, 1);
+				}
+				--i;
+			}
+			DebugPage.entcount = entityList.length;
+		}
+		else
+		{
+			for (ent in recycleEntList)
+			{
+				ent.Update(Spawn);
+				level.Collide(ent);
+			}
+			
+			DebugPage.entcount = 0;
+			for (i in 0...recycleEntList.length)
+			{
+				if (recycleEntList[i].active == false)
+				{
+					if (contains(recycleEntList[i])) removeChild(recycleEntList[i]);
+				}
+				else
+				{
+					++DebugPage.entcount;
+				}
+			}
 		}
 	}
 	
 	private function Spawn(newEnt:Entity)
 	{
-		newEntities.push(newEnt);
-		addChild(newEnt);
+		if (Main.RecycleMode == false)
+		{
+			if (entityList.length < entMax)
+			{
+				newEntities.push(newEnt);
+				addChild(newEnt);
+			}
+		}
+		else
+		{
+			var i = 0;
+			while (i < recycleEntList.length)
+			{
+				if (recycleEntList[i].active == false)
+				{
+					recycleEntList[i].active = true;
+					recycleEntList[i].x = newEnt.x;
+					recycleEntList[i].y = newEnt.y;
+					recycleEntList[i].xv = newEnt.xv;
+					recycleEntList[i].yv = newEnt.yv;
+					recycleEntList[i].rotation = newEnt.rotation;
+					addChild(recycleEntList[i]);
+					break;
+				}
+				++i;
+			}
+		}
 	}
 	
 	public function Pause()

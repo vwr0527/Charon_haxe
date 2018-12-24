@@ -24,6 +24,9 @@ class Entity extends Sprite
 	
 	public function Update(Spawn:Function)
 	{
+		//time elapsed per frame = 60 / FPS
+		//1 = 1/60th of a second, 2 = 2/60ths of a second, etc
+		//maximum 2, minimum 0.25
 		t = Math.max(Math.min(60 / Main.getFPS(), 2), 0.25);
 		
 		x += xv * t;

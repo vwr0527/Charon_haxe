@@ -13,6 +13,8 @@ class Player extends Entity
 {
 	private var sprite:Sprite;
 	private var shootCooldown:Float = 0;
+	private var turnSpeed = 6;
+	
 	var recycleshot:Shot = new Shot();
 	
 	public function new() 
@@ -131,6 +133,6 @@ class Player extends Entity
 		if (rotationDiff < -maxDiff) rotationDiff = -maxDiff;
 		rotationDiff /= maxDiff;
 		
-		av += rotationDiff * 4 * t;
+		av += rotationDiff * turnSpeed * t;
 	}
 }

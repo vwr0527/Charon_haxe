@@ -14,6 +14,9 @@ class Player extends Entity
 	private var sprite:Sprite;
 	private var shootCooldown:Float = 0;
 	private var turnSpeed = 6;
+	private var shootRate = 4;
+	private var shotspeed = 30;
+	private var shotSpread = 0;
 	
 	var recycleshot:Shot = new Shot();
 	
@@ -57,61 +60,24 @@ class Player extends Entity
 		{
 			yv += speed;
 		}
-		if (Input.MouseHeld() && shootCooldown > 0)
+		if (Input.MouseHeld() && shootCooldown > shootRate)
 		{
-			/*
-			var shot:Shot = new Shot();
-			shot.x = x;
-			shot.y = y;
-			shot.xv = 50 * Math.sin((180 - rotation) * (Math.PI / 180));
-			shot.yv = 50 * Math.cos((180 - rotation) * (Math.PI / 180));
-			shot.x += shot.xv;
-			shot.y += shot.yv;
-			shot.rotation = rotation;
-			Spawn(shot);
-			*/
 			var i = 0;
 			var prevrot = rotation;
 			
-			if (Main.RecycleMode)
-			{
-				while (i < 20)
-				{
-					var basespeed = Math.random() + 9;
-					var speedmult = 0.1;
-					rotation += ((Math.random() - 0.5) * (Math.random() - 0.5)) * 25.0;
-					recycleshot.x = x;
-					recycleshot.y = y;
-					recycleshot.xv = speedmult * basespeed * Math.sin((180 - rotation) * (Math.PI / 180));
-					recycleshot.yv = speedmult * basespeed * Math.cos((180 - rotation) * (Math.PI / 180));
-					recycleshot.x += recycleshot.xv * 1;// .8;
-					recycleshot.y += recycleshot.yv * 1;// .8;
-					recycleshot.rotation = rotation;
-					Spawn(recycleshot);
-					rotation = prevrot;
-					++i;
-				}
-			}
-			else
-			{
-				while (i < 20)
-				{
-					var basespeed = Math.random() + 9;
-					var speedmult = 0.1;
-					rotation += ((Math.random() - 0.5) * (Math.random() - 0.5)) * 25.0;
-					var shot:Shot = new Shot();
-					shot.x = x;
-					shot.y = y;
-					shot.xv = speedmult * basespeed * Math.sin((180 - rotation) * (Math.PI / 180));
-					shot.yv = speedmult * basespeed * Math.cos((180 - rotation) * (Math.PI / 180));
-					shot.x += shot.xv * 1;// .8;
-					shot.y += shot.yv * 1;// .8;
-					shot.rotation = rotation;
-					Spawn(shot);
-					rotation = prevrot;
-					++i;
-				}
-			}
+			rotation += ((Math.random() - 0.5) * (Math.random() - 0.5)) * shotSpread;
+			var shot:Shot = new Shot();
+			shot.x = x;
+			shot.y = y;
+			shot.xv = shotspeed * Math.sin((180 - rotation) * (Math.PI / 180));
+			shot.yv = shotspeed * Math.cos((180 - rotation) * (Math.PI / 180));
+			shot.x += shot.xv * 2;//shot starts a little distance away from the ship
+			shot.y += shot.yv * 2;
+			shot.rotation = rotation;
+			Spawn(shot);
+			rotation = prevrot;
+			++i;
+			
 			shootCooldown = 0;
 		}
 		shootCooldown += t;

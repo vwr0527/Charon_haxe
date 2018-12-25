@@ -14,14 +14,13 @@ class Main extends Sprite
 	var world:World;
 	var menu:Menu;
 	var input:Input;
-	var timer:Timer;
-	var timer2:Timer;
+	var calcFpsTimer:Timer;
+	var frameTimer:Timer;
 	var calculatingFPS:Bool = true;
 	var count = 0;
 	var prevcount = 0;
 	
 	static var fps = 0;
-	public static var RecycleMode = false;
 	public static var EnterFrameMode = false;
 	public static var FrameModeChange = false;
 	
@@ -40,13 +39,13 @@ class Main extends Sprite
 		addEventListener(Event.DEACTIVATE, LostFocus);
 		addEventListener(Event.ACTIVATE, RegainedFocus);
 		
-		timer = new Timer(1000);
-		timer.addEventListener(TimerEvent.TIMER, CalcFPS);
-		timer.start();
+		calcFpsTimer = new Timer(1000);
+		calcFpsTimer.addEventListener(TimerEvent.TIMER, CalcFPS);
+		calcFpsTimer.start();
 		
-		timer2 = new Timer(16);
-		timer2.addEventListener(TimerEvent.TIMER, Update);
-		if (!EnterFrameMode) timer2.start();
+		frameTimer = new Timer(16);
+		frameTimer.addEventListener(TimerEvent.TIMER, Update);
+		if (!EnterFrameMode) frameTimer.start();
 	}
 	
 	public function Update(e)
@@ -62,13 +61,13 @@ class Main extends Sprite
 	
 	public function LostFocus(e)
 	{
-		timer.stop();
+		calcFpsTimer.stop();
 	}
 	
 	public function RegainedFocus(e)
 	{
-		timer.reset();
-		timer.start();
+		calcFpsTimer.reset();
+		calcFpsTimer.start();
 		
 		calculatingFPS = true;
 		count = 0;
@@ -86,12 +85,12 @@ class Main extends Sprite
 		{
 			if (EnterFrameMode == true)
 			{
-				timer2.stop();
+				frameTimer.stop();
 				addEventListener(Event.ENTER_FRAME, Update);
 			}
 			else
 			{
-				timer2.start();
+				frameTimer.start();
 				removeEventListener(Event.ENTER_FRAME, Update);
 			}
 			FrameModeChange = false;

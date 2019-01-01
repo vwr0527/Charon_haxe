@@ -37,4 +37,28 @@ class Entity extends Sprite
 		yv *= 1 / Math.pow(10, tf * t);
 		av *= 1 / Math.pow(10, rf * t);
 	}
+	
+	public function LevelCollide(level:Level)
+	{
+		if (x < level.xmin)
+		{
+			xv = 0;
+			x = level.xmin;
+		}
+		if (x > level.xmax)
+		{
+			xv = 0;
+			x = level.xmax;
+		}
+		if (y < level.ymin)
+		{
+			yv = 0;
+			y = level.ymin;
+		}
+		if (y > level.ymax)
+		{
+			yv = 0;
+			y = level.ymax;
+		}
+	}
 }

@@ -68,7 +68,7 @@ class World extends Sprite
 		for (ent in entityList)
 		{
 			ent.Update(Spawn);
-			level.Collide(ent);
+			ent.LevelCollide(level);
 		}
 		
 		for (ent in newEntities)
@@ -113,7 +113,7 @@ class World extends Sprite
 	{
 		this.x = -camera.x + Lib.application.window.width / 2;
 		this.y = -camera.y + Lib.application.window.height / 2;
-		this.scaleX = this.scaleY = camera.zoom * (Lib.application.window.height / 480);
+		this.scaleX = this.scaleY = camera.zoom * (Lib.application.window.height / 540);
 	}
 	
 	private function LoadLevels() 

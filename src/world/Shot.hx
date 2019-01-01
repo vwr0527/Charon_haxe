@@ -28,7 +28,7 @@ class Shot extends Entity
 		bitmap.x -= bitmap.width * 0.5;
 		bitmap.y -= bitmap.height * 0.5;
 		bitmap.smoothing = true;
-		sprite.scaleY = 2.5;
+		sprite.scaleY = 1.5;
 		sprite.scaleX = 0.5;
 		addChild(sprite);
 	}
@@ -36,8 +36,11 @@ class Shot extends Entity
 	public override function Update(Spawn:Function)
 	{
 		super.Update(Spawn);
-		
-		if (x >= 400 || x <= -400 || y >= 240 || y <= -240)
+	}
+	
+	public override function LevelCollide(level:Level)
+	{
+		if (x >= 480 || x <= -480 || y >= 270 || y <= -270)
 		{
 			active = false;
 		}

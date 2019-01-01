@@ -14,11 +14,10 @@ class Player extends Entity
 	private var sprite:Sprite;
 	private var shootCooldown:Float = 0;
 	private var turnSpeed = 6;
-	private var shootRate = 4;
-	private var shotspeed = 30;
-	private var shotSpread = 0;
-	
-	var recycleshot:Shot = new Shot();
+	private var shootRate = 10;
+	private var shotSpeed = 45;
+	private var shotStartDist = 1.2;
+	private var shotSpread = 4;
 	
 	public function new() 
 	{
@@ -62,21 +61,15 @@ class Player extends Entity
 		}
 		if (Input.MouseHeld() && shootCooldown > shootRate)
 		{
-			var i = 0;
-			var prevrot = rotation;
-			
-			rotation += ((Math.random() - 0.5) * (Math.random() - 0.5)) * shotSpread;
 			var shot:Shot = new Shot();
 			shot.x = x;
 			shot.y = y;
-			shot.xv = shotspeed * Math.sin((180 - rotation) * (Math.PI / 180));
-			shot.yv = shotspeed * Math.cos((180 - rotation) * (Math.PI / 180));
-			shot.x += shot.xv * 2;//shot starts a little distance away from the ship
-			shot.y += shot.yv * 2;
-			shot.rotation = rotation;
+			shot.rotation = rotation + ((Math.random() - 0.5) * (Math.random() - 0.5)) * shotSpread;
+			shot.xv = shotSpeed * Math.sin((180 - shot.rotation) * (Math.PI / 180));
+			shot.yv = shotSpeed * Math.cos((180 - shot.rotation) * (Math.PI / 180));
+			shot.x += shot.xv * shotStartDist; //shot starts a little distance away from the ship
+			shot.y += shot.yv * shotStartDist;
 			Spawn(shot);
-			rotation = prevrot;
-			++i;
 			
 			shootCooldown = 0;
 		}

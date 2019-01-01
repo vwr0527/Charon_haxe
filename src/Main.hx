@@ -4,6 +4,7 @@ import openfl.display.Sprite;
 import openfl.events.Event;
 import openfl.events.TimerEvent;
 import openfl.utils.Timer;
+import openfl.Lib;
 
 /**
  * ...
@@ -20,9 +21,11 @@ class Main extends Sprite
 	var count = 0;
 	var prevcount = 0;
 	
+	static var EnterFrameMode = true;
+	static var TargetFPS = 60;
+	
+	static var FrameModeChange = false;
 	static var fps = 0;
-	public static var EnterFrameMode = false;
-	public static var FrameModeChange = false;
 	
 	public function new() 
 	{
@@ -43,7 +46,7 @@ class Main extends Sprite
 		calcFpsTimer.addEventListener(TimerEvent.TIMER, CalcFPS);
 		calcFpsTimer.start();
 		
-		frameTimer = new Timer(16);
+		frameTimer = new Timer(1000/TargetFPS);
 		frameTimer.addEventListener(TimerEvent.TIMER, Update);
 		if (!EnterFrameMode) frameTimer.start();
 	}

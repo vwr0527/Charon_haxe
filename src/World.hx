@@ -7,7 +7,6 @@ import world.Camera;
 import world.Entity;
 import world.Level;
 import world.Player;
-import world.Shot;
 
 /**
  * ...
@@ -60,6 +59,7 @@ class World extends Sprite
 	public function Update()
 	{
 		MoveWorldToCamera();
+		MoveCameraToPlayer();
 		
 		if (paused) return;
 		
@@ -116,9 +116,16 @@ class World extends Sprite
 		this.scaleX = this.scaleY = camera.zoom * (Lib.application.window.height / 540);
 	}
 	
+	private function MoveCameraToPlayer() 
+	{
+		camera.x += (player.x - camera.x) / 20;
+		camera.y += (player.y - camera.y) / 20;
+	}
+	
 	private function LoadLevels() 
 	{
 		levelDictionary.set("test", new Level());
 		level = levelDictionary["test"];
+		addChild(level);
 	}
 }

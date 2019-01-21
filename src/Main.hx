@@ -4,7 +4,6 @@ import openfl.display.Sprite;
 import openfl.events.Event;
 import openfl.events.TimerEvent;
 import openfl.utils.Timer;
-import openfl.Lib;
 
 /**
  * ...

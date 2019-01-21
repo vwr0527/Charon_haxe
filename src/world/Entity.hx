@@ -7,7 +7,7 @@ import openfl.utils.Function;
  * ...
  * @author Victor Reynolds
  */
-class Entity extends Sprite 
+class Entity extends Sprite
 {
 	public var active:Bool = true;
 	public var xv:Float = 0;

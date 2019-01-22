@@ -10,10 +10,15 @@ import openfl.geom.Point;
  */
 class LevelTile extends Sprite
 {
+	private var isTestTile = false;
+	
 	public function new() 
 	{
 		super();
-		
+	}
+	
+	public function InitTest()
+	{
 		var bmd:BitmapData = openfl.Assets.getBitmapData("img/testtile.bmp");
 		var bmd2:BitmapData = new BitmapData(bmd.width, bmd.height);
 		bmd2.threshold(bmd, bmd2.rect, new Point(0, 0), "==", 0xff000000, 0x00000000, 0xffffffff, true);
@@ -26,5 +31,12 @@ class LevelTile extends Sprite
 		bitmap.smoothing = true;
 		sprite.scaleY = sprite.scaleX = 1.0;
 		addChild(sprite);
+		
+		isTestTile = true;
+	}
+	
+	public function IsTestTile()
+	{
+		return isTestTile;
 	}
 }

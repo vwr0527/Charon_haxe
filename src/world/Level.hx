@@ -12,7 +12,7 @@ class Level extends Sprite
 	public var ymin:Float;
 	public var ymax:Float;
 	
-	public var tiles:Array<LevelTile>;
+	public var tiles:Array<Array<LevelTile>>;
 
 	public function new() 
 	{
@@ -25,37 +25,20 @@ class Level extends Sprite
 		
 		tiles = new Array();
 		
-		for (i in 0...30)
+		
+		for (i in 0...17)
 		{
-			var newtile = new LevelTile();
-			tiles.push(newtile);
-			addChild(newtile);
-			newtile.x = (i * 32) - 480 + 16;
-			newtile.y = -270 + 16;
-		}
-		for (i in 0...30)
-		{
-			var newtile = new LevelTile();
-			tiles.push(newtile);
-			addChild(newtile);
-			newtile.x = (i * 32) - 480 + 16;
-			newtile.y = 274 - 16;
-		}
-		for (i in 1...16)
-		{
-			var newtile = new LevelTile();
-			tiles.push(newtile);
-			addChild(newtile);
-			newtile.x = -480 + 16;
-			newtile.y = (i * 32) - 270 + 16;
-		}
-		for (i in 1...16)
-		{
-			var newtile = new LevelTile();
-			tiles.push(newtile);
-			addChild(newtile);
-			newtile.x = 480 - 16;
-			newtile.y = (i * 32) - 270 + 16;
+			var newRow = new Array();
+			tiles.push(newRow);
+			for (j in 0...30)
+			{
+				var newtile = new LevelTile();
+				if (j == 0 || j == 29 || i == 0 || i == 16) newtile.InitTest();
+				newRow.push(newtile);
+				addChild(newtile);
+				newtile.x = (j * 32) - 480 + 16;
+				newtile.y = (i * 32) - 270 + 16;
+			}
 		}
 	}
 }

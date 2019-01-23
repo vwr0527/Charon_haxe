@@ -49,11 +49,11 @@ class Level extends Sprite
 		xpos /= 32;
 		ypos /= 32;
 		
-		var yi = Math.round(ypos);
-		var xi = Math.round(xpos);
+		var yi = Std.int(Math.min(Math.max(Math.round(ypos), 0), tiles.length - 1));
+		var xi = Std.int(Math.min(Math.max(Math.round(xpos), 0), tiles[yi].length - 1));
 		
 		var selectTile:LevelTile = tiles[yi][xi];
-		if (/*xi <= 30 && yi <= 16 && */selectTile != null)
+		if (selectTile != null)
 			selectTile.Blink();
 	}
 }

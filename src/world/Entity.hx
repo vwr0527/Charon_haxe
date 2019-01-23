@@ -15,6 +15,7 @@ class Entity extends Sprite
 	public var av:Float = 0;
 	public var tf:Float = 0;
 	public var rf:Float = 0;
+	public var hbs:Float = 0;
 	private var t:Float = 0;
 	
 	public function new() 

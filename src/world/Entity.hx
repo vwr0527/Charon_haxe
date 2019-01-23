@@ -60,5 +60,7 @@ class Entity extends Sprite
 			yv = 0;
 			y = level.ymax;
 		}
+		
+		level.TestTileAt(x, y);
 	}
 }

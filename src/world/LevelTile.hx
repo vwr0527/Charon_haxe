@@ -39,4 +39,9 @@ class LevelTile extends Sprite
 	{
 		return isTestTile;
 	}
+	
+	public function Blink()
+	{
+		alpha = Math.random();
+	}
 }

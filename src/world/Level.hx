@@ -41,4 +41,19 @@ class Level extends Sprite
 			}
 		}
 	}
+	
+	public function TestTileAt(xpos:Float, ypos:Float)
+	{
+		xpos += 480 - 16;
+		ypos += 270 - 16;
+		xpos /= 32;
+		ypos /= 32;
+		
+		var yi = Math.round(ypos);
+		var xi = Math.round(xpos);
+		
+		var selectTile:LevelTile = tiles[yi][xi];
+		if (/*xi <= 30 && yi <= 16 && */selectTile != null)
+			selectTile.Blink();
+	}
 }

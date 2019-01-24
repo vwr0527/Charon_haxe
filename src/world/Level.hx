@@ -56,4 +56,18 @@ class Level extends Sprite
 		if (selectTile != null)
 			selectTile.Blink();
 	}
+	
+	public function GetIndexAtX(xpos:Float):Int
+	{
+		xpos += 480 - 16;
+		xpos /= 32;
+		return Std.int(Math.min(Math.max(Math.round(xpos), 0), tiles.length - 1));
+	}
+	
+	public function GetIndexAtY(ypos:Float):Int
+	{
+		ypos += 270 - 16;
+		ypos /= 32;
+		return Std.int(Math.min(Math.max(Math.round(ypos), 0), tiles.length - 1));
+	}
 }

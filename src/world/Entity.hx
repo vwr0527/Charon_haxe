@@ -12,6 +12,8 @@ class Entity extends Sprite
 	public var active:Bool = true;
 	public var xv:Float = 0;
 	public var yv:Float = 0;
+	public var px:Float = 0;
+	public var py:Float = 0;
 	public var av:Float = 0;
 	public var tf:Float = 0;
 	public var rf:Float = 0;
@@ -30,6 +32,8 @@ class Entity extends Sprite
 		//maximum 2, minimum 0.25
 		t = Math.max(Math.min(60 / Main.getFPS(), 2), 0.25);
 		
+		px = x;
+		py = y;
 		x += xv * t;
 		y += yv * t;
 		rotation += av * t;
@@ -62,6 +66,15 @@ class Entity extends Sprite
 			y = level.ymax;
 		}
 		
-		level.TestTileAt(x, y);
+		var half = hbs / 2;
+		var xmin = Math.min(Math.min(Math.min(px - half, px + half), x - half), x + half);
+		var xmax = Math.max(Math.max(Math.max(px - half, px + half), x - half), x + half);
+		var ymin = Math.min(Math.min(Math.min(py - half, py + half), y - half), y + half);
+		var ymax = Math.max(Math.max(Math.max(py - half, py + half), y - half), y + half);
+		
+		level.TestTileAt(xmin, ymin);
+		level.TestTileAt(xmin, ymax);
+		level.TestTileAt(xmax, ymin);
+		level.TestTileAt(xmax, ymax);
 	}
 }

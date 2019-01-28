@@ -10,7 +10,7 @@ import openfl.geom.Point;
  */
 class LevelTile extends Sprite
 {
-	private var isTestTile = false;
+	private var voidTile = true;
 	
 	public function new() 
 	{
@@ -32,12 +32,12 @@ class LevelTile extends Sprite
 		sprite.scaleY = sprite.scaleX = 1.0;
 		addChild(sprite);
 		
-		isTestTile = true;
+		voidTile = false;
 	}
 	
-	public function IsTestTile()
+	public function IsVoidTile():Bool
 	{
-		return isTestTile;
+		return voidTile;
 	}
 	
 	public function Blink()

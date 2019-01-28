@@ -127,5 +127,8 @@ class World extends Sprite
 		levelDictionary.set("test", new Level());
 		level = levelDictionary["test"];
 		addChild(level);
+		
+		player.x = level.playerSpawnX;
+		player.y = level.playerSpawnY;
 	}
 }

@@ -8,11 +8,20 @@ import openfl.display.Sprite;
 class Level extends Sprite
 {
 	public var xmin:Float;
-	public var xmax:Float;
 	public var ymin:Float;
+	public var xmax:Float;
 	public var ymax:Float;
 	
+	public var tsize:Float;
+	public var xtiles:Int;
+	public var ytiles:Int;
+	public var tstartx:Float;
+	public var tstarty:Float;
+	
 	public var tiles:Array<Array<LevelTile>>;
+	
+	public var playerSpawnX:Float;
+	public var playerSpawnY:Float;
 
 	public function new() 
 	{
@@ -22,52 +31,45 @@ class Level extends Sprite
 		xmax = 480;
 		ymin = -270;
 		ymax = 270;
+		tsize = 32;
+		xtiles = 30;
+		ytiles = 17;
+		tstartx = -480;
+		tstarty = -270;
 		
 		tiles = new Array();
 		
 		
-		for (i in 0...17)
+		for (i in 0...ytiles)
 		{
 			var newRow = new Array();
 			tiles.push(newRow);
-			for (j in 0...30)
+			for (j in 0...xtiles)
 			{
 				var newtile = new LevelTile();
-				if (j == 0 || j == 29 || i == 0 || i == 16) newtile.InitTest();
+				if (j == 0 || j == xtiles - 1 || i == 0 || i == ytiles - 1) newtile.InitTest();
 				newRow.push(newtile);
 				addChild(newtile);
-				newtile.x = (j * 32) - 480 + 16;
-				newtile.y = (i * 32) - 270 + 16;
+				newtile.x = (j * tsize) + tstartx + tsize / 2;
+				newtile.y = (i * tsize) + tstarty + tsize / 2;
 			}
 		}
-	}
-	
-	public function TestTileAt(xpos:Float, ypos:Float)
-	{
-		xpos += 480 - 16;
-		ypos += 270 - 16;
-		xpos /= 32;
-		ypos /= 32;
 		
-		var yi = Std.int(Math.min(Math.max(Math.round(ypos), 0), tiles.length - 1));
-		var xi = Std.int(Math.min(Math.max(Math.round(xpos), 0), tiles[yi].length - 1));
-		
-		var selectTile:LevelTile = tiles[yi][xi];
-		if (selectTile != null)
-			selectTile.Blink();
+		playerSpawnX = 0;
+		playerSpawnY = 0;
 	}
 	
 	public function GetIndexAtX(xpos:Float):Int
 	{
-		xpos += 480 - 16;
-		xpos /= 32;
-		return Std.int(Math.min(Math.max(Math.round(xpos), 0), tiles.length - 1));
+		xpos -= tstartx + tsize / 2;
+		xpos /= tsize;
+		return Std.int(Math.min(Math.max(Math.round(xpos), 0), xtiles - 1));
 	}
 	
 	public function GetIndexAtY(ypos:Float):Int
 	{
-		ypos += 270 - 16;
-		ypos /= 32;
-		return Std.int(Math.min(Math.max(Math.round(ypos), 0), tiles.length - 1));
+		ypos -= tstarty + tsize / 2;
+		ypos /= tsize;
+		return Std.int(Math.min(Math.max(Math.round(ypos), 0), ytiles - 1));
 	}
 }

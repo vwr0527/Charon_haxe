@@ -48,6 +48,7 @@ class Level extends Sprite
 			{
 				var newtile = new LevelTile();
 				if (j == 0 || j == xtiles - 1 || i == 0 || i == ytiles - 1) newtile.InitTest();
+				if (j == 16 && i == 9) newtile.InitTest();
 				newRow.push(newtile);
 				addChild(newtile);
 				newtile.x = (j * tsize) + tstartx + tsize / 2;

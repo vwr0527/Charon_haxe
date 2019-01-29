@@ -20,8 +20,6 @@ class Entity extends Sprite
 	public var tf:Float = 0;
 	public var rf:Float = 0;
 	public var hbs:Float = 0;
-	private  var pushOutX:Float = 0;
-	private  var pushOutY:Float = 0;
 	private var t:Float = 0;
 	
 	public function new() 
@@ -77,17 +75,21 @@ class Entity extends Sprite
 		}
 	}
 	
+	private static var pushOutX:Float = 0;
+	private static var pushOutY:Float = 0;
+	private static var movefraction:Float = 1.0;
 	public function CollideLevelTiles(level:Level) 
 	{
 		var half = hbs / 2;
-		var didHit:Bool = false;
-		
 		var tpx = px;
 		var tpy = py;
+		var didHit = false;
+		var bounceLimit = 3;
+		var numBounces = 0;
 		
 		do
 		{
-			var movefraction:Float = 1.0;
+			movefraction = 1.0;
 			didHit = false;
 			var xmin = level.GetIndexAtX(Math.min(Math.min(Math.min(tpx - half, tpx + half), x - half), x + half));
 			var xmax = level.GetIndexAtX(Math.max(Math.max(Math.max(tpx - half, tpx + half), x - half), x + half));
@@ -101,7 +103,7 @@ class Entity extends Sprite
 					if (level.tiles[i][j].IsVoidTile()) continue;
 					else
 					{
-						movefraction = Math.min(CollideEntityTile(level.tiles[i][j], level.tsize, tpx, tpy), movefraction);
+						CollideEntityTile(level.tiles[i][j], level.tsize, tpx, tpy);
 					}
 				}
 			}
@@ -111,15 +113,20 @@ class Entity extends Sprite
 				movefraction -= 0.01;
 				x -= (x - tpx) * (1.0 - movefraction);
 				y -= (y - tpy) * (1.0 - movefraction);
-				x += pushOutX;
-				y += pushOutY;
+				x += pushOutX / 100;
+				y -= pushOutY / 100;
 				xv = 0;
 				yv = 0;
+			}
+			++numBounces;
+			if (numBounces >= bounceLimit)
+			{
+				didHit = false;
 			}
 		} while (didHit);
 	}
 	
-	public function CollideEntityTile(levelTile:LevelTile, tileSize:Float, prevx:Float, prevy:Float):Float
+	public function CollideEntityTile(levelTile:LevelTile, tileSize:Float, prevx:Float, prevy:Float)
 	{
 		var half = hbs / 2;
 		var sx = prevx - half;
@@ -127,24 +134,22 @@ class Entity extends Sprite
 		var ex = x - half;
 		var ey = y - half;
 		
-		var movefraction:Float = CollideLineTile(levelTile, tileSize, sx, sy, ex, ey);
+		CollideLineTile(levelTile, tileSize, sx, sy, ex, ey);
 		
 		sx = prevx + half;
 		ex = x + half;
-		movefraction = Math.min(CollideLineTile(levelTile, tileSize, sx, sy, ex, ey), movefraction);
+		CollideLineTile(levelTile, tileSize, sx, sy, ex, ey);
 		
 		sy = prevy + half;
 		ey = y + half;
-		movefraction = Math.min(CollideLineTile(levelTile, tileSize, sx, sy, ex, ey), movefraction);
+		CollideLineTile(levelTile, tileSize, sx, sy, ex, ey);
 		
 		sx = prevx - half;
 		ex = x - half;
-		movefraction = Math.min(CollideLineTile(levelTile, tileSize, sx, sy, ex, ey), movefraction);
-		
-		return movefraction;
+		CollideLineTile(levelTile, tileSize, sx, sy, ex, ey);
 	}
 	
-	public function CollideLineTile(levelTile:LevelTile, tileSize:Float, sx:Float, sy:Float, ex:Float, ey:Float):Float
+	public function CollideLineTile(levelTile:LevelTile, tileSize:Float, sx:Float, sy:Float, ex:Float, ey:Float)
 	{
 		var thalf = tileSize / 2;
 		var tsx = levelTile.x - thalf;
@@ -152,27 +157,23 @@ class Entity extends Sprite
 		var tex = levelTile.x + thalf;
 		var tey = levelTile.y - thalf;
 		
-		var movefraction:Float = LineLineIntersectSpecial(sx, sy, ex, ey, tsx, tsy, tex, tey);
+		LineLineIntersectSpecial(sx, sy, ex, ey, tsx, tsy, tex, tey);
 		
 		tsx = levelTile.x + thalf;
 		tey = levelTile.y + thalf;
-		movefraction = Math.min(LineLineIntersectSpecial(sx, sy, ex, ey, tsx, tsy, tex, tey), movefraction);
+		LineLineIntersectSpecial(sx, sy, ex, ey, tsx, tsy, tex, tey);
 		
 		tsy = levelTile.y + thalf;
 		tex = levelTile.x - thalf;
-		movefraction = Math.min(LineLineIntersectSpecial(sx, sy, ex, ey, tsx, tsy, tex, tey), movefraction);
+		LineLineIntersectSpecial(sx, sy, ex, ey, tsx, tsy, tex, tey);
 		
 		tsx = levelTile.x - thalf;
 		tey = levelTile.y - thalf;
-		movefraction = Math.min(LineLineIntersectSpecial(sx, sy, ex, ey, tsx, tsy, tex, tey), movefraction);
-		
-		return movefraction;
+		LineLineIntersectSpecial(sx, sy, ex, ey, tsx, tsy, tex, tey);
 	}
 	
-	public function LineLineIntersectSpecial(startx:Float, starty:Float, endx:Float, endy:Float, wallx1:Float, wally1:Float, wallx2:Float, wally2:Float):Float
+	public function LineLineIntersectSpecial(startx:Float, starty:Float, endx:Float, endy:Float, wallx1:Float, wally1:Float, wallx2:Float, wally2:Float)
 	{
-		// like line line intersection, but instead of a coordinate, it gives you the time of the intersection (where start=time 0.0 and end=time 1.0).
-		// it assumes the first pair is a motion (start->stop) and the second pair is a wall
 		var s1_x:Float = endx - startx;
 		var s1_y:Float = endy - starty;
 		var s2_x:Float = wallx2 - wallx1;
@@ -183,9 +184,13 @@ class Entity extends Sprite
 		
 		if (s >= 0 && s <= 1 && t >= 0 && t <= 1)
 		{
-			return t;
+			if (t < movefraction)
+			{
+				movefraction = t;
+				var dist = Math.sqrt(Math.pow(wallx2 - wallx1, 2) + Math.pow(wally2 - wally1, 2));
+				pushOutX = (wally2 - wally1) / dist;
+				pushOutY = (wallx2 - wallx1) / dist;
+			}
 		}
-		
-		return 1.0;
 	}
 }

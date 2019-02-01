@@ -25,7 +25,7 @@ class Player extends Entity
 	{
 		super();
 		
-		hbs = 32;
+		hbs = 63;
 		
 		var bitmapData = openfl.Assets.getBitmapData("img/ship.png");
 		var bitmap = new Bitmap (bitmapData);

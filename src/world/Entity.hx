@@ -2,7 +2,6 @@ package world;
 
 import openfl.display.Sprite;
 import openfl.utils.Function;
-import openfl.geom.Point;
 import world.Level;
 
 /**
@@ -103,7 +102,8 @@ class Entity extends Sprite
 					if (level.tiles[i][j].IsVoidTile()) continue;
 					else
 					{
-						CollideEntityTile(level.tiles[i][j], level.tsize, tpx, tpy);
+						CollideTwoSquares(hbs, level.tiles[i][j].x - tpx, level.tiles[i][j].y - tpy, level.tsize, x - tpx, y - tpy, false);
+						CollideTwoSquares(level.tsize, tpx - level.tiles[i][j].x, tpy - level.tiles[i][j].y, hbs, tpx - x, tpy - y, true);
 					}
 				}
 			}
@@ -126,53 +126,27 @@ class Entity extends Sprite
 		} while (didHit);
 	}
 	
-	public function CollideEntityTile(levelTile:LevelTile, tileSize:Float, prevx:Float, prevy:Float)
+	public function CollideTwoSquares(asize:Float, bx:Float, by:Float, bsize:Float, dx:Float, dy:Float, reverse:Bool) 
 	{
-		var half = hbs / 2;
-		var sx = prevx - half;
-		var sy = prevy - half;
-		var ex = x - half;
-		var ey = y - half;
-		
-		CollideLineTile(levelTile, tileSize, sx, sy, ex, ey);
-		
-		sx = prevx + half;
-		ex = x + half;
-		CollideLineTile(levelTile, tileSize, sx, sy, ex, ey);
-		
-		sy = prevy + half;
-		ey = y + half;
-		CollideLineTile(levelTile, tileSize, sx, sy, ex, ey);
-		
-		sx = prevx - half;
-		ex = x - half;
-		CollideLineTile(levelTile, tileSize, sx, sy, ex, ey);
+		var hasize = asize / 2;
+		CollideLineSquare(bsize, bx, by, -hasize, -hasize, dx, dy, reverse);
+		CollideLineSquare(bsize, bx, by, hasize, -hasize, dx, dy, reverse);
+		CollideLineSquare(bsize, bx, by, hasize, hasize, dx, dy, reverse);
+		CollideLineSquare(bsize, bx, by, -hasize, hasize, dx, dy, reverse);
 	}
 	
-	public function CollideLineTile(levelTile:LevelTile, tileSize:Float, sx:Float, sy:Float, ex:Float, ey:Float)
+	public function CollideLineSquare(bsize:Float, bx:Float, by:Float, sx:Float, sy:Float, dx:Float, dy:Float, reverse:Bool) 
 	{
-		var thalf = tileSize / 2;
-		var tsx = levelTile.x - thalf;
-		var tsy = levelTile.y - thalf;
-		var tex = levelTile.x + thalf;
-		var tey = levelTile.y - thalf;
-		
-		LineLineIntersectSpecial(sx, sy, ex, ey, tsx, tsy, tex, tey);
-		
-		tsx = levelTile.x + thalf;
-		tey = levelTile.y + thalf;
-		LineLineIntersectSpecial(sx, sy, ex, ey, tsx, tsy, tex, tey);
-		
-		tsy = levelTile.y + thalf;
-		tex = levelTile.x - thalf;
-		LineLineIntersectSpecial(sx, sy, ex, ey, tsx, tsy, tex, tey);
-		
-		tsx = levelTile.x - thalf;
-		tey = levelTile.y - thalf;
-		LineLineIntersectSpecial(sx, sy, ex, ey, tsx, tsy, tex, tey);
+		var hbsize = bsize / 2;
+		var ex = sx + dx;
+		var ey = sy + dy;
+		LineLineIntersectSpecial(sx, sy, ex, ey, bx - hbsize, by - hbsize, bx + hbsize, by - hbsize, reverse);
+		LineLineIntersectSpecial(sx, sy, ex, ey, bx + hbsize, by - hbsize, bx + hbsize, by + hbsize, reverse);
+		LineLineIntersectSpecial(sx, sy, ex, ey, bx + hbsize, by + hbsize, bx - hbsize, by + hbsize, reverse);
+		LineLineIntersectSpecial(sx, sy, ex, ey, bx - hbsize, by + hbsize, bx - hbsize, by - hbsize, reverse);
 	}
 	
-	public function LineLineIntersectSpecial(startx:Float, starty:Float, endx:Float, endy:Float, wallx1:Float, wally1:Float, wallx2:Float, wally2:Float)
+	public function LineLineIntersectSpecial(startx:Float, starty:Float, endx:Float, endy:Float, wallx1:Float, wally1:Float, wallx2:Float, wally2:Float, reverse:Bool)
 	{
 		var s1_x:Float = endx - startx;
 		var s1_y:Float = endy - starty;
@@ -190,6 +164,11 @@ class Entity extends Sprite
 				var dist = Math.sqrt(Math.pow(wallx2 - wallx1, 2) + Math.pow(wally2 - wally1, 2));
 				pushOutX = (wally2 - wally1) / dist;
 				pushOutY = (wallx2 - wallx1) / dist;
+				if (reverse)
+				{
+					pushOutX *= -1;
+					pushOutY *= -1;
+				}
 			}
 		}
 	}

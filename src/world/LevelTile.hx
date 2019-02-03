@@ -11,10 +11,14 @@ import openfl.geom.Point;
 class LevelTile extends Sprite
 {
 	private var voidTile = true;
+	public var hitbox:HitShape;
+	private var tileSize:Float;
 	
-	public function new() 
+	public function new(size:Float) 
 	{
 		super();
+		hitbox = new HitShape();
+		tileSize = size;
 	}
 	
 	public function InitTest()
@@ -33,6 +37,7 @@ class LevelTile extends Sprite
 		addChild(sprite);
 		
 		voidTile = false;
+		hitbox.MakeSquare(tileSize);
 	}
 	
 	public function IsVoidTile():Bool

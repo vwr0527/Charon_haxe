@@ -19,13 +19,11 @@ class Player extends Entity
 	private var shotStartDist = 1.2;
 	private var shotSpread = 4;
 	
-	private var hitbox:Sprite;
-	
 	public function new() 
 	{
 		super();
-		
-		hbs = 63;
+		hitbox.MakeSquare(63);
+		showHitbox = true;
 		
 		var bitmapData = openfl.Assets.getBitmapData("img/ship.png");
 		var bitmap = new Bitmap (bitmapData);
@@ -38,12 +36,6 @@ class Player extends Entity
 		
 		addChild(sprite);
 		
-		hitbox = new Sprite();
-		hitbox.graphics.lineStyle(1, 0x00ff00);
-		hitbox.graphics.drawRect( -hbs / 2, -hbs / 2, hbs, hbs);
-		
-		addChild(hitbox);
-		
 		rf = 0.2;//0.8;
 		tf = 0.01;//0.98;
 	}
@@ -51,8 +43,6 @@ class Player extends Entity
 	public override function Update(Spawn:Function)
 	{
 		super.Update(Spawn);
-		
-		hitbox.rotation = -rotation;
 		
 		var speed = 0.4 * t;
 		if (Input.KeyHeld(65))

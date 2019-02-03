@@ -18,12 +18,15 @@ class Entity extends Sprite
 	public var av:Float = 0;
 	public var tf:Float = 0;
 	public var rf:Float = 0;
-	public var hbs:Float = 0;
+	public var hitbox:HitShape;
+	public var showHitbox:Bool = false;
 	private var t:Float = 0;
 	
 	public function new() 
 	{
 		super();
+		hitbox = new HitShape();
+		addChild(hitbox.graphic);
 	}
 	
 	public function Update(Spawn:Function)
@@ -42,6 +45,16 @@ class Entity extends Sprite
 		xv *= 1 / Math.pow(10, tf * t);
 		yv *= 1 / Math.pow(10, tf * t);
 		av *= 1 / Math.pow(10, rf * t);
+		
+		if (showHitbox)
+		{
+			hitbox.graphic.rotation = -rotation;
+			hitbox.graphic.visible = true;
+		}
+		else
+		{
+			hitbox.graphic.visible = false;
+		}
 	}
 	
 	public function LevelCollide(level:Level)
@@ -73,13 +86,9 @@ class Entity extends Sprite
 			y = level.ymax;
 		}
 	}
-	
-	private static var pushOutX:Float = 0;
-	private static var pushOutY:Float = 0;
-	private static var movefraction:Float = 1.0;
-	public function CollideLevelTiles(level:Level) 
+	public function CollideLevelTiles(level:Level)
 	{
-		var half = hbs / 2;
+		HitShape.ResetMovefraction();
 		var tpx = px;
 		var tpy = py;
 		var didHit = false;
@@ -88,12 +97,11 @@ class Entity extends Sprite
 		
 		do
 		{
-			movefraction = 1.0;
 			didHit = false;
-			var xmin = level.GetIndexAtX(Math.min(Math.min(Math.min(tpx - half, tpx + half), x - half), x + half));
-			var xmax = level.GetIndexAtX(Math.max(Math.max(Math.max(tpx - half, tpx + half), x - half), x + half));
-			var ymin = level.GetIndexAtY(Math.min(Math.min(Math.min(tpy - half, tpy + half), y - half), y + half));
-			var ymax = level.GetIndexAtY(Math.max(Math.max(Math.max(tpy - half, tpy + half), y - half), y + half));
+			var xmin = level.GetIndexAtX(Math.min(tpx, x) + hitbox.GetXmin());
+			var xmax = level.GetIndexAtX(Math.max(tpx, x) + hitbox.GetXmax());
+			var ymin = level.GetIndexAtY(Math.min(tpy, y) + hitbox.GetYmin());
+			var ymax = level.GetIndexAtY(Math.max(tpy, y) + hitbox.GetYmax());
 			
 			for (i in ymin...ymax + 1)
 			{
@@ -102,19 +110,17 @@ class Entity extends Sprite
 					if (level.tiles[i][j].IsVoidTile()) continue;
 					else
 					{
-						CollideTwoSquares(hbs, level.tiles[i][j].x - tpx, level.tiles[i][j].y - tpy, level.tsize, x - tpx, y - tpy, false);
-						CollideTwoSquares(level.tsize, tpx - level.tiles[i][j].x, tpy - level.tiles[i][j].y, hbs, tpx - x, tpy - y, true);
+						hitbox.Collide(level.tiles[i][j].x - x, level.tiles[i][j].y - y, x - tpx, y - tpy, level.tiles[i][j].hitbox);
 					}
 				}
 			}
-			if (movefraction < 1.0)
+			if (HitShape.GetMovefraction() < 1.0)
 			{
 				didHit = true;
-				movefraction -= 0.01;
-				x -= (x - tpx) * (1.0 - movefraction);
-				y -= (y - tpy) * (1.0 - movefraction);
-				x += pushOutX / 100;
-				y -= pushOutY / 100;
+				x -= (x - tpx) * (1.01 - HitShape.GetMovefraction());
+				y -= (y - tpy) * (1.01 - HitShape.GetMovefraction());
+				x += HitShape.GetPushoutX() / 100;
+				y -= HitShape.GetPushoutY() / 100;
 				xv = 0;
 				yv = 0;
 			}
@@ -124,52 +130,5 @@ class Entity extends Sprite
 				didHit = false;
 			}
 		} while (didHit);
-	}
-	
-	public function CollideTwoSquares(asize:Float, bx:Float, by:Float, bsize:Float, dx:Float, dy:Float, reverse:Bool) 
-	{
-		var hasize = asize / 2;
-		CollideLineSquare(bsize, bx, by, -hasize, -hasize, dx, dy, reverse);
-		CollideLineSquare(bsize, bx, by, hasize, -hasize, dx, dy, reverse);
-		CollideLineSquare(bsize, bx, by, hasize, hasize, dx, dy, reverse);
-		CollideLineSquare(bsize, bx, by, -hasize, hasize, dx, dy, reverse);
-	}
-	
-	public function CollideLineSquare(bsize:Float, bx:Float, by:Float, sx:Float, sy:Float, dx:Float, dy:Float, reverse:Bool) 
-	{
-		var hbsize = bsize / 2;
-		var ex = sx + dx;
-		var ey = sy + dy;
-		LineLineIntersectSpecial(sx, sy, ex, ey, bx - hbsize, by - hbsize, bx + hbsize, by - hbsize, reverse);
-		LineLineIntersectSpecial(sx, sy, ex, ey, bx + hbsize, by - hbsize, bx + hbsize, by + hbsize, reverse);
-		LineLineIntersectSpecial(sx, sy, ex, ey, bx + hbsize, by + hbsize, bx - hbsize, by + hbsize, reverse);
-		LineLineIntersectSpecial(sx, sy, ex, ey, bx - hbsize, by + hbsize, bx - hbsize, by - hbsize, reverse);
-	}
-	
-	public function LineLineIntersectSpecial(startx:Float, starty:Float, endx:Float, endy:Float, wallx1:Float, wally1:Float, wallx2:Float, wally2:Float, reverse:Bool)
-	{
-		var s1_x:Float = endx - startx;
-		var s1_y:Float = endy - starty;
-		var s2_x:Float = wallx2 - wallx1;
-		var s2_y:Float = wally2 - wally1;
-		
-		var s:Float = ( -s1_y * (startx - wallx1) + s1_x * (starty - wally1)) / ( -s2_x * s1_y + s1_x * s2_y);
-		var t:Float = ( s2_x * (starty - wally1) - s2_y * (startx - wallx1)) / ( -s2_x * s1_y + s1_x * s2_y);
-		
-		if (s >= 0 && s <= 1 && t >= 0 && t <= 1)
-		{
-			if (t < movefraction)
-			{
-				movefraction = t;
-				var dist = Math.sqrt(Math.pow(wallx2 - wallx1, 2) + Math.pow(wally2 - wally1, 2));
-				pushOutX = (wally2 - wally1) / dist;
-				pushOutY = (wallx2 - wallx1) / dist;
-				if (reverse)
-				{
-					pushOutX *= -1;
-					pushOutY *= -1;
-				}
-			}
-		}
 	}
 }

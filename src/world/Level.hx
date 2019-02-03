@@ -46,7 +46,7 @@ class Level extends Sprite
 			tiles.push(newRow);
 			for (j in 0...xtiles)
 			{
-				var newtile = new LevelTile();
+				var newtile = new LevelTile(tsize);
 				if (j == 0 || j == xtiles - 1 || i == 0 || i == ytiles - 1) newtile.InitTest();
 				if (j == 16 && i == 9) newtile.InitTest();
 				newRow.push(newtile);

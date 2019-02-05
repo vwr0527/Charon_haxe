@@ -22,7 +22,7 @@ class Player extends Entity
 	public function new() 
 	{
 		super();
-		hitbox.MakeSquare(63);
+		hitbox.MakeSquare(129);
 		showHitbox = true;
 		
 		var bitmapData = openfl.Assets.getBitmapData("img/ship.png");

@@ -89,16 +89,16 @@ class Entity extends Sprite
 	}
 	public function CollideLevelTiles(level:Level)
 	{
-		HitShape.ResetMovefraction();
 		var tpx = px;
 		var tpy = py;
 		var didHit = false;
-		var bounceLimit = 100;  // this is not a bounce limit! don't know what it's doing... TODO: fix (naming or purpose)
+		var bounceLimit = 6;  // this is not a bounce limit! don't know what it's doing... TODO: fix (naming or purpose)
 		var numBounces = 0;
 		
 		do
 		{
 			didHit = false;
+			HitShape.ResetMovefraction();
 			var xmin = level.GetIndexAtX(Math.min(tpx, x) + hitbox.GetXmin());
 			var xmax = level.GetIndexAtX(Math.max(tpx, x) + hitbox.GetXmax());
 			var ymin = level.GetIndexAtY(Math.min(tpy, y) + hitbox.GetYmin());
@@ -111,7 +111,7 @@ class Entity extends Sprite
 					if (level.tiles[i][j].IsVoidTile()) continue;
 					else
 					{
-						hitbox.Collide(level.tiles[i][j].x - x, level.tiles[i][j].y - y, x - tpx, y - tpy, level.tiles[i][j].hitbox); //this function might be wrong.
+						hitbox.Collide(level.tiles[i][j].x - x, level.tiles[i][j].y - y, x - tpx, y - tpy, level.tiles[i][j].hitbox);
 					}
 				}
 			}
@@ -121,25 +121,24 @@ class Entity extends Sprite
 				didHit = true;
 				var ox = x;
 				var oy = y;
-				var wx = (x - ((x - tpx) * (1 - HitShape.GetMovefraction()))) + (HitShape.GetPushoutX() / 100);
-				var wy = (y - ((y - tpy) * (1 - HitShape.GetMovefraction()))) - (HitShape.GetPushoutY() / 100);
+				var wx = (x - ((x - tpx) * (1.001 - HitShape.GetMovefraction()))) + (HitShape.GetPushoutX() / 1000);
+				var wy = (y - ((y - tpy) * (1.001 - HitShape.GetMovefraction()))) - (HitShape.GetPushoutY() / 1000);
 				
 				var factor = -1 * dotprod(HitShape.GetPushoutX(), -HitShape.GetPushoutY(), ox - wx, oy - wy);
-				x = ox + (factor * HitShape.GetPushoutX()) + (HitShape.GetPushoutX() / 100);
-				y = oy + (factor * -HitShape.GetPushoutY()) - (HitShape.GetPushoutY() / 100);
+				x = ox + (factor * HitShape.GetPushoutX()) + (HitShape.GetPushoutX() / 1000);
+				y = oy + (factor * -HitShape.GetPushoutY()) - (HitShape.GetPushoutY() / 1000);
 				
 				tpx = wx;
 				tpy = wy;
 				
-				var factor = -1 * dotprod(HitShape.GetPushoutX(), -HitShape.GetPushoutY(), xv, yv);
+				factor = -1 * dotprod(HitShape.GetPushoutX(), -HitShape.GetPushoutY(), xv, yv);
 				xv += factor * HitShape.GetPushoutX();
 				yv += factor * -HitShape.GetPushoutY();
 			}
-			/*if (numBounces >= bounceLimit)
+			if (numBounces >= bounceLimit)
 			{
-				trace(numBounces); //it keeps hitting the limit EVERY time??? why? this is a safety measure, not a crutch!
 				didHit = false;
-			}*/
+			}
 		} while (didHit);
 	}
 	

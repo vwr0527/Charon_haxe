@@ -48,13 +48,18 @@ class Level extends Sprite
 			{
 				var newtile = new LevelTile(tsize);
 				if (j == 0 || j == xtiles - 1 || i == 0 || i == ytiles - 1) newtile.InitTest();
-				//if (j == 16 && i == 9) newtile.InitTest();
 				newRow.push(newtile);
 				addChild(newtile);
 				newtile.x = (j * tsize) + tstartx + tsize / 2;
 				newtile.y = (i * tsize) + tstarty + tsize / 2;
 			}
 		}
+		
+		tiles[15][28].InitBRTest();
+		tiles[15][1].InitBLTest();
+		tiles[1][1].InitTLTest();
+		tiles[1][28].InitTRTest();
+		
 		
 		playerSpawnX = 0;
 		playerSpawnY = 0;

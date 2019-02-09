@@ -20,7 +20,7 @@ class Entity extends Sprite
 	public var rf:Float = 0;
 	public var hitbox:HitShape;
 	public var showHitbox:Bool = false;
-	public var elasticity:Float = 0.8;
+	public var elasticity:Float = 0.25;
 	private var t:Float = 0;
 	
 	public function new() 
@@ -92,7 +92,7 @@ class Entity extends Sprite
 		var tpx = px;
 		var tpy = py;
 		var didHit = false;
-		var bounceLimit = 6;  // this is not a bounce limit! don't know what it's doing... TODO: fix (naming or purpose)
+		var bounceLimit = 6;
 		var numBounces = 0;
 		
 		do
@@ -111,7 +111,7 @@ class Entity extends Sprite
 					if (level.tiles[i][j].IsVoidTile()) continue;
 					else
 					{
-						hitbox.Collide(level.tiles[i][j].x - x, level.tiles[i][j].y - y, x - tpx, y - tpy, level.tiles[i][j].hitbox);
+						hitbox.Collide(level.tiles[i][j].x - x, level.tiles[i][j].y - y, x - tpx, y - tpy, level.tiles[i][j].hitShape);
 					}
 				}
 			}
@@ -124,14 +124,14 @@ class Entity extends Sprite
 				var wx = (x - ((x - tpx) * (1.001 - HitShape.GetMovefraction()))) + (HitShape.GetPushoutX() / 1000);
 				var wy = (y - ((y - tpy) * (1.001 - HitShape.GetMovefraction()))) - (HitShape.GetPushoutY() / 1000);
 				
-				var factor = -1 * dotprod(HitShape.GetPushoutX(), -HitShape.GetPushoutY(), ox - wx, oy - wy);
+				var factor = -(1 + elasticity) * dotprod(HitShape.GetPushoutX(), -HitShape.GetPushoutY(), ox - wx, oy - wy);
 				x = ox + (factor * HitShape.GetPushoutX()) + (HitShape.GetPushoutX() / 1000);
 				y = oy + (factor * -HitShape.GetPushoutY()) - (HitShape.GetPushoutY() / 1000);
 				
 				tpx = wx;
 				tpy = wy;
 				
-				factor = -1 * dotprod(HitShape.GetPushoutX(), -HitShape.GetPushoutY(), xv, yv);
+				factor = -(1 + elasticity) * dotprod(HitShape.GetPushoutX(), -HitShape.GetPushoutY(), xv, yv);
 				xv += factor * HitShape.GetPushoutX();
 				yv += factor * -HitShape.GetPushoutY();
 			}

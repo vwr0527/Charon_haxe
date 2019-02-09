@@ -43,6 +43,21 @@ class HitShape
 		if (x > xmax) xmax = x;
 		if (y < ymin) ymin = y;
 		if (y > ymax) ymax = y;
+		
+		graphic.graphics.clear();
+		graphic.graphics.lineStyle(1, 0x00ff00);
+		graphic.graphics.moveTo(p[0].x, p[0].y);
+		for (i in 1...p.length + 1)
+		{
+			if (i >= p.length)
+			{
+				graphic.graphics.lineTo(p[0].x, p[0].y);
+			}
+			else
+			{
+				graphic.graphics.lineTo(p[i].x, p[i].y);
+			}
+		}
 	}
 	
 	public function GetX(i:Int):Float

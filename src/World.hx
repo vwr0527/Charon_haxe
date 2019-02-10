@@ -40,8 +40,6 @@ class World extends Sprite
 		newEntities = new Array();
 		
 		player = new Player();
-		addChild(player);
-		
 		entityList.push(player);
 		
 		playerShots = new Array();
@@ -54,6 +52,8 @@ class World extends Sprite
 		
 		levelDictionary = new Map();
 		LoadLevels();
+		
+		addChild(player);
 	}
 	
 	public function Update()
@@ -68,7 +68,7 @@ class World extends Sprite
 		for (ent in entityList)
 		{
 			ent.Update(Spawn);
-			ent.LevelCollide(level);
+			ent.LevelCollide(level.CurrentRoom());
 		}
 		
 		for (ent in newEntities)
@@ -128,7 +128,7 @@ class World extends Sprite
 		level = levelDictionary["test"];
 		addChild(level);
 		
-		player.x = level.playerSpawnX;
-		player.y = level.playerSpawnY;
+		player.x = level.StartRoom().playerSpawnX;
+		player.y = level.StartRoom().playerSpawnY;
 	}
 }

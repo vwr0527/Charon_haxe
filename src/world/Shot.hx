@@ -13,7 +13,6 @@ import openfl.utils.Function;
  */
 class Shot extends Entity 
 {
-
 	public function new() 
 	{
 		super();
@@ -38,9 +37,9 @@ class Shot extends Entity
 		super.Update(Spawn);
 	}
 	
-	public override function LevelCollide(level:Level)
+	public override function LevelCollide(room:LevelRoom)
 	{
-		if (x >= 480 || x <= -480 || y >= 270 || y <= -270)
+		if (x >= room.xmax || x <= room.xmin || y >= room.ymax || y <= room.ymin)
 		{
 			active = false;
 		}

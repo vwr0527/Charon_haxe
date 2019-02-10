@@ -11,6 +11,7 @@ class MainMenu extends MenuPage
 {
 	var title:MenuElement;
 	var info:MenuElement;
+	var menuActive:Bool = false;
 	
 	public function new() 
 	{
@@ -59,7 +60,7 @@ class MainMenu extends MenuPage
 			{
 				elem.alpha = 0.5;
 				
-				if (Input.MouseDown())
+				if (Input.MouseUp())
 				{
 					switch (i) 
 					{
@@ -78,10 +79,18 @@ class MainMenu extends MenuPage
 		
 		if (toggleMenu)
 		{
+			menuActive = !menuActive;
 			for (i in 0...(numChildren))
 			{
-				getChildAt(i).visible = !getChildAt(i).visible;
+				getChildAt(i).visible = menuActive;
 			}
+			getChildAt(0).visible = !menuActive;
 		}
+		trace(toggleMenu);
+	}
+	
+	public function isActive():Bool
+	{
+		return menuActive;
 	}
 }

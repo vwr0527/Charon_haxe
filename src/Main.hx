@@ -14,6 +14,7 @@ class Main extends Sprite
 	var world:World;
 	var menu:Menu;
 	var input:Input;
+	
 	var calcFpsTimer:Timer;
 	var frameTimer:Timer;
 	var calculatingFPS:Bool = true;
@@ -56,8 +57,8 @@ class Main extends Sprite
 		
 		if (calculatingFPS) return;
 		
+		if (!menu.isActive()) world.Update();
 		menu.Update();
-		world.Update();
 		input.Update();
 	}
 	

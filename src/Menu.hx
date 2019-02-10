@@ -28,4 +28,9 @@ class Menu extends Sprite
 		mainPage.Update();
 		debugPage.Update();
 	}
+	
+	public function isActive():Bool
+	{
+		return mainPage.isActive();
+	}
 }

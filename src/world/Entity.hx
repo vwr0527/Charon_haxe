@@ -58,36 +58,36 @@ class Entity extends Sprite
 		}
 	}
 	
-	public function LevelCollide(level:Level)
+	public function LevelCollide(room:LevelRoom)
 	{
-		CollideLevelBorders(level);
-		CollideLevelTiles(level);
+		CollideLevelBorders(room);
+		CollideLevelTiles(room);
 	}
 	
-	public function CollideLevelBorders(level:Level) 
+	public function CollideLevelBorders(room:LevelRoom) 
 	{
-		if (x < level.xmin)
+		if (x < room.xmin)
 		{
 			xv = 0;
-			x = level.xmin;
+			x = room.xmin;
 		}
-		if (x > level.xmax)
+		if (x > room.xmax)
 		{
 			xv = 0;
-			x = level.xmax;
+			x = room.xmax;
 		}
-		if (y < level.ymin)
+		if (y < room.ymin)
 		{
 			yv = 0;
-			y = level.ymin;
+			y = room.ymin;
 		}
-		if (y > level.ymax)
+		if (y > room.ymax)
 		{
 			yv = 0;
-			y = level.ymax;
+			y = room.ymax;
 		}
 	}
-	public function CollideLevelTiles(level:Level)
+	public function CollideLevelTiles(room:LevelRoom)
 	{
 		var tpx = px;
 		var tpy = py;
@@ -99,19 +99,19 @@ class Entity extends Sprite
 		{
 			didHit = false;
 			HitShape.ResetMovefraction();
-			var xmin = level.GetIndexAtX(Math.min(tpx, x) + hitbox.GetXmin());
-			var xmax = level.GetIndexAtX(Math.max(tpx, x) + hitbox.GetXmax());
-			var ymin = level.GetIndexAtY(Math.min(tpy, y) + hitbox.GetYmin());
-			var ymax = level.GetIndexAtY(Math.max(tpy, y) + hitbox.GetYmax());
+			var xmin = room.GetIndexAtX(Math.min(tpx, x) + hitbox.GetXmin());
+			var xmax = room.GetIndexAtX(Math.max(tpx, x) + hitbox.GetXmax());
+			var ymin = room.GetIndexAtY(Math.min(tpy, y) + hitbox.GetYmin());
+			var ymax = room.GetIndexAtY(Math.max(tpy, y) + hitbox.GetYmax());
 			
 			for (i in ymin...ymax + 1)
 			{
 				for (j in xmin...xmax + 1)
 				{
-					if (level.tiles[i][j].IsVoidTile()) continue;
+					if (room.tiles[i][j].IsVoidTile()) continue;
 					else
 					{
-						hitbox.Collide(level.tiles[i][j].x - x, level.tiles[i][j].y - y, x - tpx, y - tpy, level.tiles[i][j].hitShape);
+						hitbox.Collide(room.tiles[i][j].x - x, room.tiles[i][j].y - y, x - tpx, y - tpy, room.tiles[i][j].hitShape);
 					}
 				}
 			}

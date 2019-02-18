@@ -1,11 +1,12 @@
 package;
 
 import menu.DebugPage;
-import openfl.display.Sprite;
 import openfl.Lib;
+import openfl.display.Sprite;
 import world.Camera;
 import world.Entity;
 import world.Level;
+import world.levels.TestLevel1;
 import world.Player;
 
 /**
@@ -88,6 +89,8 @@ class World extends Sprite
 			--i;
 		}
 		DebugPage.entcount = entityList.length;
+		
+		level.Update();
 	}
 	
 	private function Spawn(newEnt:Entity)
@@ -124,8 +127,9 @@ class World extends Sprite
 	
 	private function LoadLevels() 
 	{
-		levelDictionary.set("test", new Level());
-		level = levelDictionary["test"];
+		var testLevel1 = new TestLevel1();
+		level = testLevel1.level;
+		levelDictionary.set("test", level);
 		addChild(level);
 		
 		player.x = level.StartRoom().playerSpawnX;

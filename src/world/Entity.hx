@@ -2,7 +2,7 @@ package world;
 
 import openfl.display.Sprite;
 import openfl.utils.Function;
-import world.Level;
+import world.LevelRoom;
 
 /**
  * ...

@@ -9,15 +9,22 @@ import world.LevelRoom;
 class Level extends Sprite
 {
 	public var rooms:Array<LevelRoom>;
-	var currentRoom:LevelRoom;
+	public var currentRoom:LevelRoom;
+	public var lastRoomIndex:Int;
 
 	public function new() 
 	{
 		super();
 		rooms = new Array();
-		rooms.push(new LevelRoom());
-		currentRoom = rooms[0];
-		addChild(currentRoom);
+	}
+	
+	public function Update()
+	{
+		if (currentRoom.IsSwitchingRoom())
+		{
+			lastRoomIndex = currentRoom.SwitchToRoomIndex();
+			currentRoom = rooms[lastRoomIndex];
+		}
 	}
 	
 	public function StartRoom():LevelRoom

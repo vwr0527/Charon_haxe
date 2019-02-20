@@ -60,8 +60,8 @@ class Entity extends Sprite
 	
 	public function LevelCollide(room:LevelRoom)
 	{
-		CollideLevelBorders(room);
 		CollideLevelTiles(room);
+		CollideLevelBorders(room);
 	}
 	
 	public function CollideLevelBorders(room:LevelRoom) 

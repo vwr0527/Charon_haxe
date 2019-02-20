@@ -86,7 +86,6 @@ class MainMenu extends MenuPage
 			}
 			getChildAt(0).visible = !menuActive;
 		}
-		trace(toggleMenu);
 	}
 	
 	public function isActive():Bool

@@ -13,6 +13,8 @@ class LevelTile extends Sprite
 	private var voidTile = true;
 	public var hitShape:HitShape;
 	private var tileSize:Float;
+	private var hasImg:Bool = false;
+	private var sprite:Sprite;
 	
 	public function new(size:Float) 
 	{
@@ -21,16 +23,14 @@ class LevelTile extends Sprite
 		tileSize = size;
 	}
 	
-	public function InitTest()
+	private function UsePic(assetName:String)
 	{
-		voidTile = false;
-		
-		var bmd:BitmapData = openfl.Assets.getBitmapData("img/testtile.bmp");
+		var bmd:BitmapData = openfl.Assets.getBitmapData(assetName);
 		var bmd2:BitmapData = new BitmapData(bmd.width, bmd.height);
 		bmd2.threshold(bmd, bmd2.rect, new Point(0, 0), "==", 0xff000000, 0x00000000, 0xffffffff, true);
 		
 		var bitmap = new Bitmap(bmd2);
-		var sprite = new Sprite();
+		sprite = new Sprite();
 		sprite.addChild(bitmap);
 		bitmap.x -= bitmap.width * 0.5;
 		bitmap.y -= bitmap.height * 0.5;
@@ -38,46 +38,68 @@ class LevelTile extends Sprite
 		sprite.scaleY = sprite.scaleX = 1.0;
 		addChild(sprite);
 		
+	}
+	
+	public function Init()
+	{
+		voidTile = false;
+		UsePic("img/testtile.bmp");
+		
 		hitShape.MakeSquare(tileSize);
 		//hitShape.graphic.visible = true;
 		//addChild(hitShape.graphic);
 	}
 	
-	public function InitTLTest()
+	public function InitTL()
 	{
 		voidTile = false;
+		UsePic("img/testdiagtile.bmp");
+		
 		hitShape.AddPoint( -tileSize / 2, -tileSize / 2);
 		hitShape.AddPoint( tileSize / 2, -tileSize / 2);
 		hitShape.AddPoint( -tileSize / 2, tileSize / 2);
-		hitShape.graphic.visible = true;
-		addChild(hitShape.graphic);
+		
+		//hitShape.graphic.visible = true;
+		//addChild(hitShape.graphic);
 	}
-	public function InitTRTest()
+	public function InitTR()
 	{
 		voidTile = false;
+		UsePic("img/testdiagtile.bmp");
+		sprite.rotation = 90;
+		
 		hitShape.AddPoint( -tileSize / 2, -tileSize / 2);
 		hitShape.AddPoint( tileSize / 2, -tileSize / 2);
 		hitShape.AddPoint( tileSize / 2, tileSize / 2);
-		hitShape.graphic.visible = true;
-		addChild(hitShape.graphic);
+		
+		//hitShape.graphic.visible = true;
+		//addChild(hitShape.graphic);
 	}
-	public function InitBLTest()
+	public function InitBL()
 	{
 		voidTile = false;
+		UsePic("img/testdiagtile.bmp");
+		sprite.rotation = 270;
+		
 		hitShape.AddPoint( -tileSize / 2, -tileSize / 2);
 		hitShape.AddPoint( tileSize / 2, tileSize / 2);
 		hitShape.AddPoint( -tileSize / 2, tileSize / 2);
-		hitShape.graphic.visible = true;
-		addChild(hitShape.graphic);
+		
+		//hitShape.graphic.visible = true;
+		//addChild(hitShape.graphic);
 	}
-	public function InitBRTest()
+	public function InitBR()
 	{
 		voidTile = false;
+		UsePic("img/testdiagtile.bmp");
+		sprite.rotation = 180;
+		
 		hitShape.AddPoint( tileSize / 2, -tileSize / 2);
 		hitShape.AddPoint( tileSize / 2, tileSize / 2);
 		hitShape.AddPoint( -tileSize / 2, tileSize / 2);
-		hitShape.graphic.visible = true;
-		addChild(hitShape.graphic);
+		
+		//hitShape.graphic.visible = true;
+		//addChild(hitShape.graphic);
 	}
 	
 	public function IsVoidTile():Bool

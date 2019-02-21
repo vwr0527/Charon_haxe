@@ -123,6 +123,7 @@ class HitShape
 		}
 	}
 	
+	//from Andre LeMothe's "Tricks of the Windows Game Programming Gurus", via https://stackoverflow.com/questions/563198/how-do-you-detect-where-two-line-segments-intersect
 	public function LineLineIntersectSpecial(startx:Float, starty:Float, endx:Float, endy:Float, wallx1:Float, wally1:Float, wallx2:Float, wally2:Float, reverse:Bool)
 	{
 		var s1_x:Float = endx - startx;
@@ -168,5 +169,47 @@ class HitShape
 	public static function GetPushoutY():Float
 	{
 		return pushOutY;
+	}
+	
+	//copied from http://blackpawn.com/texts/pointinpoly/
+	public function PointInTriangle(xpos:Float, ypos:Float):Bool
+	{
+		if (p.length == 3)
+		{
+			// Compute vectors        
+			var v0:Point = new Point(p[2].x - p[0].x, p[2].y - p[0].y);
+			var v1:Point = new Point(p[1].x - p[0].x, p[1].y - p[0].y);
+			var v2:Point = new Point(xpos - p[0].x, ypos - p[0].y);
+			
+			// Compute dot products
+			var dot00 = dot(v0, v0);
+			var dot01 = dot(v0, v1);
+			var dot02 = dot(v0, v2);
+			var dot11 = dot(v1, v1);
+			var dot12 = dot(v1, v2);
+			
+			// Compute barycentric coordinates
+			var invDenom = 1 / (dot00 * dot11 - dot01 * dot01);
+			var u = (dot11 * dot02 - dot01 * dot12) * invDenom;
+			var v = (dot00 * dot12 - dot01 * dot02) * invDenom;
+			
+			// Check if point is in triangle
+			return (u >= 0) && (v >= 0) && (u + v < 1);
+		}
+		return false;
+	}
+	
+	public function PointInRect(xpos:Float, ypos:Float):Bool
+	{
+		if (p.length == 4)
+		{
+			return xpos > GetXmin() && xpos < GetXmax() && ypos > GetYmin() && ypos < GetYmax();
+		}
+		return false;
+	}
+	
+	function dot(p1:Point, p2:Point):Float
+	{
+		return (p1.x * p2.x) + (p1.y * p2.y);
 	}
 }

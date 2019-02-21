@@ -89,4 +89,19 @@ class LevelTile extends Sprite
 	{
 		alpha = Math.random();
 	}
+	
+	public function PointInside(xpos:Float, ypos:Float):Bool
+	{
+		xpos -= x;
+		ypos -= y;
+		if (hitShape.GetNumPts() == 4)
+		{
+			if (hitShape.PointInRect(xpos, ypos)) return true;
+		}
+		if (hitShape.GetNumPts() == 3)
+		{
+			if (hitShape.PointInTriangle(xpos, ypos)) return true;
+		}
+		return false;
+	}
 }

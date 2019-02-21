@@ -15,9 +15,12 @@ class Shot extends Entity
 {
 	var shotHit = false;
 	var shotHitAnim = 5.0;
+	var shotStart = true;
 	
 	var laserSprite:Sprite;
 	var hitSprite:Sprite;
+	
+	var age = 0;
 	
 	public function new() 
 	{
@@ -46,15 +49,20 @@ class Shot extends Entity
 		bitmap2.y -= bitmap2.height * 0.5;
 		bitmap2.smoothing = true;
 		addChild(hitSprite);
-		hitSprite.visible = false;
 		
-		hitbox.MakeSquare(1);
+		laserSprite.visible = false;
+		hitSprite.visible = true;
+		
+		hitbox.AddPoint(0, 0);
 		elasticity = 1;
 	}
 	
 	public override function Update(Spawn:Function)
 	{
 		super.Update(Spawn);
+		age += 1;
+		laserSprite.visible = true;
+		hitSprite.visible = false;
 		if (shotHit)
 		{
 			laserSprite.visible = false;
@@ -66,6 +74,17 @@ class Shot extends Entity
 				active = false;
 				hitSprite.visible = false;
 			}
+		}
+	}
+	
+	public override function LevelCollide(room:LevelRoom)
+	{
+		CollideLevelTiles(room);
+		CollideLevelBorders(room);
+		if (shotHit && age <= 1)
+		{
+			var shotwidth = Math.sqrt(Math.pow(x - px, 2) + Math.pow(y - py, 2)) / 45;
+			laserSprite.scaleY = shotwidth;
 		}
 	}
 	
@@ -102,6 +121,15 @@ class Shot extends Entity
 					if (room.tiles[i][j].IsVoidTile()) continue;
 					else
 					{
+						if (room.tiles[i][j].PointInside(tpx, tpy))
+						{
+							shotHit = true;
+							x = tpx;
+							y = tpy;
+							xv = 0;
+							yv = 0;
+							return;
+						}
 						hitbox.Collide(room.tiles[i][j].x - x, room.tiles[i][j].y - y, x - tpx, y - tpy, room.tiles[i][j].hitShape);
 					}
 				}

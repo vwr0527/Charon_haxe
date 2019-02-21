@@ -16,7 +16,7 @@ class Player extends Entity
 	private var turnSpeed = 6;
 	private var shootRate = 10;
 	private var shotSpeed = 45;
-	private var shotStartDist = 1.2;
+	private var shotStartDist = 0.65;
 	private var shotSpread = 4;
 	
 	public function new() 

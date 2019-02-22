@@ -58,9 +58,6 @@ class LevelTile extends Sprite
 		hitShape.AddPoint( -tileSize / 2, -tileSize / 2);
 		hitShape.AddPoint( tileSize / 2, -tileSize / 2);
 		hitShape.AddPoint( -tileSize / 2, tileSize / 2);
-		
-		//hitShape.graphic.visible = true;
-		//addChild(hitShape.graphic);
 	}
 	public function InitTR()
 	{
@@ -71,9 +68,6 @@ class LevelTile extends Sprite
 		hitShape.AddPoint( -tileSize / 2, -tileSize / 2);
 		hitShape.AddPoint( tileSize / 2, -tileSize / 2);
 		hitShape.AddPoint( tileSize / 2, tileSize / 2);
-		
-		//hitShape.graphic.visible = true;
-		//addChild(hitShape.graphic);
 	}
 	public function InitBL()
 	{
@@ -84,9 +78,6 @@ class LevelTile extends Sprite
 		hitShape.AddPoint( -tileSize / 2, -tileSize / 2);
 		hitShape.AddPoint( tileSize / 2, tileSize / 2);
 		hitShape.AddPoint( -tileSize / 2, tileSize / 2);
-		
-		//hitShape.graphic.visible = true;
-		//addChild(hitShape.graphic);
 	}
 	public function InitBR()
 	{
@@ -97,9 +88,6 @@ class LevelTile extends Sprite
 		hitShape.AddPoint( tileSize / 2, -tileSize / 2);
 		hitShape.AddPoint( tileSize / 2, tileSize / 2);
 		hitShape.AddPoint( -tileSize / 2, tileSize / 2);
-		
-		//hitShape.graphic.visible = true;
-		//addChild(hitShape.graphic);
 	}
 	
 	public function IsVoidTile():Bool

@@ -3,15 +3,17 @@ import world.LevelTile;
 
 /**
  * ...
- * @author ...
+ * @author 
  */
-class DoorTile extends LevelTile
+class WallTile extends LevelTile
 {
+
 	public function new(size:Float) 
 	{
 		super(size);
-		UsePic("img/testdoor.bmp");
+		UsePic("img/testtile.bmp");
 		
 		hitShape.MakeSquare(tileSize);
 	}
+	
 }

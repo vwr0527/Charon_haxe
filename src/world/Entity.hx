@@ -108,7 +108,7 @@ class Entity extends Sprite
 			{
 				for (j in xmin...xmax + 1)
 				{
-					if (room.tiles[i][j].IsVoidTile()) continue;
+					if (room.tiles[i][j] == null) continue;
 					else
 					{
 						hitbox.Collide(room.tiles[i][j].x - x, room.tiles[i][j].y - y, x - tpx, y - tpy, room.tiles[i][j].hitShape);

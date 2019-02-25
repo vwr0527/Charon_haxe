@@ -118,7 +118,7 @@ class Shot extends Entity
 			{
 				for (j in xmin...xmax + 1)
 				{
-					if (room.tiles[i][j].IsVoidTile()) continue;
+					if (room.tiles[i][j] == null) continue;
 					else
 					{
 						if (room.tiles[i][j].PointInside(tpx, tpy))

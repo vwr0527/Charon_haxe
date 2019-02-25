@@ -1,7 +1,7 @@
 package world.levels;
 import world.LevelRoom;
 import world.LevelTile;
-import world.tiles.DoorTile;
+import world.tiles.*;
 
 /**
  * ...
@@ -13,45 +13,58 @@ class TestLevel1
 	public function new() 
 	{
 		level = new Level();
-		var room = new LevelRoom();
+		var room = new LevelRoom(-480, 480, -270, 270, 32, 30, 17, -480, -270);
 		
-		room.xmin = -480;
-		room.xmax = 480;
-		room.ymin = -270;
-		room.ymax = 270;
-		room.tsize = 32;
-		room.xtiles = 30;
-		room.ytiles = 17;
-		room.tstartx = -480;
-		room.tstarty = -270;
-		
-		for (i in 0...room.ytiles)
+		for (i in 0...17)
 		{
-			var newRow = new Array();
-			room.tiles.push(newRow);
-			for (j in 0...room.xtiles)
+			for (j in 0...30)
 			{
-				var newtile:LevelTile;
-				if (i == 16 && (j >= 13 && j <= 16))
-					newtile = new DoorTile(room.tsize);
-				else
-					newtile = new LevelTile(room.tsize);
+				if (j == 0 || j == 29 || i == 0 || i == 16)
+				{
+					var newtile:LevelTile;
+					if (i == 16 && (j >= 13 && j <= 16))
+						newtile = new DoorTile(32);
+					else
+						newtile = new WallTile(32);
 					
-				if (j == 0 || j == room.xtiles - 1 || i == 0 || i == room.ytiles - 1) newtile.Init();
-				newRow.push(newtile);
-				room.addChild(newtile);
-				newtile.x = (j * room.tsize) + room.tstartx + room.tsize / 2;
-				newtile.y = (i * room.tsize) + room.tstarty + room.tsize / 2;
+					room.SetTile(newtile, j, i);
+				}
 			}
 		}
 		
-		room.tiles[15][28].InitBR();
-		room.tiles[15][1].InitBL();
-		room.tiles[1][1].InitTL();
-		room.tiles[1][28].InitTR();
+		room.SetTile(new BRWallTile(32), 28, 15);
+		room.SetTile(new BLWallTile(32), 1, 15);
+		room.SetTile(new TLWallTile(32), 1, 1);
+		room.SetTile(new TRWallTile(32), 28, 1);
 		
 		level.rooms.push(room);
 		level.currentRoom = room;
 		level.addChild(room);
+		
+		var room2 = new LevelRoom(-480, 480, -270, 270, 32, 30, 17, -480, -270);
+		
+		for (i in 0...17)
+		{
+			for (j in 0...30)
+			{
+				if (j == 0 || j == 29 || i == 0 || i == 16)
+				{
+					var newtile:LevelTile;
+					if (i == 0 && (j >= 13 && j <= 16))
+						newtile = new DoorTile(32);
+					else
+						newtile = new WallTile(32);
+					
+					room2.SetTile(newtile, j, i);
+				}
+			}
+		}
+		
+		room2.SetTile(new BRWallTile(32), 13, 7);
+		room2.SetTile(new BLWallTile(32), 14, 7);
+		room2.SetTile(new TLWallTile(32), 14, 8);
+		room2.SetTile(new TRWallTile(32), 13, 8);
+		
+		level.rooms.push(room2);
 	}
 }

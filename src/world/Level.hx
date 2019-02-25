@@ -20,10 +20,13 @@ class Level extends Sprite
 	
 	public function Update()
 	{
+		currentRoom.Update();
 		if (currentRoom.IsSwitchingRoom())
 		{
 			lastRoomIndex = currentRoom.SwitchToRoomIndex();
+			removeChild(currentRoom);
 			currentRoom = rooms[lastRoomIndex];
+			addChild(currentRoom);
 		}
 	}
 	

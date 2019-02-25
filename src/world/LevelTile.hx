@@ -10,7 +10,6 @@ import openfl.geom.Point;
  */
 class LevelTile extends Sprite
 {
-	private var voidTile = true;
 	public var hitShape:HitShape;
 	private var tileSize:Float;
 	private var hasImg:Bool = false;
@@ -23,7 +22,7 @@ class LevelTile extends Sprite
 		tileSize = size;
 	}
 	
-	private function UsePic(assetName:String)
+	public function UsePic(assetName:String)
 	{
 		var bmd:BitmapData = openfl.Assets.getBitmapData(assetName);
 		var bmd2:BitmapData = new BitmapData(bmd.width, bmd.height);
@@ -38,61 +37,6 @@ class LevelTile extends Sprite
 		sprite.scaleY = sprite.scaleX = 1.0;
 		addChild(sprite);
 		
-	}
-	
-	public function Init()
-	{
-		voidTile = false;
-		UsePic("img/testtile.bmp");
-		
-		hitShape.MakeSquare(tileSize);
-		//hitShape.graphic.visible = true;
-		//addChild(hitShape.graphic);
-	}
-	
-	public function InitTL()
-	{
-		voidTile = false;
-		UsePic("img/testdiagtile.bmp");
-		
-		hitShape.AddPoint( -tileSize / 2, -tileSize / 2);
-		hitShape.AddPoint( tileSize / 2, -tileSize / 2);
-		hitShape.AddPoint( -tileSize / 2, tileSize / 2);
-	}
-	public function InitTR()
-	{
-		voidTile = false;
-		UsePic("img/testdiagtile.bmp");
-		sprite.rotation = 90;
-		
-		hitShape.AddPoint( -tileSize / 2, -tileSize / 2);
-		hitShape.AddPoint( tileSize / 2, -tileSize / 2);
-		hitShape.AddPoint( tileSize / 2, tileSize / 2);
-	}
-	public function InitBL()
-	{
-		voidTile = false;
-		UsePic("img/testdiagtile.bmp");
-		sprite.rotation = 270;
-		
-		hitShape.AddPoint( -tileSize / 2, -tileSize / 2);
-		hitShape.AddPoint( tileSize / 2, tileSize / 2);
-		hitShape.AddPoint( -tileSize / 2, tileSize / 2);
-	}
-	public function InitBR()
-	{
-		voidTile = false;
-		UsePic("img/testdiagtile.bmp");
-		sprite.rotation = 180;
-		
-		hitShape.AddPoint( tileSize / 2, -tileSize / 2);
-		hitShape.AddPoint( tileSize / 2, tileSize / 2);
-		hitShape.AddPoint( -tileSize / 2, tileSize / 2);
-	}
-	
-	public function IsVoidTile():Bool
-	{
-		return voidTile;
 	}
 	
 	public function Blink()

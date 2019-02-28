@@ -23,8 +23,7 @@ class LevelRoom extends Sprite
 	public var playerSpawnX:Float;
 	public var playerSpawnY:Float;
 	
-	var switchingRoom:Bool = false;
-	var switchRoomIndex:Int = 0;
+	public var switchRoomIndex:Int = 0;
 
 	public function new(x_min:Float, x_max:Float, y_min:Float, y_max:Float, tile_size:Float, num_x_tiles:Int, num_y_tiles:Int, tile_start_x:Float, tile_start_y:Float) 
 	{
@@ -52,18 +51,6 @@ class LevelRoom extends Sprite
 	
 	public function Update() 
 	{
-		if (Input.KeyDown(80))
-		{
-			switchingRoom = true;
-			if (switchRoomIndex == 0)
-			{
-				switchRoomIndex = 1;
-			}
-			else
-			{
-				switchRoomIndex = 0;
-			}
-		}
 	}
 	
 	public function SetTile(tile:LevelTile, xi:Int, yi:Int)
@@ -89,14 +76,8 @@ class LevelRoom extends Sprite
 		return Std.int(Math.min(Math.max(Math.round(ypos), 0), ytiles - 1));
 	}
 	
-	public function IsSwitchingRoom():Bool
-	{
-		return switchingRoom;
-	}
-	
 	public function SwitchToRoomIndex():Int
 	{
-		switchingRoom = false;
 		return switchRoomIndex;
 	}
 }

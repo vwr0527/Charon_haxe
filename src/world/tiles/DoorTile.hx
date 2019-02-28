@@ -12,6 +12,9 @@ class DoorTile extends LevelTile
 		super(size);
 		UsePic("img/testdoor.bmp");
 		
-		hitShape.MakeSquare(tileSize);
+		hitShape.AddPoint( -tileSize / 2, -tileSize * 0.25);
+		hitShape.AddPoint( tileSize / 2, -tileSize * 0.25);
+		hitShape.AddPoint( tileSize / 2, tileSize * 0.25);
+		hitShape.AddPoint( -tileSize / 2, tileSize * 0.25);
 	}
 }

@@ -36,6 +36,7 @@ class TestLevel1
 		room.SetTile(new BLWallTile(32), 1, 15);
 		room.SetTile(new TLWallTile(32), 1, 1);
 		room.SetTile(new TRWallTile(32), 28, 1);
+		room.switchRoomIndex = 1;
 		
 		level.rooms.push(room);
 		level.currentRoom = room;
@@ -64,6 +65,7 @@ class TestLevel1
 		room2.SetTile(new BLWallTile(32), 14, 7);
 		room2.SetTile(new TLWallTile(32), 14, 8);
 		room2.SetTile(new TRWallTile(32), 13, 8);
+		room2.switchRoomIndex = 0;
 		
 		level.rooms.push(room2);
 	}

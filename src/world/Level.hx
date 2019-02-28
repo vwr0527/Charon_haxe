@@ -21,7 +21,7 @@ class Level extends Sprite
 	public function Update()
 	{
 		currentRoom.Update();
-		if (currentRoom.IsSwitchingRoom())
+		if (Input.KeyDown(80))
 		{
 			lastRoomIndex = currentRoom.SwitchToRoomIndex();
 			removeChild(currentRoom);

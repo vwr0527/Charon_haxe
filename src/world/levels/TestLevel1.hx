@@ -23,7 +23,9 @@ class TestLevel1
 				{
 					var newtile:LevelTile;
 					if (i == 16 && (j >= 13 && j <= 16))
-						newtile = new DoorTile(32);
+						newtile = new HDoorTile(32);
+					else if (j == 29 && (i >= 6 && i <= 9))
+						newtile = new VDoorTile(32);
 					else
 						newtile = new WallTile(32);
 					
@@ -52,7 +54,7 @@ class TestLevel1
 				{
 					var newtile:LevelTile;
 					if (i == 0 && (j >= 13 && j <= 16))
-						newtile = new DoorTile(32);
+						newtile = new HDoorTile(32);
 					else
 						newtile = new WallTile(32);
 					

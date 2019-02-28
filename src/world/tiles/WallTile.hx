@@ -15,5 +15,4 @@ class WallTile extends LevelTile
 		
 		hitShape.MakeSquare(tileSize);
 	}
-	
 }

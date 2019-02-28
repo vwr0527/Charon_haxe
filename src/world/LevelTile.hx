@@ -14,6 +14,7 @@ class LevelTile extends Sprite
 	private var tileSize:Float;
 	private var hasImg:Bool = false;
 	private var sprite:Sprite;
+	private var state:Int;
 	
 	public function new(size:Float) 
 	{
@@ -36,7 +37,21 @@ class LevelTile extends Sprite
 		bitmap.smoothing = true;
 		sprite.scaleY = sprite.scaleX = 1.0;
 		addChild(sprite);
+	}
+	
+	public function Update()
+	{
 		
+	}
+	
+	public function SetState(st:Int)
+	{
+		state = st;
+	}
+	
+	public function GetState():Int
+	{
+		return state;
 	}
 	
 	public function Blink()

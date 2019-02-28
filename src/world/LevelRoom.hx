@@ -51,6 +51,13 @@ class LevelRoom extends Sprite
 	
 	public function Update() 
 	{
+		for (i in 0...ytiles)
+		{
+			for (j in 0...xtiles)
+			{
+				if (tiles[i][j] != null) tiles[i][j].Update();
+			}
+		}
 	}
 	
 	public function SetTile(tile:LevelTile, xi:Int, yi:Int)

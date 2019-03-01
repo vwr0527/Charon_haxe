@@ -4,6 +4,7 @@ import openfl.utils.Function;
 import openfl.Assets;
 import openfl.display.Sprite;
 import openfl.display.Bitmap;
+import world.tiles.DoorTile;
 
 /**
  * ...
@@ -95,5 +96,17 @@ class Player extends Entity
 		rotationDiff /= maxDiff;
 		
 		av += rotationDiff * turnSpeed * t;
+	}
+	
+	public override function HitTile(levelTile:LevelTile, room:LevelRoom)
+	{
+		if (Std.is(levelTile, DoorTile))
+		{
+			if (cast(levelTile, DoorTile).IsOpen())
+			{
+				trace ("hit door");
+				room.EnteredDoor(levelTile);
+			}
+		}
 	}
 }

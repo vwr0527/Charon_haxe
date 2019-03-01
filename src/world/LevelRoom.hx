@@ -1,5 +1,6 @@
 package world;
 import openfl.display.Sprite;
+import world.LevelTile;
 
 /**
  * ...
@@ -86,5 +87,10 @@ class LevelRoom extends Sprite
 	public function SwitchToRoomIndex():Int
 	{
 		return switchRoomIndex;
+	}
+	
+	public function EnteredDoor(levelTile:LevelTile) 
+	{
+		
 	}
 }

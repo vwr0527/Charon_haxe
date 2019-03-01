@@ -5,7 +5,7 @@ import world.LevelTile;
  * ...
  * @author ...
  */
-class VDoorTile extends LevelTile
+class VDoorTile extends DoorTile
 {
 	public function new(size:Float) 
 	{

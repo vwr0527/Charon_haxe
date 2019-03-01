@@ -3,6 +3,9 @@ package world;
 import openfl.display.Sprite;
 import openfl.utils.Function;
 import world.LevelRoom;
+import world.LevelTile;
+import world.tiles.DoorTile;
+import world.tiles.HDoorTile;
 
 /**
  * ...
@@ -112,6 +115,7 @@ class Entity extends Sprite
 					else
 					{
 						hitbox.Collide(room.tiles[i][j].x - x, room.tiles[i][j].y - y, x - tpx, y - tpy, room.tiles[i][j].hitShape);
+						HitTile(room.tiles[i][j], room);
 					}
 				}
 			}
@@ -140,6 +144,11 @@ class Entity extends Sprite
 				didHit = false;
 			}
 		} while (didHit);
+	}
+	
+	public function HitTile(levelTile:LevelTile, room:LevelRoom) 
+	{
+		
 	}
 	
 	function dotprod(x1:Float, y1:Float, x2:Float, y2:Float):Float

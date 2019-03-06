@@ -1,5 +1,4 @@
 package world.tiles;
-import world.LevelTile;
 
 /**
  * ...
@@ -16,5 +15,7 @@ class HDoorTile extends DoorTile
 		hitShape.AddPoint( tileSize / 2, -tileSize / 4);
 		hitShape.AddPoint( tileSize / 2, tileSize / 4);
 		hitShape.AddPoint( -tileSize / 2, tileSize / 4);
+		
+		isVertical = false;
 	}
 }

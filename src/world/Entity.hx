@@ -4,8 +4,6 @@ import openfl.display.Sprite;
 import openfl.utils.Function;
 import world.LevelRoom;
 import world.LevelTile;
-import world.tiles.DoorTile;
-import world.tiles.HDoorTile;
 
 /**
  * ...
@@ -114,7 +112,7 @@ class Entity extends Sprite
 					if (room.tiles[i][j] == null) continue;
 					else
 					{
-						hitbox.Collide(room.tiles[i][j].x - x, room.tiles[i][j].y - y, x - tpx, y - tpy, room.tiles[i][j].hitShape);
+						if (!room.tiles[i][j].NoCollide()) hitbox.Collide(room.tiles[i][j].x - x, room.tiles[i][j].y - y, x - tpx, y - tpy, room.tiles[i][j].hitShape);
 						HitTile(room.tiles[i][j], room);
 					}
 				}

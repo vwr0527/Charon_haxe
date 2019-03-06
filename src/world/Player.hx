@@ -102,10 +102,17 @@ class Player extends Entity
 	{
 		if (Std.is(levelTile, DoorTile))
 		{
-			if (cast(levelTile, DoorTile).IsOpen())
+			var door:DoorTile = cast(levelTile, DoorTile);
+			if (door.IsOpen())
 			{
-				trace ("hit door");
-				room.EnteredDoor(levelTile);
+				if (door.isVertical)
+				{
+					if ((x > door.x && px < door.x) || (px > door.x && x < door.x)) room.EnteredDoor(door);
+				}
+				else
+				{
+					if ((y > door.y && py < door.y) || (py > door.y && y < door.y)) room.EnteredDoor(door);
+				}
 			}
 		}
 	}

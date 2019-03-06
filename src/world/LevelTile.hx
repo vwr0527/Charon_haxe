@@ -15,12 +15,14 @@ class LevelTile extends Sprite
 	private var hasImg:Bool = false;
 	private var sprite:Sprite;
 	private var state:Int;
+	private var noclip:Bool;
 	
 	public function new(size:Float) 
 	{
 		super();
 		hitShape = new HitShape();
 		tileSize = size;
+		noclip = false;
 	}
 	
 	public function UsePic(assetName:String)
@@ -72,5 +74,10 @@ class LevelTile extends Sprite
 			if (hitShape.PointInTriangle(xpos, ypos)) return true;
 		}
 		return false;
+	}
+	
+	public function NoCollide() 
+	{
+		return noclip;
 	}
 }

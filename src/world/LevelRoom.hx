@@ -1,6 +1,7 @@
 package world;
 import openfl.display.Sprite;
 import world.LevelTile;
+import world.tiles.DoorTile;
 
 /**
  * ...
@@ -25,6 +26,7 @@ class LevelRoom extends Sprite
 	public var playerSpawnY:Float;
 	
 	public var switchRoomIndex:Int = 0;
+	public var switchingRoom:Bool = false;
 
 	public function new(x_min:Float, x_max:Float, y_min:Float, y_max:Float, tile_size:Float, num_x_tiles:Int, num_y_tiles:Int, tile_start_x:Float, tile_start_y:Float) 
 	{
@@ -89,8 +91,42 @@ class LevelRoom extends Sprite
 		return switchRoomIndex;
 	}
 	
-	public function EnteredDoor(levelTile:LevelTile) 
+	public function EnteredDoor(door:DoorTile) 
 	{
+		switchingRoom = true;
+	}
+	
+	public function SwitchRoomPlayerPosX():Float
+	{
+		switchingRoom = false;
 		
+		//temp
+		if (switchRoomIndex == 1)
+		{
+			return tiles[16][14].x;
+		}
+		else
+		if (switchRoomIndex == 0)
+		{
+			return tiles[0][14].x;
+		}
+		return 0;
+	}
+	
+	public function SwitchRoomPlayerPosY():Float
+	{
+		switchingRoom = false;
+		
+		//temp
+		if (switchRoomIndex == 1)
+		{
+			return tiles[16][14].y - 1;
+		}
+		else
+		if (switchRoomIndex == 0)
+		{
+			return tiles[0][14].y + 1;
+		}
+		return 0;
 	}
 }

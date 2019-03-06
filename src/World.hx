@@ -91,6 +91,13 @@ class World extends Sprite
 		DebugPage.entcount = entityList.length;
 		
 		level.Update();
+		if (level.SwitchedRoom())
+		{
+			player.x = level.SwitchRoomPlayerPosX();
+			player.y = level.SwitchRoomPlayerPosY();
+			camera.x = player.x;
+			camera.y = player.y;
+		}
 	}
 	
 	private function Spawn(newEnt:Entity)

@@ -93,6 +93,8 @@ class Shot extends Entity
 		super.CollideLevelBorders(room);
 		if (x >= room.xmax || x <= room.xmin || y >= room.ymax || y <= room.ymin)
 		{
+			xv = 0;
+			yv = 0;
 			shotHit = true;
 		}
 	}

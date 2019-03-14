@@ -21,6 +21,7 @@ class LevelRoom extends Sprite
 	var tstarty:Float;
 	
 	public var tiles:Array<Array<LevelTile>>;
+	public var doors:Array<DoorController>;
 	
 	public var playerSpawnX:Float;
 	public var playerSpawnY:Float;
@@ -41,6 +42,7 @@ class LevelRoom extends Sprite
 		tstartx = tile_start_x;
 		tstarty = tile_start_y;
 		tiles = new Array();
+		doors = new Array();
 		for (i in 0...num_y_tiles)
 		{
 			var newRow = new Array();
@@ -94,6 +96,7 @@ class LevelRoom extends Sprite
 	public function EnteredDoor(door:DoorTile) 
 	{
 		switchingRoom = true;
+		//switchRoomIndex = door
 	}
 	
 	public function SwitchRoomPlayerPosX():Float

@@ -6,6 +6,7 @@ import openfl.display.BitmapData;
 import openfl.geom.Point;
 import openfl.Assets;
 import openfl.utils.Function;
+import world.tiles.DoorTile;
 
 /**
  * ...
@@ -116,6 +117,9 @@ class Shot extends Entity
 			var ymin = room.GetIndexAtY(Math.min(tpy, y) + hitbox.GetYmin());
 			var ymax = room.GetIndexAtY(Math.max(tpy, y) + hitbox.GetYmax());
 			
+			var lastHitTile:LevelTile = room.tiles[0][0];
+			var lowestMoveFraction:Float = 1.0;
+			
 			for (i in ymin...ymax + 1)
 			{
 				for (j in xmin...xmax + 1)
@@ -130,9 +134,18 @@ class Shot extends Entity
 							y = tpy;
 							xv = 0;
 							yv = 0;
+							
+							HitTile(room.tiles[i][j], room);
+							
 							return;
 						}
 						hitbox.Collide(room.tiles[i][j].x - x, room.tiles[i][j].y - y, x - tpx, y - tpy, room.tiles[i][j].hitShape);
+						
+						if (HitShape.GetMovefraction() < lowestMoveFraction)
+						{
+							lowestMoveFraction = HitShape.GetMovefraction();
+							lastHitTile = room.tiles[i][j];
+						}
 					}
 				}
 			}
@@ -140,10 +153,13 @@ class Shot extends Entity
 			{
 				++numBounces;
 				didHit = true;
+				HitTile(lastHitTile, room);
+				
 				x = x - ((x - tpx) * (1 - HitShape.GetMovefraction()));
 				y = y - ((y - tpy) * (1 - HitShape.GetMovefraction()));
 				xv = 0;
 				yv = 0;
+				
 				shotHit = true;
 			}
 			if (numBounces >= bounceLimit)
@@ -151,5 +167,14 @@ class Shot extends Entity
 				didHit = false;
 			}
 		} while (didHit);
+	}
+	
+	public override function HitTile(levelTile:LevelTile, room:LevelRoom) 
+	{
+		if (Std.is(levelTile, DoorTile))
+		{
+			var door:DoorTile = cast(levelTile, DoorTile);
+			door.SetOpen(true);
+		}
 	}
 }

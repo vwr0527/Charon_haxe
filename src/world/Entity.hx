@@ -105,6 +105,9 @@ class Entity extends Sprite
 			var ymin = room.GetIndexAtY(Math.min(tpy, y) + hitbox.GetYmin());
 			var ymax = room.GetIndexAtY(Math.max(tpy, y) + hitbox.GetYmax());
 			
+			var lastHitTile:LevelTile = room.tiles[0][0];
+			var lowestMoveFraction:Float = 1.0;
+			
 			for (i in ymin...ymax + 1)
 			{
 				for (j in xmin...xmax + 1)
@@ -112,8 +115,20 @@ class Entity extends Sprite
 					if (room.tiles[i][j] == null) continue;
 					else
 					{
-						if (!room.tiles[i][j].NoCollide()) hitbox.Collide(room.tiles[i][j].x - x, room.tiles[i][j].y - y, x - tpx, y - tpy, room.tiles[i][j].hitShape);
-						HitTile(room.tiles[i][j], room);
+						if (hitbox.RectOverlap(px, py, room.tiles[i][j].x, room.tiles[i][j].y, room.tiles[i][j].hitShape))
+						{
+							HitTile(room.tiles[i][j], room);
+						}
+						else if (!room.tiles[i][j].NoCollide())
+						{
+							hitbox.Collide(room.tiles[i][j].x - x, room.tiles[i][j].y - y, x - tpx, y - tpy, room.tiles[i][j].hitShape);
+						}
+						
+						if (HitShape.GetMovefraction() < lowestMoveFraction)
+						{
+							lowestMoveFraction = HitShape.GetMovefraction();
+							lastHitTile = room.tiles[i][j];
+						}
 					}
 				}
 			}
@@ -121,6 +136,8 @@ class Entity extends Sprite
 			{
 				++numBounces;
 				didHit = true;
+				HitTile(lastHitTile, room);
+				
 				var ox = x;
 				var oy = y;
 				var wx = (x - ((x - tpx) * (1.001 - HitShape.GetMovefraction()))) + (HitShape.GetPushoutX() / 1000);

@@ -6,9 +6,9 @@ package world.tiles;
  */
 class VDoorTile extends DoorTile
 {
-	public function new(size:Float) 
+	public function new(size:Float, id:Int) 
 	{
-		super(size);
+		super(size, true, id);
 		UsePic("img/testdoor.bmp");
 		sprite.rotation = 90;
 		
@@ -16,7 +16,5 @@ class VDoorTile extends DoorTile
 		hitShape.AddPoint( tileSize / 4, -tileSize / 2);
 		hitShape.AddPoint( tileSize / 4, tileSize / 2);
 		hitShape.AddPoint( -tileSize / 4, tileSize / 2);
-		
-		isVertical = true;
 	}
 }

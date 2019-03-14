@@ -8,16 +8,25 @@ import world.LevelTile;
 class DoorTile extends LevelTile
 {
 	var isOpen:Bool = false;
-	public var thisDoorNumber:Int;
-	public var targetDoorNumber:Int;
-	public var roomIndex:Int;
-	public var isVertical:Bool;
+	var isVertical:Bool;
+	var identifier:Int;
+	var openTime = 0;
 	
-	public function new(size:Float) 
+	public function new(size:Float, orientation:Bool, id:Int) 
 	{
 		super(size);
+		isVertical = orientation;
+		identifier = id;
+	}
+	
+	public override function Update()
+	{
+		if (isOpen) openTime ++;
 		
-		SetOpen(true);//temp
+		if (openTime > 300)
+		{
+			SetOpen(false);
+		}
 	}
 	
 	public function IsOpen():Bool
@@ -25,9 +34,23 @@ class DoorTile extends LevelTile
 		return isOpen;
 	}
 	
+	public function IsVertical():Bool
+	{
+		return isVertical;
+	}
+	
 	public function SetOpen(open:Bool)
 	{
 		isOpen = open;
 		noclip = open;
+		if (open)
+		{
+			sprite.alpha = 0.2;
+			openTime = 0;
+		}
+		else
+		{
+			sprite.alpha = 1.0;
+		}
 	}
 }

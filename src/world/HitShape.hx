@@ -208,6 +208,18 @@ class HitShape
 		return false;
 	}
 	
+	public function RectOverlap(x1:Float, y1:Float, x2:Float, y2:Float, other:HitShape):Bool
+	{
+		if (p.length == 4 && other.p.length == 4)
+		{
+			if (xmax + x1 < other.xmin + x2 || xmin + x1 > other.xmax + x2) return false;
+			if (ymax + y1 < other.ymin + y2 || ymin + y1 > other.ymax + y2) return false;
+			
+			return true;
+		}
+		return false;
+	}
+	
 	function dot(p1:Point, p2:Point):Float
 	{
 		return (p1.x * p2.x) + (p1.y * p2.y);

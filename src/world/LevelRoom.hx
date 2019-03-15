@@ -108,50 +108,55 @@ class LevelRoom extends Sprite
 		return switchRoomIndex;
 	}
 	
+	var enteredDoorVertical:Bool;
 	var targetDoor:Int;
 	var targetDoorTileIndex:Int;
+	var playerDoorOffsetX:Float;
+	var playerDoorOffsetY:Float;
+	var doorSwitchingOrientation:Bool;
 	
-	public function EnteredDoor(door:DoorTile) 
+	public function EnteredDoor(door:DoorTile, offset:Float) 
 	{
 		switchingRoom = true;
 		switchRoomIndex = doors[door.GetID()].targetRoom;
 		targetDoor = doors[door.GetID()].targetDoor;
 		targetDoorTileIndex = doors[door.GetID()].doorTiles.indexOf(door);
+		if (door.IsVertical()) 
+		{
+			enteredDoorVertical = true;
+			playerDoorOffsetX = 0;
+			playerDoorOffsetY = offset;
+		}
+		else
+		{
+			enteredDoorVertical = false;
+			playerDoorOffsetX = offset;
+			playerDoorOffsetY = 0;
+		}
+	}
+	
+	public function SwitchedDoorOrientation(rooms:Array<LevelRoom>):Bool
+	{
+		doorSwitchingOrientation = rooms[switchRoomIndex].doors[targetDoor].doorTiles[targetDoorTileIndex].IsVertical() != enteredDoorVertical;
+		if (doorSwitchingOrientation)
+		{
+			var temp = playerDoorOffsetX;
+			playerDoorOffsetX = playerDoorOffsetY;
+			playerDoorOffsetY = temp;
+		}
+		return doorSwitchingOrientation;
 	}
 	
 	public function SwitchRoomPlayerPosX(rooms:Array<LevelRoom>):Float
 	{
 		switchingRoom = false;
-		return rooms[switchRoomIndex].doors[targetDoor].doorTiles[targetDoorTileIndex].x;
-		/*
-		if (switchRoomIndex == 1)
-		{
-			return tiles[16][14].x;
-		}
-		else
-		if (switchRoomIndex == 0)
-		{
-			return tiles[0][14].x;
-		}*/
-		return 0;
+		return rooms[switchRoomIndex].doors[targetDoor].doorTiles[targetDoorTileIndex].x + playerDoorOffsetX;
 	}
 	
 	public function SwitchRoomPlayerPosY(rooms:Array<LevelRoom>):Float
 	{
 		switchingRoom = false;
-		return rooms[switchRoomIndex].doors[targetDoor].doorTiles[targetDoorTileIndex].y;
-		/*
-		//temp
-		if (switchRoomIndex == 1)
-		{
-			return tiles[16][14].y - 1;
-		}
-		else
-		if (switchRoomIndex == 0)
-		{
-			return tiles[0][14].y + 1;
-		}*/
-		return 0;
+		return rooms[switchRoomIndex].doors[targetDoor].doorTiles[targetDoorTileIndex].y + playerDoorOffsetY;
 	}
 	
 	public function isSwitchingRoom():Bool

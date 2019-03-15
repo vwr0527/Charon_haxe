@@ -10,7 +10,7 @@ class Level extends Sprite
 {
 	public var rooms:Array<LevelRoom>;
 	public var currentRoom:LevelRoom;
-	public var lastRoomIndex:Int;
+	public var previousRoom:LevelRoom;
 	var switchingRoom = false;
 	var switchedRoom = false;
 
@@ -26,9 +26,9 @@ class Level extends Sprite
 		switchedRoom = false;
 		if (currentRoom.isSwitchingRoom())
 		{
-			lastRoomIndex = currentRoom.SwitchToRoomIndex();
+			previousRoom = currentRoom;
 			removeChild(currentRoom);
-			currentRoom = rooms[lastRoomIndex];
+			currentRoom = rooms[currentRoom.SwitchToRoomIndex()];
 			addChild(currentRoom);
 			switchingRoom = false;
 			switchedRoom = true;
@@ -45,14 +45,19 @@ class Level extends Sprite
 		return currentRoom;
 	}
 	
+	public function SwitchedDoorOrientation():Bool
+	{
+		return previousRoom.SwitchedDoorOrientation(rooms);
+	}
+	
 	public function SwitchRoomPlayerPosX():Float
 	{
-		return currentRoom.SwitchRoomPlayerPosX(rooms);
+		return previousRoom.SwitchRoomPlayerPosX(rooms);
 	}
 	
 	public function SwitchRoomPlayerPosY():Float
 	{
-		return currentRoom.SwitchRoomPlayerPosY(rooms);
+		return previousRoom.SwitchRoomPlayerPosY(rooms);
 	}
 	
 	public function SwitchedRoom():Bool

@@ -93,10 +93,17 @@ class World extends Sprite
 		level.Update();
 		if (level.SwitchedRoom())
 		{
+			if (level.SwitchedDoorOrientation())
+			{
+				var temp = player.xv;
+				player.xv = player.yv;
+				player.yv = temp;
+			}
 			player.x = level.SwitchRoomPlayerPosX();
 			player.y = level.SwitchRoomPlayerPosY();
 			camera.x = player.x;
 			camera.y = player.y;
+			MoveWorldToCamera();
 		}
 	}
 	

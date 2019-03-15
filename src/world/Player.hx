@@ -105,11 +105,11 @@ class Player extends Entity
 			var door:DoorTile = cast(levelTile, DoorTile);
 			if (door.IsVertical())
 			{
-				if ((x > door.x && px < door.x) || (px > door.x && x < door.x)) room.EnteredDoor(door);
+				if ((x > door.x && px < door.x) || (px > door.x && x < door.x)) room.EnteredDoor(door, y - door.y);
 			}
 			else
 			{
-				if ((y > door.y && py < door.y) || (py > door.y && y < door.y)) room.EnteredDoor(door);
+				if ((y > door.y && py < door.y) || (py > door.y && y < door.y)) room.EnteredDoor(door, x - door.x);
 			}
 		}
 	}

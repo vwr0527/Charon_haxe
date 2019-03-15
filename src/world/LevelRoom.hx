@@ -27,7 +27,7 @@ class LevelRoom extends Sprite
 	public var playerSpawnY:Float;
 	
 	public var switchRoomIndex:Int = 0;
-	public var switchingRoom:Bool = false;
+	private var switchingRoom:Bool = false;
 
 	public function new(x_min:Float, x_max:Float, y_min:Float, y_max:Float, tile_size:Float, num_x_tiles:Int, num_y_tiles:Int, tile_start_x:Float, tile_start_y:Float) 
 	{
@@ -63,6 +63,10 @@ class LevelRoom extends Sprite
 				if (tiles[i][j] != null) tiles[i][j].Update();
 			}
 		}
+		for (i in 0...doors.length)
+		{
+			doors[i].Update();
+		}
 	}
 	
 	public function SetTile(tile:LevelTile, xi:Int, yi:Int)
@@ -72,6 +76,17 @@ class LevelRoom extends Sprite
 		addChild(tile);
 		tiles[yi][xi].x = (xi * tsize) + tstartx + tsize / 2;
 		tiles[yi][xi].y = (yi * tsize) + tstarty + tsize / 2;
+	}
+	
+	public function SetDoor(dtile:DoorTile, xi:Int, yi:Int)
+	{
+		SetTile(dtile, xi, yi);
+		var doorIndex:Int = dtile.GetID();
+		while (doors.length <= doorIndex)
+		{
+			doors.push(new DoorController());
+		}
+		doors[doorIndex].doorTiles.push(dtile);
 	}
 	
 	public function GetIndexAtX(xpos:Float):Int
@@ -93,17 +108,22 @@ class LevelRoom extends Sprite
 		return switchRoomIndex;
 	}
 	
+	var targetDoor:Int;
+	var targetDoorTileIndex:Int;
+	
 	public function EnteredDoor(door:DoorTile) 
 	{
 		switchingRoom = true;
-		//switchRoomIndex = door
+		switchRoomIndex = doors[door.GetID()].targetRoom;
+		targetDoor = doors[door.GetID()].targetDoor;
+		targetDoorTileIndex = doors[door.GetID()].doorTiles.indexOf(door);
 	}
 	
-	public function SwitchRoomPlayerPosX():Float
+	public function SwitchRoomPlayerPosX(rooms:Array<LevelRoom>):Float
 	{
 		switchingRoom = false;
-		
-		//temp
+		return rooms[switchRoomIndex].doors[targetDoor].doorTiles[targetDoorTileIndex].x;
+		/*
 		if (switchRoomIndex == 1)
 		{
 			return tiles[16][14].x;
@@ -112,14 +132,15 @@ class LevelRoom extends Sprite
 		if (switchRoomIndex == 0)
 		{
 			return tiles[0][14].x;
-		}
+		}*/
 		return 0;
 	}
 	
-	public function SwitchRoomPlayerPosY():Float
+	public function SwitchRoomPlayerPosY(rooms:Array<LevelRoom>):Float
 	{
 		switchingRoom = false;
-		
+		return rooms[switchRoomIndex].doors[targetDoor].doorTiles[targetDoorTileIndex].y;
+		/*
 		//temp
 		if (switchRoomIndex == 1)
 		{
@@ -129,7 +150,12 @@ class LevelRoom extends Sprite
 		if (switchRoomIndex == 0)
 		{
 			return tiles[0][14].y + 1;
-		}
+		}*/
 		return 0;
+	}
+	
+	public function isSwitchingRoom():Bool
+	{
+		return switchingRoom;
 	}
 }

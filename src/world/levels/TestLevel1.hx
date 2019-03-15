@@ -21,15 +21,12 @@ class TestLevel1
 			{
 				if (j == 0 || j == 29 || i == 0 || i == 16)
 				{
-					var newtile:LevelTile;
 					if (i == 16 && (j >= 13 && j <= 16))
-						newtile = new HDoorTile(32, 0);
+						room.SetDoor(new HDoorTile(32, 0), j, i);
 					else if (j == 29 && (i >= 6 && i <= 9))
-						newtile = new VDoorTile(32, 1);
+						room.SetDoor(new VDoorTile(32, 1), j, i);
 					else
-						newtile = new WallTile(32);
-					
-					room.SetTile(newtile, j, i);
+						room.SetTile(new WallTile(32), j, i);
 				}
 			}
 		}
@@ -39,6 +36,10 @@ class TestLevel1
 		room.SetTile(new TLWallTile(32), 1, 1);
 		room.SetTile(new TRWallTile(32), 28, 1);
 		room.switchRoomIndex = 1;
+		room.doors[0].targetDoor = 0;
+		room.doors[0].targetRoom = 1;
+		room.doors[1].targetDoor = 0;
+		room.doors[1].targetRoom = 1;
 		
 		level.rooms.push(room);
 		level.currentRoom = room;
@@ -52,13 +53,10 @@ class TestLevel1
 			{
 				if (j == 0 || j == 29 || i == 0 || i == 16)
 				{
-					var newtile:LevelTile;
 					if (i == 0 && (j >= 13 && j <= 16))
-						newtile = new HDoorTile(32, 0);
+						room2.SetDoor(new HDoorTile(32, 0), j, i);
 					else
-						newtile = new WallTile(32);
-					
-					room2.SetTile(newtile, j, i);
+						room2.SetTile(new WallTile(32), j, i);
 				}
 			}
 		}
@@ -68,6 +66,8 @@ class TestLevel1
 		room2.SetTile(new TLWallTile(32), 14, 8);
 		room2.SetTile(new TRWallTile(32), 13, 8);
 		room2.switchRoomIndex = 0;
+		room2.doors[0].targetDoor = 0;
+		room2.doors[0].targetRoom = 0;
 		
 		level.rooms.push(room2);
 	}

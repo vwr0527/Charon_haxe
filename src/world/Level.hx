@@ -24,7 +24,7 @@ class Level extends Sprite
 	{
 		currentRoom.Update();
 		switchedRoom = false;
-		if (currentRoom.switchingRoom)
+		if (currentRoom.isSwitchingRoom())
 		{
 			lastRoomIndex = currentRoom.SwitchToRoomIndex();
 			removeChild(currentRoom);
@@ -47,12 +47,12 @@ class Level extends Sprite
 	
 	public function SwitchRoomPlayerPosX():Float
 	{
-		return currentRoom.SwitchRoomPlayerPosX();
+		return currentRoom.SwitchRoomPlayerPosX(rooms);
 	}
 	
 	public function SwitchRoomPlayerPosY():Float
 	{
-		return currentRoom.SwitchRoomPlayerPosY();
+		return currentRoom.SwitchRoomPlayerPosY(rooms);
 	}
 	
 	public function SwitchedRoom():Bool

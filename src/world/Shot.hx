@@ -76,6 +76,7 @@ class Shot extends Entity
 				hitSprite.visible = false;
 			}
 		}
+		if (age > 60) active = false;
 	}
 	
 	public override function LevelCollide(room:LevelRoom)
@@ -94,9 +95,7 @@ class Shot extends Entity
 		super.CollideLevelBorders(room);
 		if (x >= room.xmax || x <= room.xmin || y >= room.ymax || y <= room.ymin)
 		{
-			xv = 0;
-			yv = 0;
-			shotHit = true;
+			active = false;
 		}
 	}
 	
@@ -174,7 +173,8 @@ class Shot extends Entity
 		if (Std.is(levelTile, DoorTile))
 		{
 			var door:DoorTile = cast(levelTile, DoorTile);
-			door.SetOpen(true);
+			//door.SetOpen(true);
+			room.doors[door.GetID()].SetOpen(true);
 		}
 	}
 }

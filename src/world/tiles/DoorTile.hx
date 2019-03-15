@@ -10,7 +10,6 @@ class DoorTile extends LevelTile
 	var isOpen:Bool = false;
 	var isVertical:Bool;
 	var identifier:Int;
-	var openTime = 0;
 	
 	public function new(size:Float, orientation:Bool, id:Int) 
 	{
@@ -21,12 +20,6 @@ class DoorTile extends LevelTile
 	
 	public override function Update()
 	{
-		if (isOpen) openTime ++;
-		
-		if (openTime > 300)
-		{
-			SetOpen(false);
-		}
 	}
 	
 	public function IsOpen():Bool
@@ -46,11 +39,15 @@ class DoorTile extends LevelTile
 		if (open)
 		{
 			sprite.alpha = 0.2;
-			openTime = 0;
 		}
 		else
 		{
 			sprite.alpha = 1.0;
 		}
+	}
+	
+	public function GetID():Int
+	{
+		return identifier;
 	}
 }

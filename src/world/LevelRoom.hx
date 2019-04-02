@@ -150,13 +150,13 @@ class LevelRoom extends Sprite
 	public function SwitchRoomPlayerPosX(rooms:Array<LevelRoom>):Float
 	{
 		switchingRoom = false;
-		return rooms[switchRoomIndex].doors[targetDoor].doorTiles[targetDoorTileIndex].x + playerDoorOffsetX;
+		return rooms[switchRoomIndex].doors[targetDoor].doorTiles[targetDoorTileIndex].x + playerDoorOffsetX + rooms[switchRoomIndex].doors[targetDoor].enterDirX;
 	}
 	
 	public function SwitchRoomPlayerPosY(rooms:Array<LevelRoom>):Float
 	{
 		switchingRoom = false;
-		return rooms[switchRoomIndex].doors[targetDoor].doorTiles[targetDoorTileIndex].y + playerDoorOffsetY;
+		return rooms[switchRoomIndex].doors[targetDoor].doorTiles[targetDoorTileIndex].y + playerDoorOffsetY + rooms[switchRoomIndex].doors[targetDoor].enterDirY;
 	}
 	
 	public function isSwitchingRoom():Bool

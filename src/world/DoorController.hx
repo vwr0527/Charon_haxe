@@ -12,6 +12,8 @@ class DoorController
 	public var targetDoor:Int;
 	public var openTime:Int;
 	public var isOpen:Bool = false;
+	public var enterDirX:Float = 0;
+	public var enterDirY:Float = 0;
 	
 	public function new() 
 	{

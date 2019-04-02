@@ -38,8 +38,12 @@ class TestLevel1
 		room.switchRoomIndex = 1;
 		room.doors[0].targetDoor = 0;
 		room.doors[0].targetRoom = 1;
+		room.doors[0].enterDirX = 0;
+		room.doors[0].enterDirY = -1;
 		room.doors[1].targetDoor = 0;
 		room.doors[1].targetRoom = 1;
+		room.doors[1].enterDirX = -1;
+		room.doors[1].enterDirY = 0;
 		
 		level.rooms.push(room);
 		level.currentRoom = room;
@@ -68,6 +72,8 @@ class TestLevel1
 		room2.switchRoomIndex = 0;
 		room2.doors[0].targetDoor = 0;
 		room2.doors[0].targetRoom = 0;
+		room2.doors[0].enterDirX = 0;
+		room2.doors[0].enterDirY = 1;
 		
 		level.rooms.push(room2);
 	}

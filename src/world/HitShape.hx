@@ -92,17 +92,15 @@ class HitShape
 		return ymin;
 	}
 	
-	private static var movefraction:Float;
-	private static var pushOutX:Float;
-	private static var pushOutY:Float;
-	
-	public function Collide(x:Float, y:Float, dx:Float, dy:Float, other:HitShape)
+	public function Collide(x:Float, y:Float, dx:Float, dy:Float, other:HitShape):CollisionResult
 	{
-		CollideOneWay(x, y, dx, dy, other, false);
-		other.CollideOneWay( -x, -y, -dx, -dy, this, true);
+		var result:CollisionResult = { movefraction : 1, pushOutX : 0, pushOutY : 0};
+		CollideOneWay(x, y, dx, dy, other, false, result);
+		other.CollideOneWay( -x, -y, -dx, -dy, this, true, result);
+		return result;
 	}
 	
-	private function CollideOneWay(x:Float, y:Float, dx:Float, dy:Float, other:HitShape, reverse:Bool)
+	private function CollideOneWay(x:Float, y:Float, dx:Float, dy:Float, other:HitShape, reverse:Bool, collisionResult:CollisionResult)
 	{
 		for (i in 0...p.length)
 		{
@@ -118,13 +116,13 @@ class HitShape
 				var wy1 = other.GetY(j) + y;
 				var wx2 = other.GetX(k) + x;
 				var wy2 = other.GetY(k) + y;
-				LineLineIntersectSpecial(sx, sy, ex, ey, wx1, wy1, wx2, wy2, reverse);
+				LineLineIntersectSpecial(sx, sy, ex, ey, wx1, wy1, wx2, wy2, reverse, collisionResult);
 			}
 		}
 	}
 	
 	//from Andre LeMothe's "Tricks of the Windows Game Programming Gurus", via https://stackoverflow.com/questions/563198/how-do-you-detect-where-two-line-segments-intersect
-	public function LineLineIntersectSpecial(startx:Float, starty:Float, endx:Float, endy:Float, wallx1:Float, wally1:Float, wallx2:Float, wally2:Float, reverse:Bool)
+	public function LineLineIntersectSpecial(startx:Float, starty:Float, endx:Float, endy:Float, wallx1:Float, wally1:Float, wallx2:Float, wally2:Float, reverse:Bool, collisionResult:CollisionResult)
 	{
 		var s1_x:Float = endx - startx;
 		var s1_y:Float = endy - starty;
@@ -136,39 +134,19 @@ class HitShape
 		
 		if (s >= 0 && s <= 1 && t >= 0 && t <= 1)
 		{
-			if (t < movefraction)
+			if (t < collisionResult.movefraction)
 			{
-				movefraction = t;
+				collisionResult.movefraction = t;
 				var dist = Math.sqrt(Math.pow(wallx2 - wallx1, 2) + Math.pow(wally2 - wally1, 2));
-				pushOutX = (wally2 - wally1) / dist;
-				pushOutY = (wallx2 - wallx1) / dist;
+				collisionResult.pushOutX = (wally2 - wally1) / dist;
+				collisionResult.pushOutY = (wallx2 - wallx1) / dist;
 				if (reverse)
 				{
-					pushOutX *= -1;
-					pushOutY *= -1;
+					collisionResult.pushOutX *= -1;
+					collisionResult.pushOutY *= -1;
 				}
 			}
 		}
-	}
-	
-	public static function ResetMovefraction()
-	{
-		movefraction = 1.0;
-	}
-	
-	public static function GetMovefraction():Float
-	{
-		return movefraction;
-	}
-	
-	public static function GetPushoutX():Float
-	{
-		return pushOutX;
-	}
-	
-	public static function GetPushoutY():Float
-	{
-		return pushOutY;
 	}
 	
 	//copied from http://blackpawn.com/texts/pointinpoly/
@@ -224,4 +202,11 @@ class HitShape
 	{
 		return (p1.x * p2.x) + (p1.y * p2.y);
 	}
+}
+
+typedef CollisionResult = 
+{
+	movefraction:Float,
+	pushOutX:Float,
+	pushOutY:Float
 }

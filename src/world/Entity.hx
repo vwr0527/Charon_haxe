@@ -2,6 +2,7 @@ package world;
 
 import openfl.display.Sprite;
 import openfl.utils.Function;
+import world.HitShape.CollisionResult;
 import world.LevelRoom;
 import world.LevelTile;
 
@@ -99,7 +100,8 @@ class Entity extends Sprite
 		do
 		{
 			didHit = false;
-			HitShape.ResetMovefraction();
+			var pushOutX:Float = 0.0;
+			var pushOutY:Float = 0.0;
 			var xmin = room.GetIndexAtX(Math.min(tpx, x) + hitbox.GetXmin());
 			var xmax = room.GetIndexAtX(Math.max(tpx, x) + hitbox.GetXmax());
 			var ymin = room.GetIndexAtY(Math.min(tpy, y) + hitbox.GetYmin());
@@ -121,18 +123,19 @@ class Entity extends Sprite
 						}
 						else if (!room.tiles[i][j].NoCollide())
 						{
-							hitbox.Collide(room.tiles[i][j].x - x, room.tiles[i][j].y - y, x - tpx, y - tpy, room.tiles[i][j].hitShape);
-						}
-						
-						if (HitShape.GetMovefraction() < lowestMoveFraction)
-						{
-							lowestMoveFraction = HitShape.GetMovefraction();
-							lastHitTile = room.tiles[i][j];
+							var collisionResult:CollisionResult = hitbox.Collide(room.tiles[i][j].x - x, room.tiles[i][j].y - y, x - tpx, y - tpy, room.tiles[i][j].hitShape);
+							if (collisionResult.movefraction < lowestMoveFraction)
+							{
+								lowestMoveFraction = collisionResult.movefraction;
+								lastHitTile = room.tiles[i][j];
+								pushOutX = collisionResult.pushOutX;
+								pushOutY = collisionResult.pushOutY;
+							}
 						}
 					}
 				}
 			}
-			if (HitShape.GetMovefraction() < 1.0)
+			if (lowestMoveFraction < 1.0)
 			{
 				++numBounces;
 				didHit = true;
@@ -140,19 +143,19 @@ class Entity extends Sprite
 				
 				var ox = x;
 				var oy = y;
-				var wx = (x - ((x - tpx) * (1.001 - HitShape.GetMovefraction()))) + (HitShape.GetPushoutX() / 1000);
-				var wy = (y - ((y - tpy) * (1.001 - HitShape.GetMovefraction()))) - (HitShape.GetPushoutY() / 1000);
+				var wx = (x - ((x - tpx) * (1.001 - lowestMoveFraction))) + (pushOutX / 1000);
+				var wy = (y - ((y - tpy) * (1.001 - lowestMoveFraction))) - (pushOutY / 1000);
 				
-				var factor = -(1 + elasticity) * dotprod(HitShape.GetPushoutX(), -HitShape.GetPushoutY(), ox - wx, oy - wy);
-				x = ox + (factor * HitShape.GetPushoutX()) + (HitShape.GetPushoutX() / 1000);
-				y = oy + (factor * -HitShape.GetPushoutY()) - (HitShape.GetPushoutY() / 1000);
+				var factor = -(1 + elasticity) * dotprod(pushOutX, -pushOutY, ox - wx, oy - wy);
+				x = ox + (factor * pushOutX) + (pushOutX / 1000);
+				y = oy + (factor * -pushOutY) - (pushOutY / 1000);
 				
 				tpx = wx;
 				tpy = wy;
 				
-				factor = -(1 + elasticity) * dotprod(HitShape.GetPushoutX(), -HitShape.GetPushoutY(), xv, yv);
-				xv += factor * HitShape.GetPushoutX();
-				yv += factor * -HitShape.GetPushoutY();
+				factor = -(1 + elasticity) * dotprod(pushOutX, -pushOutY, xv, yv);
+				xv += factor * pushOutX;
+				yv += factor * -pushOutY;
 			}
 			if (numBounces >= bounceLimit)
 			{

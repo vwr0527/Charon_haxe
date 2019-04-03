@@ -6,6 +6,7 @@ import openfl.display.BitmapData;
 import openfl.geom.Point;
 import openfl.Assets;
 import openfl.utils.Function;
+import world.HitShape.CollisionResult;
 import world.tiles.DoorTile;
 
 /**
@@ -110,7 +111,8 @@ class Shot extends Entity
 		do
 		{
 			didHit = false;
-			HitShape.ResetMovefraction();
+			var pushOutX:Float = 0.0;
+			var pushOutY:Float = 0.0;
 			var xmin = room.GetIndexAtX(Math.min(tpx, x) + hitbox.GetXmin());
 			var xmax = room.GetIndexAtX(Math.max(tpx, x) + hitbox.GetXmax());
 			var ymin = room.GetIndexAtY(Math.min(tpy, y) + hitbox.GetYmin());
@@ -138,24 +140,25 @@ class Shot extends Entity
 							
 							return;
 						}
-						hitbox.Collide(room.tiles[i][j].x - x, room.tiles[i][j].y - y, x - tpx, y - tpy, room.tiles[i][j].hitShape);
-						
-						if (HitShape.GetMovefraction() < lowestMoveFraction)
+						var collisionResult:CollisionResult = hitbox.Collide(room.tiles[i][j].x - x, room.tiles[i][j].y - y, x - tpx, y - tpy, room.tiles[i][j].hitShape);
+						if (collisionResult.movefraction < lowestMoveFraction)
 						{
-							lowestMoveFraction = HitShape.GetMovefraction();
+							lowestMoveFraction = collisionResult.movefraction;
 							lastHitTile = room.tiles[i][j];
+							pushOutX = collisionResult.pushOutX;
+							pushOutY = collisionResult.pushOutY;
 						}
 					}
 				}
 			}
-			if (HitShape.GetMovefraction() < 1.0)
+			if (lowestMoveFraction < 1.0)
 			{
 				++numBounces;
 				didHit = true;
 				HitTile(lastHitTile, room);
 				
-				x = x - ((x - tpx) * (1 - HitShape.GetMovefraction()));
-				y = y - ((y - tpy) * (1 - HitShape.GetMovefraction()));
+				x = x - ((x - tpx) * (1 - lowestMoveFraction));
+				y = y - ((y - tpy) * (1 - lowestMoveFraction));
 				xv = 0;
 				yv = 0;
 				

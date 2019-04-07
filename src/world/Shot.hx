@@ -80,10 +80,11 @@ class Shot extends Entity
 		if (age > 60) active = false;
 	}
 	
-	public override function LevelCollide(room:LevelRoom)
+	public override function LevelCollide(level:Level)
 	{
-		CollideLevelTiles(room);
-		CollideLevelBorders(room);
+		var room:LevelRoom = level.currentRoom;
+		CollideLevelTiles(level);
+		CollideLevelBorders(level);
 		if (shotHit && age <= 1)
 		{
 			var shotwidth = Math.sqrt(Math.pow(x - px, 2) + Math.pow(y - py, 2)) / 45;
@@ -91,17 +92,19 @@ class Shot extends Entity
 		}
 	}
 	
-	public override function CollideLevelBorders(room:LevelRoom) 
+	public override function CollideLevelBorders(level:Level)
 	{
-		super.CollideLevelBorders(room);
+		var room:LevelRoom = level.currentRoom;
+		super.CollideLevelBorders(level);
 		if (x >= room.xmax || x <= room.xmin || y >= room.ymax || y <= room.ymin)
 		{
 			active = false;
 		}
 	}
 	
-	public override function CollideLevelTiles(room:LevelRoom)
+	public override function CollideLevelTiles(level:Level)
 	{
+		var room:LevelRoom = level.currentRoom;
 		var tpx = px;
 		var tpy = py;
 		var didHit = false;
@@ -136,7 +139,7 @@ class Shot extends Entity
 							xv = 0;
 							yv = 0;
 							
-							HitTile(room.tiles[i][j], room);
+							HitTile(room.tiles[i][j], level);
 							
 							return;
 						}
@@ -155,7 +158,7 @@ class Shot extends Entity
 			{
 				++numBounces;
 				didHit = true;
-				HitTile(lastHitTile, room);
+				HitTile(lastHitTile, level);
 				
 				x = x - ((x - tpx) * (1 - lowestMoveFraction));
 				y = y - ((y - tpy) * (1 - lowestMoveFraction));
@@ -171,8 +174,9 @@ class Shot extends Entity
 		} while (didHit);
 	}
 	
-	public override function HitTile(levelTile:LevelTile, room:LevelRoom) 
+	public override function HitTile(levelTile:LevelTile, level:Level)
 	{
+		var room:LevelRoom = level.currentRoom;
 		if (Std.is(levelTile, DoorTile))
 		{
 			var door:DoorTile = cast(levelTile, DoorTile);

@@ -1,6 +1,5 @@
 package world.levels;
 import world.LevelRoom;
-import world.LevelTile;
 import world.tiles.*;
 
 /**
@@ -35,7 +34,6 @@ class TestLevel1
 		room.SetTile(new BLWallTile(32), 1, 15);
 		room.SetTile(new TLWallTile(32), 1, 1);
 		room.SetTile(new TRWallTile(32), 28, 1);
-		room.switchRoomIndex = 1;
 		room.doors[0].targetDoor = 0;
 		room.doors[0].targetRoom = 1;
 		room.doors[0].enterDirX = 0;
@@ -69,7 +67,6 @@ class TestLevel1
 		room2.SetTile(new BLWallTile(32), 14, 7);
 		room2.SetTile(new TLWallTile(32), 14, 8);
 		room2.SetTile(new TRWallTile(32), 13, 8);
-		room2.switchRoomIndex = 0;
 		room2.doors[0].targetDoor = 0;
 		room2.doors[0].targetRoom = 0;
 		room2.doors[0].enterDirX = 0;

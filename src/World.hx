@@ -69,7 +69,7 @@ class World extends Sprite
 		for (ent in entityList)
 		{
 			ent.Update(Spawn);
-			ent.LevelCollide(level.CurrentRoom());
+			ent.LevelCollide(level);
 		}
 		
 		for (ent in newEntities)
@@ -93,11 +93,7 @@ class World extends Sprite
 		level.Update();
 		if (level.SwitchedRoom())
 		{
-			if (level.SwitchedDoorOrientation())
-			{
-				player.xv = 0;
-				player.yv = 0;
-			}
+			level.SwitchedDoorOrientation();
 			player.x = level.SwitchRoomPlayerPosX();
 			player.y = level.SwitchRoomPlayerPosY();
 			camera.x = player.x;

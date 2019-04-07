@@ -98,18 +98,18 @@ class Player extends Entity
 		av += rotationDiff * turnSpeed * t;
 	}
 	
-	public override function HitTile(levelTile:LevelTile, room:LevelRoom)
+	public override function HitTile(levelTile:LevelTile, level:Level)
 	{
 		if (Std.is(levelTile, DoorTile))
 		{
 			var door:DoorTile = cast(levelTile, DoorTile);
 			if (door.IsVertical())
 			{
-				if ((x > door.x && px < door.x) || (px > door.x && x < door.x)) room.EnteredDoor(door, y - door.y);
+				if ((x > door.x && px < door.x) || (px > door.x && x < door.x)) level.EnteredDoor(door, y - door.y);
 			}
 			else
 			{
-				if ((y > door.y && py < door.y) || (py > door.y && y < door.y)) room.EnteredDoor(door, x - door.x);
+				if ((y > door.y && py < door.y) || (py > door.y && y < door.y)) level.EnteredDoor(door, x - door.x);
 			}
 		}
 	}

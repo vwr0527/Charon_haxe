@@ -1,6 +1,7 @@
 package world;
 import openfl.display.Sprite;
 import world.LevelRoom;
+import world.tiles.DoorTile;
 
 /**
  * ...
@@ -11,8 +12,17 @@ class Level extends Sprite
 	public var rooms:Array<LevelRoom>;
 	public var currentRoom:LevelRoom;
 	public var previousRoom:LevelRoom;
-	var switchingRoom = false;
+	
+	var switchRoomIndex:Int = 0;
+	var switchingRoom:Bool = false;
 	var switchedRoom = false;
+	
+	var enteredDoorVertical:Bool;
+	var targetDoor:Int;
+	var targetDoorTileIndex:Int;
+	var playerDoorOffsetX:Float;
+	var playerDoorOffsetY:Float;
+	var doorSwitchingOrientation:Bool;
 
 	public function new() 
 	{
@@ -24,13 +34,12 @@ class Level extends Sprite
 	{
 		currentRoom.Update();
 		switchedRoom = false;
-		if (currentRoom.isSwitchingRoom())
+		if (switchingRoom)
 		{
 			previousRoom = currentRoom;
 			removeChild(currentRoom);
-			currentRoom = rooms[currentRoom.SwitchToRoomIndex()];
+			currentRoom = rooms[switchRoomIndex];
 			addChild(currentRoom);
-			switchingRoom = false;
 			switchedRoom = true;
 		}
 	}
@@ -45,19 +54,48 @@ class Level extends Sprite
 		return currentRoom;
 	}
 	
+	public function EnteredDoor(door:DoorTile, offset:Float) 
+	{
+		switchingRoom = true;
+		switchRoomIndex = currentRoom.doors[door.GetID()].targetRoom;
+		targetDoor = currentRoom.doors[door.GetID()].targetDoor;
+		targetDoorTileIndex = currentRoom.doors[door.GetID()].doorTiles.indexOf(door);
+		if (door.IsVertical()) 
+		{
+			enteredDoorVertical = true;
+			playerDoorOffsetX = 0;
+			playerDoorOffsetY = offset;
+		}
+		else
+		{
+			enteredDoorVertical = false;
+			playerDoorOffsetX = offset;
+			playerDoorOffsetY = 0;
+		}
+	}
+	
 	public function SwitchedDoorOrientation():Bool
 	{
-		return previousRoom.SwitchedDoorOrientation(rooms);
+		doorSwitchingOrientation = rooms[switchRoomIndex].doors[targetDoor].doorTiles[targetDoorTileIndex].IsVertical() != enteredDoorVertical;
+		if (doorSwitchingOrientation)
+		{
+			var temp = playerDoorOffsetX;
+			playerDoorOffsetX = playerDoorOffsetY;
+			playerDoorOffsetY = temp;
+		}
+		return doorSwitchingOrientation;
 	}
 	
 	public function SwitchRoomPlayerPosX():Float
 	{
-		return previousRoom.SwitchRoomPlayerPosX(rooms);
+		switchingRoom = false;
+		return rooms[switchRoomIndex].doors[targetDoor].doorTiles[targetDoorTileIndex].x + playerDoorOffsetX + rooms[switchRoomIndex].doors[targetDoor].enterDirX;
 	}
 	
 	public function SwitchRoomPlayerPosY():Float
 	{
-		return previousRoom.SwitchRoomPlayerPosY(rooms);
+		switchingRoom = false;
+		return rooms[switchRoomIndex].doors[targetDoor].doorTiles[targetDoorTileIndex].y + playerDoorOffsetY + rooms[switchRoomIndex].doors[targetDoor].enterDirY;
 	}
 	
 	public function SwitchedRoom():Bool

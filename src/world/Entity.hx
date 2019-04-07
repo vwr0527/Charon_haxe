@@ -60,14 +60,16 @@ class Entity extends Sprite
 		}
 	}
 	
-	public function LevelCollide(room:LevelRoom)
+	public function LevelCollide(level:Level)
 	{
-		CollideLevelTiles(room);
-		CollideLevelBorders(room);
+		var room:LevelRoom = level.currentRoom;
+		CollideLevelTiles(level);
+		CollideLevelBorders(level);
 	}
 	
-	public function CollideLevelBorders(room:LevelRoom) 
+	public function CollideLevelBorders(level:Level)
 	{
+		var room:LevelRoom = level.currentRoom;
 		if (x < room.xmin)
 		{
 			xv = 0;
@@ -89,8 +91,9 @@ class Entity extends Sprite
 			y = room.ymax;
 		}
 	}
-	public function CollideLevelTiles(room:LevelRoom)
+	public function CollideLevelTiles(level:Level)
 	{
+		var room:LevelRoom = level.currentRoom;
 		var tpx = px;
 		var tpy = py;
 		var didHit = false;
@@ -119,7 +122,7 @@ class Entity extends Sprite
 					{
 						if (hitbox.RectOverlap(px, py, room.tiles[i][j].x, room.tiles[i][j].y, room.tiles[i][j].hitShape))
 						{
-							HitTile(room.tiles[i][j], room);
+							HitTile(room.tiles[i][j], level);
 						}
 						else if (!room.tiles[i][j].NoCollide())
 						{
@@ -139,7 +142,7 @@ class Entity extends Sprite
 			{
 				++numBounces;
 				didHit = true;
-				HitTile(lastHitTile, room);
+				HitTile(lastHitTile, level);
 				
 				var ox = x;
 				var oy = y;
@@ -164,7 +167,7 @@ class Entity extends Sprite
 		} while (didHit);
 	}
 	
-	public function HitTile(levelTile:LevelTile, room:LevelRoom) 
+	public function HitTile(levelTile:LevelTile, level:Level)
 	{
 		
 	}

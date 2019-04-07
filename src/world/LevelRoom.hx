@@ -25,9 +25,6 @@ class LevelRoom extends Sprite
 	
 	public var playerSpawnX:Float;
 	public var playerSpawnY:Float;
-	
-	public var switchRoomIndex:Int = 0;
-	private var switchingRoom:Bool = false;
 
 	public function new(x_min:Float, x_max:Float, y_min:Float, y_max:Float, tile_size:Float, num_x_tiles:Int, num_y_tiles:Int, tile_start_x:Float, tile_start_y:Float) 
 	{
@@ -101,66 +98,5 @@ class LevelRoom extends Sprite
 		ypos -= tstarty + tsize / 2;
 		ypos /= tsize;
 		return Std.int(Math.min(Math.max(Math.round(ypos), 0), ytiles - 1));
-	}
-	
-	public function SwitchToRoomIndex():Int
-	{
-		return switchRoomIndex;
-	}
-	
-	var enteredDoorVertical:Bool;
-	var targetDoor:Int;
-	var targetDoorTileIndex:Int;
-	var playerDoorOffsetX:Float;
-	var playerDoorOffsetY:Float;
-	var doorSwitchingOrientation:Bool;
-	
-	public function EnteredDoor(door:DoorTile, offset:Float) 
-	{
-		switchingRoom = true;
-		switchRoomIndex = doors[door.GetID()].targetRoom;
-		targetDoor = doors[door.GetID()].targetDoor;
-		targetDoorTileIndex = doors[door.GetID()].doorTiles.indexOf(door);
-		if (door.IsVertical()) 
-		{
-			enteredDoorVertical = true;
-			playerDoorOffsetX = 0;
-			playerDoorOffsetY = offset;
-		}
-		else
-		{
-			enteredDoorVertical = false;
-			playerDoorOffsetX = offset;
-			playerDoorOffsetY = 0;
-		}
-	}
-	
-	public function SwitchedDoorOrientation(rooms:Array<LevelRoom>):Bool
-	{
-		doorSwitchingOrientation = rooms[switchRoomIndex].doors[targetDoor].doorTiles[targetDoorTileIndex].IsVertical() != enteredDoorVertical;
-		if (doorSwitchingOrientation)
-		{
-			var temp = playerDoorOffsetX;
-			playerDoorOffsetX = playerDoorOffsetY;
-			playerDoorOffsetY = temp;
-		}
-		return doorSwitchingOrientation;
-	}
-	
-	public function SwitchRoomPlayerPosX(rooms:Array<LevelRoom>):Float
-	{
-		switchingRoom = false;
-		return rooms[switchRoomIndex].doors[targetDoor].doorTiles[targetDoorTileIndex].x + playerDoorOffsetX + rooms[switchRoomIndex].doors[targetDoor].enterDirX;
-	}
-	
-	public function SwitchRoomPlayerPosY(rooms:Array<LevelRoom>):Float
-	{
-		switchingRoom = false;
-		return rooms[switchRoomIndex].doors[targetDoor].doorTiles[targetDoorTileIndex].y + playerDoorOffsetY + rooms[switchRoomIndex].doors[targetDoor].enterDirY;
-	}
-	
-	public function isSwitchingRoom():Bool
-	{
-		return switchingRoom;
 	}
 }

@@ -82,7 +82,6 @@ class Shot extends Entity
 	
 	public override function LevelCollide(level:Level)
 	{
-		var room:LevelRoom = level.currentRoom;
 		CollideLevelTiles(level);
 		CollideLevelBorders(level);
 		if (shotHit && age <= 1)
@@ -182,6 +181,10 @@ class Shot extends Entity
 			var door:DoorTile = cast(levelTile, DoorTile);
 			//door.SetOpen(true);
 			room.doors[door.GetID()].SetOpen(true);
+			
+			var targetRoom:Int = room.doors[door.GetID()].targetRoom;
+			var targetDoor:Int = room.doors[door.GetID()].targetDoor;
+			level.rooms[targetRoom].doors[targetDoor].SetOpen(true);
 		}
 	}
 }

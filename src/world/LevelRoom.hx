@@ -22,6 +22,7 @@ class LevelRoom extends Sprite
 	
 	public var tiles:Array<Array<LevelTile>>;
 	public var doors:Array<DoorController>;
+	public var ents:Array<Entity>;
 	
 	public var playerSpawnX:Float;
 	public var playerSpawnY:Float;
@@ -40,6 +41,7 @@ class LevelRoom extends Sprite
 		tstarty = tile_start_y;
 		tiles = new Array();
 		doors = new Array();
+		ents = new Array();
 		for (i in 0...num_y_tiles)
 		{
 			var newRow = new Array();

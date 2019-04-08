@@ -22,7 +22,6 @@ class Level extends Sprite
 	var targetDoorTileIndex:Int;
 	var playerDoorOffsetX:Float;
 	var playerDoorOffsetY:Float;
-	var doorSwitchingOrientation:Bool;
 
 	public function new() 
 	{
@@ -72,18 +71,13 @@ class Level extends Sprite
 			playerDoorOffsetX = offset;
 			playerDoorOffsetY = 0;
 		}
-	}
-	
-	public function SwitchedDoorOrientation():Bool
-	{
-		doorSwitchingOrientation = rooms[switchRoomIndex].doors[targetDoor].doorTiles[targetDoorTileIndex].IsVertical() != enteredDoorVertical;
-		if (doorSwitchingOrientation)
+		
+		if (rooms[switchRoomIndex].doors[targetDoor].doorTiles[targetDoorTileIndex].IsVertical() != enteredDoorVertical)
 		{
 			var temp = playerDoorOffsetX;
 			playerDoorOffsetX = playerDoorOffsetY;
 			playerDoorOffsetY = temp;
 		}
-		return doorSwitchingOrientation;
 	}
 	
 	public function SwitchRoomPlayerPosX():Float

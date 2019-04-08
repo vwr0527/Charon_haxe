@@ -4,6 +4,7 @@ import menu.DebugPage;
 import openfl.Lib;
 import openfl.display.Sprite;
 import world.Camera;
+import world.Enemy;
 import world.Entity;
 import world.Level;
 import world.levels.TestLevel1;
@@ -55,7 +56,13 @@ class World extends Sprite
 		LoadLevels();
 		
 		addChild(player);
+		
+		enemy = new Enemy();
+		addChild(enemy);
+		entityList.push(enemy);
 	}
+	
+	var enemy:Enemy;
 	
 	public function Update()
 	{
@@ -77,6 +84,7 @@ class World extends Sprite
 			entityList.push(ent);
 		}
 		newEntities = new Array();
+		enemy.LookAt(player.x, player.y);
 		
 		var i = entityList.length - 1;
 		while (i >= 0)
@@ -93,7 +101,6 @@ class World extends Sprite
 		level.Update();
 		if (level.SwitchedRoom())
 		{
-			level.SwitchedDoorOrientation();
 			player.x = level.SwitchRoomPlayerPosX();
 			player.y = level.SwitchRoomPlayerPosY();
 			camera.x = player.x;

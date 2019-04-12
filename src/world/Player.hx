@@ -26,7 +26,7 @@ class Player extends Entity
 		hitbox.MakeSquare(30);
 		//showHitbox = true;
 		
-		var bitmapData = openfl.Assets.getBitmapData("img/ship.png");
+		var bitmapData = openfl.Assets.getBitmapData("img/ship2.png");
 		var bitmap = new Bitmap (bitmapData);
 		sprite = new Sprite();
 		sprite.addChild(bitmap);

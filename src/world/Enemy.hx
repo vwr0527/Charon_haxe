@@ -64,6 +64,8 @@ class Enemy extends Entity
 		{
 			yv -= 0.1;
 		}
+		
+		if (age > 1000) active = false;
 	}
 	
 	public function LookAt(xpos:Float, ypos:Float)

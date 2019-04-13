@@ -19,6 +19,7 @@ class Enemy extends Entity
 	private var shotSpeed = 45;
 	private var shotStartDist = 0.65;
 	private var shotSpread = 4;
+	public var age:Int = 0;
 	
 	public function new() 
 	{
@@ -41,8 +42,6 @@ class Enemy extends Entity
 		rf = 0.2;//0.8;
 		tf = 0.01;//0.98;
 	}
-	
-	var age:Int = 0;
 	
 	public override function Update(Spawn:Function)
 	{

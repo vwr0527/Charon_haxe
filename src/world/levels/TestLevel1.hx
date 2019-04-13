@@ -1,4 +1,5 @@
 package world.levels;
+import world.Enemy;
 import world.LevelRoom;
 import world.tiles.*;
 
@@ -43,6 +44,8 @@ class TestLevel1
 		room.doors[1].enterDirX = -1;
 		room.doors[1].enterDirY = 0;
 		
+		room.ents.push(new Enemy());
+		
 		level.rooms.push(room);
 		level.currentRoom = room;
 		level.addChild(room);
@@ -71,6 +74,12 @@ class TestLevel1
 		room2.doors[0].targetRoom = 0;
 		room2.doors[0].enterDirX = 0;
 		room2.doors[0].enterDirY = 1;
+		
+		room2.ents.push(new Enemy());
+		room2.ents[0].x += 50;
+		var enemy2 = new Enemy();
+		enemy2.age = 75;
+		room2.ents.push(enemy2);
 		
 		level.rooms.push(room2);
 	}

@@ -7,6 +7,7 @@ import world.Camera;
 import world.Enemy;
 import world.Entity;
 import world.Level;
+import world.LevelRoom;
 import world.Shot;
 import world.levels.TestLevel1;
 import world.Player;
@@ -21,10 +22,10 @@ class World extends Sprite
 	private var camera:Camera;
 	private var player:Player;
 	private var entityList:Array<Entity>;
-	//private var playerShots:Array<Entity>;
-	//private var enemyShots:Array<Entity>;
-	//private var enemyList:Array<Enemy>;
-	//private var itemList:Array<Entity>;
+	private var playerShots:Array<Shot>;
+	private var enemyShots:Array<Shot>;
+	private var enemyList:Array<Enemy>;
+	private var itemList:Array<Entity>;
 	private var newEntities:Array<Entity>;
 	private var levelDictionary:Map<String, Level>;
 	private var level:Level;
@@ -45,10 +46,10 @@ class World extends Sprite
 		player = new Player();
 		entityList.push(player);
 		
-		//playerShots = new Array();
-		//enemyShots = new Array();
-		//enemyList = new Array();
-		//itemList = new Array();
+		playerShots = new Array();
+		enemyShots = new Array();
+		enemyList = new Array();
+		itemList = new Array();
 		
 		camera = new Camera();
 		MoveWorldToCamera();
@@ -57,7 +58,8 @@ class World extends Sprite
 		LoadLevels();
 		
 		addChild(player);
-		Spawn(new Enemy());
+		
+		LoadEntsFromRoom(level.currentRoom);
 	}
 	
 	public function Update()
@@ -73,28 +75,19 @@ class World extends Sprite
 		{
 			ent.Update(Spawn);
 			ent.LevelCollide(level);
-			
-			if (Std.is(ent, Enemy))
-			{
-				cast(ent, Enemy).LookAt(player.x, player.y);
-			}
 		}
 		
-		/*
 		for (enemy in enemyList)
 		{
 			enemy.LookAt(player.x, player.y);
 		}
-		*/
 		
 		for (ent in newEntities)
 		{
-			/*
 			if (Std.is(ent, Enemy))
 			{
 				enemyList.push(cast(ent, Enemy));
 			}
-			*/
 			entityList.push(ent);
 		}
 		newEntities = new Array();
@@ -106,22 +99,19 @@ class World extends Sprite
 			{
 				removeChild(entityList[i]);
 				entityList.splice(i, 1);
-				
-				/*
-				if (Std.is(entityList[i], Enemy))
-				{
-					var enemy:Enemy = cast(entityList[i], Enemy);
-					var enemyIndex:Int = enemyList.indexOf(enemy);
-					if (enemyIndex != -1)
-					{
-						enemyList.splice(enemyIndex, 1);
-					}
-				}
-				*/
 			}
 			--i;
 		}
 		DebugPage.entcount = entityList.length;
+		i = enemyList.length - 1;
+		while (i >= 0)
+		{
+			if (enemyList[i].active == false)
+			{
+				enemyList.splice(i, 1);
+			}
+			--i;
+		}
 		
 		level.Update();
 		if (level.SwitchedRoom())
@@ -132,10 +122,47 @@ class World extends Sprite
 			camera.y = player.y;
 			MoveWorldToCamera();
 			
-			//StoreEntsInRoom(level.previousRoom);
-			//RemoveAllEnts();
-			//LoadEntsFromRoom(level.currentRoom);
+			StoreEntsInRoom(level.previousRoom);
+			RemoveAllEnts();
+			LoadEntsFromRoom(level.currentRoom);
 		}
+	}
+	
+	function RemoveAllEnts() 
+	{
+		var i = entityList.length - 1;
+		while (i >= 1)
+		{
+			removeChild(entityList[i]);
+			entityList.splice(i, 1);
+			--i;
+		}
+		DebugPage.entcount = entityList.length;
+		i = enemyList.length - 1;
+		while (i >= 0)
+		{
+			enemyList.splice(i, 1);
+			--i;
+		}
+	}
+	
+	function StoreEntsInRoom(room:LevelRoom) 
+	{
+		var i = entityList.length - 1;
+		while (i >= 1)
+		{
+			room.ents.push(entityList[i]);
+			--i;
+		}
+	}
+	
+	function LoadEntsFromRoom(room:LevelRoom) 
+	{
+		for (ent in room.ents)
+		{
+			Spawn(ent);
+		}
+		room.ents = new Array<Entity>();
 	}
 	
 	private function Spawn(newEnt:Entity)

@@ -80,6 +80,10 @@ class World extends Sprite
 		for (enemy in enemyList)
 		{
 			enemy.LookAt(player.x, player.y);
+			for (shot in playerShots)
+			{
+				enemy.CheckShotHit(shot);
+			}
 		}
 		
 		for (ent in newEntities)
@@ -87,6 +91,10 @@ class World extends Sprite
 			if (Std.is(ent, Enemy))
 			{
 				enemyList.push(cast(ent, Enemy));
+			} else 
+			if (Std.is(ent, Shot))
+			{
+				playerShots.push(cast(ent, Shot));
 			}
 			entityList.push(ent);
 		}
@@ -148,11 +156,13 @@ class World extends Sprite
 	
 	function StoreEntsInRoom(room:LevelRoom) 
 	{
-		var i = entityList.length - 1;
-		while (i >= 1)
+		for (enemy in enemyList)
 		{
-			room.ents.push(entityList[i]);
-			--i;
+			room.ents.push(enemy);
+		}
+		for (item in itemList)
+		{
+			room.ents.push(item);
 		}
 	}
 	

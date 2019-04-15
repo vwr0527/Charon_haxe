@@ -63,8 +63,6 @@ class Enemy extends Entity
 		{
 			yv -= 0.1;
 		}
-		
-		if (age > 1000) active = false;
 	}
 	
 	public function LookAt(xpos:Float, ypos:Float)
@@ -84,5 +82,20 @@ class Enemy extends Entity
 		rotationDiff /= maxDiff;
 		
 		av += rotationDiff * turnSpeed * t;
+	}
+	
+	public function CheckShotHit(shot:Shot)
+	{
+		//placeholder
+		/*
+		var collisionResult:CollisionResult = hitbox.Collide(room.tiles[i][j].x - x, room.tiles[i][j].y - y, x - tpx, y - tpy, room.tiles[i][j].hitShape);
+		if (collisionResult.movefraction < lowestMoveFraction)
+		{
+			lowestMoveFraction = collisionResult.movefraction;
+			lastHitTile = room.tiles[i][j];
+			pushOutX = collisionResult.pushOutX;
+			pushOutY = collisionResult.pushOutY;
+		}
+		*/
 	}
 }

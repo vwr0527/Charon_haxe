@@ -185,4 +185,17 @@ class Shot extends Entity
 			level.rooms[targetRoom].doors[targetDoor].SetOpen(true);
 		}
 	}
+	
+	public function ShotHit(collisionResult:CollisionResult)
+	{
+		shotHit = true;
+		x = x - ((x - px) * (1 - collisionResult.movefraction));
+		y = y - ((y - py) * (1 - collisionResult.movefraction));
+		xv = 0;
+		yv = 0;
+		laserSprite.visible = false;
+		hitSprite.visible = true;
+		shotHitAnim -= 1.0;
+		hitSprite.scaleX = hitSprite.scaleY = shotHitAnim * 0.2;
+	}
 }

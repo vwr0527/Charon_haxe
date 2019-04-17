@@ -5,6 +5,7 @@ import openfl.utils.Function;
 import openfl.Assets;
 import openfl.display.Sprite;
 import openfl.display.Bitmap;
+import world.HitShape.CollisionResult;
 
 /**
  * ...
@@ -20,6 +21,7 @@ class Enemy extends Entity
 	private var shotStartDist = 0.65;
 	private var shotSpread = 4;
 	public var age:Int = 0;
+	public var hp:Int = 10;
 	
 	public function new() 
 	{
@@ -47,6 +49,7 @@ class Enemy extends Entity
 	{
 		super.Update(Spawn);
 		++age;
+		
 		if (age % 100 < 50)
 		{
 			xv += 0.1;
@@ -86,16 +89,12 @@ class Enemy extends Entity
 	
 	public function CheckShotHit(shot:Shot)
 	{
-		//placeholder
-		/*
-		var collisionResult:CollisionResult = hitbox.Collide(room.tiles[i][j].x - x, room.tiles[i][j].y - y, x - tpx, y - tpy, room.tiles[i][j].hitShape);
-		if (collisionResult.movefraction < lowestMoveFraction)
+		var collisionResult:CollisionResult = hitbox.Collide(shot.x - x, shot.y - y, (shot.px - px) - (shot.x - x), (shot.py - py) - (shot.y - y), shot.hitbox);
+		if (collisionResult.movefraction < 1)
 		{
-			lowestMoveFraction = collisionResult.movefraction;
-			lastHitTile = room.tiles[i][j];
-			pushOutX = collisionResult.pushOutX;
-			pushOutY = collisionResult.pushOutY;
+			shot.ShotHit(collisionResult);
+			hp -= 2;
+			if (hp <= 0) active = false;
 		}
-		*/
 	}
 }

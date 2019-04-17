@@ -78,6 +78,7 @@ class TestLevel1
 		room2.ents.push(new Enemy());
 		room2.ents[0].x += 50;
 		var enemy2 = new Enemy();
+		enemy2.y += 50;
 		enemy2.age = 75;
 		room2.ents.push(enemy2);
 		

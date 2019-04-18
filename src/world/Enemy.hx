@@ -95,6 +95,7 @@ class Enemy extends Entity
 			shot.ShotHit(collisionResult);
 			hp -= 2;
 			if (hp <= 0) active = false;
+			trace(hp);
 		}
 	}
 }

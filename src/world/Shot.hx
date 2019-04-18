@@ -198,4 +198,9 @@ class Shot extends Entity
 		shotHitAnim -= 1.0;
 		hitSprite.scaleX = hitSprite.scaleY = shotHitAnim * 0.2;
 	}
+	
+	public function AlreadyHit():Bool
+	{
+		return shotHit;
+	}
 }

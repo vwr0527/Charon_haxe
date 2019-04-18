@@ -82,7 +82,7 @@ class World extends Sprite
 			enemy.LookAt(player.x, player.y);
 			for (shot in playerShots)
 			{
-				enemy.CheckShotHit(shot);
+				if (!shot.AlreadyHit()) enemy.CheckShotHit(shot);
 			}
 		}
 		
@@ -117,6 +117,15 @@ class World extends Sprite
 			if (enemyList[i].active == false)
 			{
 				enemyList.splice(i, 1);
+			}
+			--i;
+		}
+		i = playerShots.length - 1;
+		while (i >= 0)
+		{
+			if (playerShots[i].active == false)
+			{
+				playerShots.splice(i, 1);
 			}
 			--i;
 		}

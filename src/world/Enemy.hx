@@ -66,7 +66,10 @@ class Enemy extends Entity
 		{
 			yv -= 0.1;
 		}
+		SpawnFcn = Spawn;
 	}
+	
+	var SpawnFcn:Function;
 	
 	public function LookAt(xpos:Float, ypos:Float)
 	{
@@ -94,7 +97,14 @@ class Enemy extends Entity
 		{
 			shot.ShotHit(collisionResult);
 			hp -= 2;
-			if (hp <= 0) active = false;
+			if (hp <= 0)
+			{
+				active = false;
+				var explosion = new Explosion();
+				explosion.x = x;
+				explosion.y = y;
+				SpawnFcn(explosion);
+			}
 			trace(hp);
 		}
 	}

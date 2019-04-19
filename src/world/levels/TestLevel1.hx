@@ -40,7 +40,7 @@ class TestLevel1
 		room.doors[0].enterDirX = 0;
 		room.doors[0].enterDirY = -1;
 		room.doors[1].targetDoor = 0;
-		room.doors[1].targetRoom = 1;
+		room.doors[1].targetRoom = 2;
 		room.doors[1].enterDirX = -1;
 		room.doors[1].enterDirY = 0;
 		
@@ -83,5 +83,27 @@ class TestLevel1
 		room2.ents.push(enemy2);
 		
 		level.rooms.push(room2);
+		
+		var room3 = new LevelRoom(-480, 480, -270, 270, 32, 30, 17, -480, -270);
+		
+		for (i in 0...17)
+		{
+			for (j in 0...30)
+			{
+				if (j == 0 || j == 29 || i == 0 || i == 16)
+				{
+					if (j == 0 && (i >= 6 && i <= 9))
+						room3.SetDoor(new VDoorTile(32, 0), j, i);
+					else
+						room3.SetTile(new WallTile(32), j, i);
+				}
+			}
+		}
+		room3.doors[0].targetDoor = 1;
+		room3.doors[0].targetRoom = 0;
+		room3.doors[0].enterDirX = 1;
+		room3.doors[0].enterDirY = 0;
+		
+		level.rooms.push(room3);
 	}
 }

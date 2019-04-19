@@ -88,6 +88,11 @@ class LevelRoom extends Sprite
 		doors[doorIndex].doorTiles.push(dtile);
 	}
 	
+	public function CreateDoor(firstRoomIndex:Int, firstDoorIndex:Int, firstDoorTileX:Int, firstDoorTileY:Int, secondDoorIndex:Int, secondRoomIndex:Int, secondDoorTileX:Int, secondDoorTileY:Int, firstDoorOrientation:Int, doorWidth:Int)
+	{
+		
+	}
+	
 	public function GetIndexAtX(xpos:Float):Int
 	{
 		xpos -= tstartx + tsize / 2;

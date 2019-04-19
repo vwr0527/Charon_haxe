@@ -1,11 +1,11 @@
 package world;
 
-import openfl.geom.Point;
+import openfl.display.BitmapData;
+import openfl.geom.ColorTransform;
 import openfl.utils.Function;
 import openfl.Assets;
 import openfl.display.Sprite;
 import openfl.display.Bitmap;
-import world.HitShape.CollisionResult;
 
 /**
  * ...
@@ -13,36 +13,71 @@ import world.HitShape.CollisionResult;
  */
 class Explosion extends Entity 
 {
-	private var sprite:Sprite;
-	public var age:Int = 0;
+	public var age:Float = 0;
+	public var speed:Float = 0.5;
+	public var scale:Float = 1.15;
+	
+	private var bang:Sprite;
+	private var med:Sprite;
+	private var dark:Sprite;
 	
 	public function new() 
 	{
 		super();
 		
-		var bitmapData = openfl.Assets.getBitmapData("img/explosion1.png");
-		var bitmap = new Bitmap (bitmapData);
-		sprite = new Sprite();
-		sprite.addChild(bitmap);
+		var bitmapData = Assets.getBitmapData("img/explosion1.png");
+		
+		var bitmap = new Bitmap (bitmapData.clone());
+		bitmap.bitmapData.colorTransform(bitmapData.rect, new ColorTransform(2, 2, 2, 2, 50, 50, 50, 0));
 		bitmap.x -= bitmap.width * 0.5;
 		bitmap.y -= bitmap.height * 0.5;
-		sprite.scaleX = sprite.scaleY = 0.7;
 		bitmap.smoothing = true;
+		bang = new Sprite();
+		bang.addChild(bitmap);
 		
-		addChild(sprite);
+		var bitmap2 = new Bitmap (bitmapData);
+		bitmap2.x -= bitmap2.width * 0.5;
+		bitmap2.y -= bitmap2.height * 0.5;
+		bitmap2.smoothing = true;
+		med = new Sprite();
+		med.addChild(bitmap2);
+		
+		var bitmap3 = new Bitmap (bitmapData.clone());
+		bitmap3.bitmapData.colorTransform(bitmapData.rect, new ColorTransform(0.2, 0.1, 0.2, 1, 80, 70, 80, 0));
+		bitmap3.x -= bitmap3.width * 0.5;
+		bitmap3.y -= bitmap3.height * 0.5;
+		bitmap3.smoothing = true;
+		dark = new Sprite();
+		dark.addChild(bitmap3);
+		
+		addChild(dark);
+		addChild(med);
+		addChild(bang);
+		
+		scaleX = scaleY = scale;
 	}
 	
 	public override function Update(Spawn:Function)
 	{
 		super.Update(Spawn);
-		++age;
 		
-		sprite.scaleX = sprite.scaleY = 1 + (age / 10);
-		alpha = (10 - age) / 10;
+		dark.scaleX = dark.scaleY = (1.5 + (age / 10));
+		dark.alpha = (10 - age) / 10;
+		if (dark.alpha < 0) dark.visible = false;
+		
+		med.alpha = (10 - age) / 10;
+		med.scaleX = med.scaleY = 1 - (age * 0.03);
+		if (med.alpha < 0) med.visible = false;
+		
+		bang.alpha = 1 - (age * 0.75);
+		bang.scaleX = bang.scaleY = 1.2 - (age * 0.1);
+		if (bang.alpha < 0) bang.visible = false;
 		
 		if (age >= 10)
 		{
 			active = false;
 		}
+		
+		age += speed;
 	}
 }

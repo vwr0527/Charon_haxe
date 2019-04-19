@@ -95,6 +95,9 @@ class Enemy extends Entity
 		var collisionResult:CollisionResult = hitbox.Collide(shot.x - x, shot.y - y, (shot.px - px) - (shot.x - x), (shot.py - py) - (shot.y - y), shot.hitbox);
 		if (collisionResult.movefraction < 1)
 		{
+			av += (Math.random() - 0.5) * 50;
+			xv += shot.xv / 30;
+			yv += shot.yv / 30;
 			shot.ShotHit(collisionResult);
 			hp -= 2;
 			if (hp <= 0)
@@ -105,7 +108,6 @@ class Enemy extends Entity
 				explosion.y = y;
 				SpawnFcn(explosion);
 			}
-			trace(hp);
 		}
 	}
 }

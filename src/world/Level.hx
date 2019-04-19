@@ -17,7 +17,6 @@ class Level extends Sprite
 	var switchingRoom:Bool = false;
 	var switchedRoom = false;
 	
-	var enteredDoorVertical:Bool;
 	var targetDoor:Int;
 	var targetDoorTileIndex:Int;
 	var playerDoorOffsetX:Float;
@@ -59,6 +58,9 @@ class Level extends Sprite
 		switchRoomIndex = currentRoom.doors[door.GetID()].targetRoom;
 		targetDoor = currentRoom.doors[door.GetID()].targetDoor;
 		targetDoorTileIndex = currentRoom.doors[door.GetID()].doorTiles.indexOf(door);
+		
+		var enteredDoorVertical:Bool = true;
+		
 		if (door.IsVertical()) 
 		{
 			enteredDoorVertical = true;

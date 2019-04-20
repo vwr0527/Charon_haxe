@@ -2,6 +2,8 @@ package world;
 import openfl.display.Sprite;
 import world.LevelRoom;
 import world.tiles.DoorTile;
+import world.tiles.HDoorTile;
+import world.tiles.VDoorTile;
 
 /**
  * ...
@@ -97,5 +99,62 @@ class Level extends Sprite
 	public function SwitchedRoom():Bool
 	{
 		return switchedRoom;
+	}
+	
+	public function CreateDoor(firstRoomIndex:Int, firstDoorIndex:Int, firstDoorTileX:Int, firstDoorTileY:Int, secondDoorIndex:Int, secondRoomIndex:Int, secondDoorTileX:Int, secondDoorTileY:Int, firstDoorOrientation:Int, doorWidth:Int)
+	{
+		//firstDoorOrientation
+		//0 = left to right
+		//1 = up to down
+		//2 = right to left
+		//3 = down to up
+		var room1 = rooms[firstRoomIndex];
+		var room2 = rooms[secondRoomIndex];
+		for (i in 0...doorWidth)
+		{
+			if (firstDoorOrientation == 0 || firstDoorOrientation == 2)
+			{
+				room1.SetDoor(new VDoorTile(room1.tsize, firstDoorIndex), firstDoorTileX, firstDoorTileY + i);
+				room2.SetDoor(new VDoorTile(room2.tsize, secondDoorIndex), secondDoorTileX, secondDoorTileY + i);
+			}
+			else
+			{
+				room1.SetDoor(new HDoorTile(room1.tsize, firstDoorIndex), firstDoorTileX + i, firstDoorTileY);
+				room2.SetDoor(new HDoorTile(room2.tsize, secondDoorIndex), secondDoorTileX + i, secondDoorTileY);
+			}
+		}
+		room1.doors[firstDoorIndex].targetDoor = secondDoorIndex;
+		room1.doors[firstDoorIndex].targetRoom = secondRoomIndex;
+		room2.doors[secondDoorIndex].targetDoor = firstDoorIndex;
+		room2.doors[secondDoorIndex].targetRoom = firstRoomIndex;
+		
+		if (firstDoorOrientation == 0)
+		{
+			room1.doors[firstDoorIndex].enterDirX = -1;
+			room1.doors[firstDoorIndex].enterDirY = 0;
+			room2.doors[secondDoorIndex].enterDirX = 1;
+			room2.doors[secondDoorIndex].enterDirY = 0;
+		}
+		else if (firstDoorOrientation == 1)
+		{
+			room1.doors[firstDoorIndex].enterDirX = 0;
+			room1.doors[firstDoorIndex].enterDirY = -1;
+			room2.doors[secondDoorIndex].enterDirX = 0;
+			room2.doors[secondDoorIndex].enterDirY = 1;
+		}
+		else if (firstDoorOrientation == 2)
+		{
+			room1.doors[firstDoorIndex].enterDirX = 1;
+			room1.doors[firstDoorIndex].enterDirY = 0;
+			room2.doors[secondDoorIndex].enterDirX = -1;
+			room2.doors[secondDoorIndex].enterDirY = 0;
+		}
+		else if (firstDoorOrientation == 3)
+		{
+			room1.doors[firstDoorIndex].enterDirX = 0;
+			room1.doors[firstDoorIndex].enterDirY = 1;
+			room2.doors[secondDoorIndex].enterDirX = 0;
+			room2.doors[secondDoorIndex].enterDirY = -1;
+		}
 	}
 }

@@ -14,7 +14,7 @@ class LevelRoom extends Sprite
 	public var xmax:Float;
 	public var ymax:Float;
 	
-	var tsize:Float;
+	public var tsize:Float;
 	var xtiles:Int;
 	var ytiles:Int;
 	var tstartx:Float;
@@ -86,11 +86,6 @@ class LevelRoom extends Sprite
 			doors.push(new DoorController());
 		}
 		doors[doorIndex].doorTiles.push(dtile);
-	}
-	
-	public function CreateDoor(firstRoomIndex:Int, firstDoorIndex:Int, firstDoorTileX:Int, firstDoorTileY:Int, secondDoorIndex:Int, secondRoomIndex:Int, secondDoorTileX:Int, secondDoorTileY:Int, firstDoorOrientation:Int, doorWidth:Int)
-	{
-		
 	}
 	
 	public function GetIndexAtX(xpos:Float):Int

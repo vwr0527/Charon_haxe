@@ -7,14 +7,16 @@ package world.tiles;
 class TLWallTile extends LevelTile
 {
 
-	public function new(size:Float) 
+	public function new() 
 	{
-		super(size);
+		super();
 		UsePic("img/testdiagtile.bmp");
 		
-		hitShape.AddPoint( -tileSize / 2, -tileSize / 2);
-		hitShape.AddPoint( tileSize / 2, -tileSize / 2);
-		hitShape.AddPoint( -tileSize / 2, tileSize / 2);
+		var size = LevelTile.size;
+		
+		hitShape.AddPoint( -size / 2, -size / 2);
+		hitShape.AddPoint( size / 2, -size / 2);
+		hitShape.AddPoint( -size / 2, size / 2);
 	}
 	
 }

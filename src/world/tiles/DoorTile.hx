@@ -11,9 +11,9 @@ class DoorTile extends LevelTile
 	var isVertical:Bool;
 	var identifier:Int;
 	
-	public function new(size:Float, orientation:Bool, id:Int) 
+	public function new(orientation:Bool, id:Int) 
 	{
-		super(size);
+		super();
 		isVertical = orientation;
 		identifier = id;
 	}

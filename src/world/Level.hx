@@ -114,13 +114,13 @@ class Level extends Sprite
 		{
 			if (firstDoorOrientation == 0 || firstDoorOrientation == 2)
 			{
-				room1.SetDoor(new VDoorTile(room1.tsize, firstDoorIndex), firstDoorTileX, firstDoorTileY + i);
-				room2.SetDoor(new VDoorTile(room2.tsize, secondDoorIndex), secondDoorTileX, secondDoorTileY + i);
+				room1.SetDoor(new VDoorTile(firstDoorIndex), firstDoorTileX, firstDoorTileY + i);
+				room2.SetDoor(new VDoorTile(secondDoorIndex), secondDoorTileX, secondDoorTileY + i);
 			}
 			else
 			{
-				room1.SetDoor(new HDoorTile(room1.tsize, firstDoorIndex), firstDoorTileX + i, firstDoorTileY);
-				room2.SetDoor(new HDoorTile(room2.tsize, secondDoorIndex), secondDoorTileX + i, secondDoorTileY);
+				room1.SetDoor(new HDoorTile(firstDoorIndex), firstDoorTileX + i, firstDoorTileY);
+				room2.SetDoor(new HDoorTile(secondDoorIndex), secondDoorTileX + i, secondDoorTileY);
 			}
 		}
 		room1.doors[firstDoorIndex].targetDoor = secondDoorIndex;

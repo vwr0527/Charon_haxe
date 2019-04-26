@@ -8,11 +8,13 @@ import world.LevelTile;
 class WallTile extends LevelTile
 {
 
-	public function new(size:Float) 
+	public function new() 
 	{
-		super(size);
+		super();
 		UsePic("img/testtile.bmp");
 		
-		hitShape.MakeSquare(tileSize);
+		var size = LevelTile.size;
+		
+		hitShape.MakeSquare(size);
 	}
 }

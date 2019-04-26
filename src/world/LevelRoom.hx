@@ -15,10 +15,8 @@ class LevelRoom extends Sprite
 	public var ymax:Float;
 	
 	public var tsize:Float;
-	var xtiles:Int;
-	var ytiles:Int;
-	var tstartx:Float;
-	var tstarty:Float;
+	public var xtiles:Int;
+	public var ytiles:Int;
 	
 	public var tiles:Array<Array<LevelTile>>;
 	public var doors:Array<DoorController>;
@@ -27,18 +25,16 @@ class LevelRoom extends Sprite
 	public var playerSpawnX:Float;
 	public var playerSpawnY:Float;
 
-	public function new(x_min:Float, x_max:Float, y_min:Float, y_max:Float, tile_size:Float, num_x_tiles:Int, num_y_tiles:Int, tile_start_x:Float, tile_start_y:Float) 
+	public function new(num_x_tiles:Int, num_y_tiles:Int) 
 	{
 		super();
-		xmin = x_min;
-		xmax = x_max;
-		ymin = y_min;
-		ymax = y_max;
-		tsize = tile_size;
+		tsize = LevelTile.size;
+		xmin = 0;
+		xmax = num_x_tiles * tsize;
+		ymin = 0;
+		ymax = num_y_tiles * tsize;
 		xtiles = num_x_tiles;
 		ytiles = num_y_tiles;
-		tstartx = tile_start_x;
-		tstarty = tile_start_y;
 		tiles = new Array();
 		doors = new Array();
 		ents = new Array();
@@ -73,8 +69,8 @@ class LevelRoom extends Sprite
 		if (tiles[yi][xi] != null) removeChild(tiles[yi][xi]);
 		tiles[yi][xi] = tile;
 		addChild(tile);
-		tiles[yi][xi].x = (xi * tsize) + tstartx + tsize / 2;
-		tiles[yi][xi].y = (yi * tsize) + tstarty + tsize / 2;
+		tiles[yi][xi].x = (xi * tsize) + tsize / 2;
+		tiles[yi][xi].y = (yi * tsize) + tsize / 2;
 	}
 	
 	public function SetDoor(dtile:DoorTile, xi:Int, yi:Int)
@@ -90,14 +86,14 @@ class LevelRoom extends Sprite
 	
 	public function GetIndexAtX(xpos:Float):Int
 	{
-		xpos -= tstartx + tsize / 2;
+		xpos -= tsize / 2;
 		xpos /= tsize;
 		return Std.int(Math.min(Math.max(Math.round(xpos), 0), xtiles - 1));
 	}
 	
 	public function GetIndexAtY(ypos:Float):Int
 	{
-		ypos -= tstarty + tsize / 2;
+		ypos -= tsize / 2;
 		ypos /= tsize;
 		return Std.int(Math.min(Math.max(Math.round(ypos), 0), ytiles - 1));
 	}

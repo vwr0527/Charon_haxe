@@ -6,14 +6,16 @@ package world.tiles;
  */
 class HDoorTile extends DoorTile
 {
-	public function new(size:Float, id:Int) 
+	public function new(id:Int) 
 	{
-		super(size, false, id);
+		super(false, id);
 		UsePic("img/testdoor.bmp");
 		
-		hitShape.AddPoint( -tileSize / 2, -tileSize / 4);
-		hitShape.AddPoint( tileSize / 2, -tileSize / 4);
-		hitShape.AddPoint( tileSize / 2, tileSize / 4);
-		hitShape.AddPoint( -tileSize / 2, tileSize / 4);
+		var size = LevelTile.size;
+		
+		hitShape.AddPoint( -size / 2, -size / 4);
+		hitShape.AddPoint( size / 2, -size / 4);
+		hitShape.AddPoint( size / 2, size / 4);
+		hitShape.AddPoint( -size / 2, size / 4);
 	}
 }

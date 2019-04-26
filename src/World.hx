@@ -225,5 +225,10 @@ class World extends Sprite
 		
 		player.x = level.StartRoom().playerSpawnX;
 		player.y = level.StartRoom().playerSpawnY;
+		
+		camera.x = player.x;
+		camera.y = player.y;
+		
+		MoveWorldToCamera();
 	}
 }

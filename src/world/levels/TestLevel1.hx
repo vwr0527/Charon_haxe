@@ -22,7 +22,7 @@ class TestLevel1
 		trace(room1parms);
 		
 		level = new Level();
-		var room = new LevelRoom(room1parms[0],room1parms[1],room1parms[2],room1parms[3],room1parms[4],room1parms[5],room1parms[6],room1parms[7],room1parms[8]);
+		var room = new LevelRoom(30, 17);
 		
 		for (i in 0...17)
 		{
@@ -30,23 +30,28 @@ class TestLevel1
 			{
 				if (j == 0 || j == 29 || i == 0 || i == 16)
 				{
-					room.SetTile(LevelTile.CreateTile("W,blah"), j, i);
+					room.SetTile(LevelTile.CreateTile("W,img/testtile.bmp"), j, i);
 				}
 			}
 		}
 		
-		room.SetTile(LevelTile.CreateTile("BR,blah"), 28, 15);
-		room.SetTile(LevelTile.CreateTile("BL,blah"), 1, 15);
-		room.SetTile(LevelTile.CreateTile("TL,blah"), 1, 1);
-		room.SetTile(LevelTile.CreateTile("TR,blah"), 28, 1);
+		room.SetTile(LevelTile.CreateTile("BR,img/testdiagtile.bmp"), 28, 15);
+		room.SetTile(LevelTile.CreateTile("BL,img/testdiagtile.bmp"), 1, 15);
+		room.SetTile(LevelTile.CreateTile("TL,img/testdiagtile.bmp"), 1, 1);
+		room.SetTile(LevelTile.CreateTile("TR,img/testdiagtile.bmp"), 28, 1);
+		
+		room.playerSpawnX = 480;
+		room.playerSpawnY = 270;
 		
 		room.ents.push(new Enemy());
+		room.ents[0].x = 480;
+		room.ents[0].y = 270;
 		
 		level.rooms.push(room);
 		level.currentRoom = room;
 		level.addChild(room);
 		
-		var room2 = new LevelRoom(-480, 480, -270, 270, 32, 30, 17, -480, -270);
+		var room2 = new LevelRoom(30, 17);
 		
 		for (i in 0...17)
 		{
@@ -54,26 +59,28 @@ class TestLevel1
 			{
 				if (j == 0 || j == 29 || i == 0 || i == 16)
 				{
-					room2.SetTile(new WallTile(32), j, i);
+					room2.SetTile(new WallTile(), j, i);
 				}
 			}
 		}
 		
-		room2.SetTile(new BRWallTile(32), 13, 7);
-		room2.SetTile(new BLWallTile(32), 14, 7);
-		room2.SetTile(new TLWallTile(32), 14, 8);
-		room2.SetTile(new TRWallTile(32), 13, 8);
+		room2.SetTile(new BRWallTile(), 13, 7);
+		room2.SetTile(new BLWallTile(), 14, 7);
+		room2.SetTile(new TLWallTile(), 14, 8);
+		room2.SetTile(new TRWallTile(), 13, 8);
 		
 		room2.ents.push(new Enemy());
-		room2.ents[0].x += 50;
+		room2.ents[0].x = 480 + 40;
+		room2.ents[0].y = 270;
 		var enemy2 = new Enemy();
-		enemy2.y += 50;
+		enemy2.x = 480;
+		enemy2.y = 270 + 50;
 		enemy2.age = 75;
 		room2.ents.push(enemy2);
 		
 		level.rooms.push(room2);
 		
-		var room3 = new LevelRoom(-480, 480, -480, 480, 32, 17, 17, -480, -480);
+		var room3 = new LevelRoom(17, 17);
 		
 		for (i in 0...17)
 		{
@@ -81,7 +88,7 @@ class TestLevel1
 			{
 				if (j == 0 || j == 16 || i == 0 || i == 16)
 				{
-					room3.SetTile(new WallTile(32), j, i);
+					room3.SetTile(new WallTile(), j, i);
 				}
 			}
 		}

@@ -1,4 +1,5 @@
 package world;
+import openfl.Assets;
 import openfl.display.Bitmap;
 import openfl.display.BitmapData;
 import openfl.display.Sprite;
@@ -16,49 +17,49 @@ import world.tiles.WallTile;
 class LevelTile extends Sprite
 {
 	public var hitShape:HitShape;
-	private var tileSize:Float;
-	private var hasImg:Bool = false;
 	private var sprite:Sprite;
-	private var state:Int;
 	private var noclip:Bool;
 	
-	public function new(size:Float) 
+	public function new() 
 	{
 		super();
 		hitShape = new HitShape();
-		tileSize = size;
 		noclip = false;
 	}
 	
-	public function UsePic(assetName:String)
+	public function UsePic(assetName:String, rot:Float = 0, scaling:Float = 1.0)
 	{
-		var bmd:BitmapData = openfl.Assets.getBitmapData(assetName);
-		var bmd2:BitmapData = new BitmapData(bmd.width, bmd.height);
-		bmd2.threshold(bmd, bmd2.rect, new Point(0, 0), "==", 0xff000000, 0x00000000, 0xffffffff, true);
-		
-		var bitmap = new Bitmap(bmd2);
-		sprite = new Sprite();
-		sprite.addChild(bitmap);
-		bitmap.x -= bitmap.width * 0.5;
-		bitmap.y -= bitmap.height * 0.5;
-		bitmap.smoothing = true;
-		sprite.scaleY = sprite.scaleX = 1.0;
-		addChild(sprite);
+		if (sprite != null)
+		{
+			removeChild(sprite);
+			sprite = null;
+		}
+		try {
+			var bmd:BitmapData = Assets.getBitmapData(assetName);
+			var bmd2:BitmapData = new BitmapData(bmd.width, bmd.height);
+			bmd2.threshold(bmd, bmd2.rect, new Point(0, 0), "==", 0xff000000, 0x00000000, 0xffffffff, true);
+			
+			var bitmap = new Bitmap(bmd2);
+			sprite = new Sprite();
+			sprite.addChild(bitmap);
+			bitmap.x -= bitmap.width * 0.5;
+			bitmap.y -= bitmap.height * 0.5;
+			bitmap.smoothing = true;
+			sprite.scaleY = sprite.scaleX = scaling;
+			sprite.rotation = rot;
+			addChild(sprite);
+		} catch (msg:String) {
+			trace(msg);
+			hitShape.graphic.visible = true;
+			sprite = hitShape.graphic;
+			addChild(sprite);
+			return;
+		}
 	}
 	
 	public function Update()
 	{
 		
-	}
-	
-	public function SetState(st:Int)
-	{
-		state = st;
-	}
-	
-	public function GetState():Int
-	{
-		return state;
 	}
 	
 	public function Blink()
@@ -86,30 +87,54 @@ class LevelTile extends Sprite
 		return noclip;
 	}
 	
+	public static var size:Float = 32;
+	
 	public static function CreateTile(tileData:String):LevelTile
 	{
-		var tiletype = tileData.split(",")[0];
-		var tilepic = tileData.split(",")[1];
-		if (tiletype == "W")
+		var tileDataSplit = tileData.split(",");
+		var tileType:String = tileDataSplit[0];
+		var defaultTilePicRotation:Float = 0;
+		
+		var result:LevelTile = null;
+		
+		if (tileType == "W")
 		{
-			return new WallTile(32);
+			result = new WallTile();
 		}
-		else if (tiletype == "BL")
+		else if (tileType == "BL")
 		{
-			return new BLWallTile(32);
+			result = new BLWallTile();
+			defaultTilePicRotation = 270;
 		}
-		else if (tiletype == "BR")
+		else if (tileType == "BR")
 		{
-			return new BRWallTile(32);
+			result = new BRWallTile();
+			defaultTilePicRotation = 180;
 		}
-		else if (tiletype == "TL")
+		else if (tileType == "TL")
 		{
-			return new TLWallTile(32);
+			result = new TLWallTile();
 		}
-		else if (tiletype == "TR")
+		else if (tileType == "TR")
 		{
-			return new TRWallTile(32);
+			result = new TRWallTile();
+			defaultTilePicRotation = 90;
 		}
-		else return null;
+		
+		if (tileDataSplit.length > 3)
+		{
+			result.UsePic(tileDataSplit[1], Std.parseFloat(tileDataSplit[2]), Std.parseFloat(tileDataSplit[3]));
+		}
+		else if (tileDataSplit.length > 2)
+		{
+			result.UsePic(tileDataSplit[1], Std.parseFloat(tileDataSplit[2]));
+		}
+		else if (tileDataSplit.length > 1)
+		{
+			result.UsePic(tileDataSplit[1], defaultTilePicRotation);
+		}
+		
+		
+		return result;
 	}
 }

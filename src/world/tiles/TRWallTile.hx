@@ -7,15 +7,16 @@ package world.tiles;
 class TRWallTile extends LevelTile
 {
 
-	public function new(size:Float) 
+	public function new() 
 	{
-		super(size);
-		UsePic("img/testdiagtile.bmp");
-		sprite.rotation = 90;
+		super();
+		UsePic("img/testdiagtile.bmp", 90);
 		
-		hitShape.AddPoint( -tileSize / 2, -tileSize / 2);
-		hitShape.AddPoint( tileSize / 2, -tileSize / 2);
-		hitShape.AddPoint( tileSize / 2, tileSize / 2);
+		var size = LevelTile.size;
+		
+		hitShape.AddPoint( -size / 2, -size / 2);
+		hitShape.AddPoint( size / 2, -size / 2);
+		hitShape.AddPoint( size / 2, size / 2);
 	}
 	
 }

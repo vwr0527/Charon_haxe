@@ -25,7 +25,7 @@ class Explosion extends Entity
 	{
 		super();
 		
-		var bitmapData = Assets.getBitmapData("img/explosion1.png");
+		var bitmapData:BitmapData = Assets.getBitmapData("img/explosion1.png");
 		
 		var bitmap = new Bitmap (bitmapData.clone());
 		bitmap.bitmapData.colorTransform(bitmapData.rect, new ColorTransform(2, 2, 2, 2, 50, 50, 50, 0));

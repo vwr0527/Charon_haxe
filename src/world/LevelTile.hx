@@ -3,6 +3,11 @@ import openfl.display.Bitmap;
 import openfl.display.BitmapData;
 import openfl.display.Sprite;
 import openfl.geom.Point;
+import world.tiles.BLWallTile;
+import world.tiles.BRWallTile;
+import world.tiles.TLWallTile;
+import world.tiles.TRWallTile;
+import world.tiles.WallTile;
 
 /**
  * ...
@@ -79,5 +84,32 @@ class LevelTile extends Sprite
 	public function NoCollide() 
 	{
 		return noclip;
+	}
+	
+	public static function CreateTile(tileData:String):LevelTile
+	{
+		var tiletype = tileData.split(",")[0];
+		var tilepic = tileData.split(",")[1];
+		if (tiletype == "W")
+		{
+			return new WallTile(32);
+		}
+		else if (tiletype == "BL")
+		{
+			return new BLWallTile(32);
+		}
+		else if (tiletype == "BR")
+		{
+			return new BRWallTile(32);
+		}
+		else if (tiletype == "TL")
+		{
+			return new TLWallTile(32);
+		}
+		else if (tiletype == "TR")
+		{
+			return new TRWallTile(32);
+		}
+		else return null;
 	}
 }

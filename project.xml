@@ -20,6 +20,7 @@
 	<!-- assets -->
 	<assets path="assets/img" rename="img" />
 	<assets path="assets/fonts" rename="fonts" />
+	<assets path="assets/levels" rename="levels" />
 	
 	<!-- optimize output
 	<haxeflag name="-dce full" /> -->

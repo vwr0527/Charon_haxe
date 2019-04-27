@@ -1,5 +1,5 @@
 package world.levels;
-import openfl.Assets;
+import util.LevelParser;
 import world.Enemy;
 import world.LevelRoom;
 import world.tiles.*;
@@ -13,15 +13,7 @@ class TestLevel1
 	public var level:Level;
 	public function new() 
 	{
-		var lvldata = Assets.getText("levels/testlevel1.txt").split(",");
-		var room1parms:Array<Int> = new Array<Int>();
-		for (s in lvldata)
-		{
-			room1parms.push(Std.parseInt(s));
-		}
-		trace(room1parms);
-		
-		level = new Level();
+		level = LevelParser.LoadLevel("levels/testlevel1.txt");
 		var room = new LevelRoom(30, 17);
 		
 		for (i in 0...17)

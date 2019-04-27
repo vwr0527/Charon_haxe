@@ -91,6 +91,7 @@ class LevelTile extends Sprite
 	
 	public static function CreateTile(tileData:String):LevelTile
 	{
+		if (tileData == null) return null;
 		var tileDataSplit = tileData.split(",");
 		var tileType:String = tileDataSplit[0];
 		var defaultTilePicRotation:Float = 0;

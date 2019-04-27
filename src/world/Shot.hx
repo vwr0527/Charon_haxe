@@ -181,7 +181,7 @@ class Shot extends Entity
 			var door:DoorTile = cast(levelTile, DoorTile);
 			room.doors[door.GetID()].SetOpen(true);
 			var targetRoom:Int = room.doors[door.GetID()].targetRoom;
-			var targetDoor:Int = room.doors[door.GetID()].targetDoor;
+			var targetDoor:String = room.doors[door.GetID()].targetDoor;
 			level.rooms[targetRoom].doors[targetDoor].SetOpen(true);
 		}
 	}

@@ -1,5 +1,6 @@
 package world;
 import openfl.display.Sprite;
+import openfl.utils.Dictionary;
 import world.LevelTile;
 import world.tiles.DoorTile;
 
@@ -19,7 +20,7 @@ class LevelRoom extends Sprite
 	public var ytiles:Int;
 	
 	public var tiles:Array<Array<LevelTile>>;
-	public var doors:Array<DoorController>;
+	public var doors:Dictionary<String,DoorController>;
 	public var ents:Array<Entity>;
 	
 	public var playerSpawnX:Float;
@@ -36,7 +37,7 @@ class LevelRoom extends Sprite
 		xtiles = num_x_tiles;
 		ytiles = num_y_tiles;
 		tiles = new Array();
-		doors = new Array();
+		doors = new Dictionary<String,DoorController>();
 		ents = new Array();
 		for (i in 0...num_y_tiles)
 		{
@@ -58,14 +59,15 @@ class LevelRoom extends Sprite
 				if (tiles[i][j] != null) tiles[i][j].Update();
 			}
 		}
-		for (i in 0...doors.length)
+		for (id in doors)
 		{
-			doors[i].Update();
+			doors[id].Update();
 		}
 	}
 	
 	public function SetTile(tile:LevelTile, xi:Int, yi:Int)
 	{
+		if (tile == null) return;
 		if (tiles[yi][xi] != null) removeChild(tiles[yi][xi]);
 		tiles[yi][xi] = tile;
 		addChild(tile);
@@ -76,12 +78,9 @@ class LevelRoom extends Sprite
 	public function SetDoor(dtile:DoorTile, xi:Int, yi:Int)
 	{
 		SetTile(dtile, xi, yi);
-		var doorIndex:Int = dtile.GetID();
-		while (doors.length <= doorIndex)
-		{
-			doors.push(new DoorController());
-		}
-		doors[doorIndex].doorTiles.push(dtile);
+		var doorID:String = dtile.GetID();
+		if (!doors.exists(doorID)) doors.set(doorID, new DoorController());
+		doors[doorID].doorTiles.push(dtile);
 	}
 	
 	public function GetIndexAtX(xpos:Float):Int

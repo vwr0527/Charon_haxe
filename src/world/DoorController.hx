@@ -9,7 +9,7 @@ class DoorController
 {
 	public var doorTiles:Array<DoorTile>;
 	public var targetRoom:Int;
-	public var targetDoor:Int;
+	public var targetDoor:String;
 	public var openTime:Int;
 	public var isOpen:Bool = false;
 	public var enterDirX:Float = 0;
@@ -24,7 +24,7 @@ class DoorController
 	{
 		if (isOpen) openTime ++;
 		
-		if (openTime > 100)
+		if (openTime > 100 && isOpen)
 		{
 			SetOpen(false);
 		}
@@ -33,6 +33,7 @@ class DoorController
 	public function SetOpen(open:Bool)
 	{
 		isOpen = open;
+		trace("open" + targetDoor);
 		for (i in 0...doorTiles.length)
 		{
 			doorTiles[i].SetOpen(open);

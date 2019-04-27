@@ -3,13 +3,13 @@ package;
 import menu.DebugPage;
 import openfl.Lib;
 import openfl.display.Sprite;
+import util.LevelParser;
 import world.Camera;
 import world.Enemy;
 import world.Entity;
 import world.Level;
 import world.LevelRoom;
 import world.Shot;
-import world.levels.TestLevel1;
 import world.Player;
 
 /**
@@ -218,8 +218,7 @@ class World extends Sprite
 	
 	private function LoadLevels() 
 	{
-		var testLevel1 = new TestLevel1();
-		level = testLevel1.level;
+		level = LevelParser.LoadLevel("levels/testlevel1.txt");
 		levelDictionary.set("test", level);
 		addChild(level);
 		

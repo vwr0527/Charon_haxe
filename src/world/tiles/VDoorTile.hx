@@ -6,7 +6,7 @@ package world.tiles;
  */
 class VDoorTile extends DoorTile
 {
-	public function new(id:Int) 
+	public function new(id:String) 
 	{
 		super(true, id);
 		UsePic("img/testdoor.bmp");

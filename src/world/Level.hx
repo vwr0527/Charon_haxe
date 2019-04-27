@@ -19,7 +19,7 @@ class Level extends Sprite
 	var switchingRoom:Bool = false;
 	var switchedRoom = false;
 	
-	var targetDoor:Int;
+	var targetDoor:String;
 	var targetDoorTileIndex:Int;
 	var playerDoorOffsetX:Float;
 	var playerDoorOffsetY:Float;
@@ -101,7 +101,7 @@ class Level extends Sprite
 		return switchedRoom;
 	}
 	
-	public function CreateDoor(firstRoomIndex:Int, firstDoorIndex:Int, firstDoorTileX:Int, firstDoorTileY:Int, secondDoorIndex:Int, secondRoomIndex:Int, secondDoorTileX:Int, secondDoorTileY:Int, firstDoorOrientation:Int, doorWidth:Int)
+	public function CreateDoor(firstRoomIndex:Int, firstDoorId:String, firstDoorTileX:Int, firstDoorTileY:Int, secondDoorId:String, secondRoomIndex:Int, secondDoorTileX:Int, secondDoorTileY:Int, firstDoorOrientation:Int, doorWidth:Int)
 	{
 		//firstDoorOrientation
 		//0 = left to right
@@ -114,47 +114,47 @@ class Level extends Sprite
 		{
 			if (firstDoorOrientation == 0 || firstDoorOrientation == 2)
 			{
-				room1.SetDoor(new VDoorTile(firstDoorIndex), firstDoorTileX, firstDoorTileY + i);
-				room2.SetDoor(new VDoorTile(secondDoorIndex), secondDoorTileX, secondDoorTileY + i);
+				room1.SetDoor(new VDoorTile(firstDoorId), firstDoorTileX, firstDoorTileY + i);
+				room2.SetDoor(new VDoorTile(secondDoorId), secondDoorTileX, secondDoorTileY + i);
 			}
 			else
 			{
-				room1.SetDoor(new HDoorTile(firstDoorIndex), firstDoorTileX + i, firstDoorTileY);
-				room2.SetDoor(new HDoorTile(secondDoorIndex), secondDoorTileX + i, secondDoorTileY);
+				room1.SetDoor(new HDoorTile(firstDoorId), firstDoorTileX + i, firstDoorTileY);
+				room2.SetDoor(new HDoorTile(secondDoorId), secondDoorTileX + i, secondDoorTileY);
 			}
 		}
-		room1.doors[firstDoorIndex].targetDoor = secondDoorIndex;
-		room1.doors[firstDoorIndex].targetRoom = secondRoomIndex;
-		room2.doors[secondDoorIndex].targetDoor = firstDoorIndex;
-		room2.doors[secondDoorIndex].targetRoom = firstRoomIndex;
+		room1.doors[firstDoorId].targetDoor = secondDoorId;
+		room1.doors[firstDoorId].targetRoom = secondRoomIndex;
+		room2.doors[secondDoorId].targetDoor = firstDoorId;
+		room2.doors[secondDoorId].targetRoom = firstRoomIndex;
 		
 		if (firstDoorOrientation == 0)
 		{
-			room1.doors[firstDoorIndex].enterDirX = -1;
-			room1.doors[firstDoorIndex].enterDirY = 0;
-			room2.doors[secondDoorIndex].enterDirX = 1;
-			room2.doors[secondDoorIndex].enterDirY = 0;
+			room1.doors[firstDoorId].enterDirX = -1;
+			room1.doors[firstDoorId].enterDirY = 0;
+			room2.doors[secondDoorId].enterDirX = 1;
+			room2.doors[secondDoorId].enterDirY = 0;
 		}
 		else if (firstDoorOrientation == 1)
 		{
-			room1.doors[firstDoorIndex].enterDirX = 0;
-			room1.doors[firstDoorIndex].enterDirY = -1;
-			room2.doors[secondDoorIndex].enterDirX = 0;
-			room2.doors[secondDoorIndex].enterDirY = 1;
+			room1.doors[firstDoorId].enterDirX = 0;
+			room1.doors[firstDoorId].enterDirY = -1;
+			room2.doors[secondDoorId].enterDirX = 0;
+			room2.doors[secondDoorId].enterDirY = 1;
 		}
 		else if (firstDoorOrientation == 2)
 		{
-			room1.doors[firstDoorIndex].enterDirX = 1;
-			room1.doors[firstDoorIndex].enterDirY = 0;
-			room2.doors[secondDoorIndex].enterDirX = -1;
-			room2.doors[secondDoorIndex].enterDirY = 0;
+			room1.doors[firstDoorId].enterDirX = 1;
+			room1.doors[firstDoorId].enterDirY = 0;
+			room2.doors[secondDoorId].enterDirX = -1;
+			room2.doors[secondDoorId].enterDirY = 0;
 		}
 		else if (firstDoorOrientation == 3)
 		{
-			room1.doors[firstDoorIndex].enterDirX = 0;
-			room1.doors[firstDoorIndex].enterDirY = 1;
-			room2.doors[secondDoorIndex].enterDirX = 0;
-			room2.doors[secondDoorIndex].enterDirY = -1;
+			room1.doors[firstDoorId].enterDirX = 0;
+			room1.doors[firstDoorId].enterDirY = 1;
+			room2.doors[secondDoorId].enterDirX = 0;
+			room2.doors[secondDoorId].enterDirY = -1;
 		}
 	}
 }

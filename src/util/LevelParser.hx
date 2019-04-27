@@ -1,7 +1,10 @@
 package util;
 import openfl.Assets;
 import openfl.utils.Dictionary;
+import world.Enemy;
 import world.Level;
+import world.LevelRoom;
+import world.LevelTile;
 
 /**
  * ...
@@ -27,6 +30,7 @@ class LevelParser
 		var finishedReadingCurrentRoomDoors:Bool = false;
 		for (line in leveltext)
 		{
+			if (line.charCodeAt(line.length - 1) == 13) line = line.substr(0, line.length - 1); //remove last character if it's "\n"
 			if (line.indexOf("Tiles") != -1)
 			{
 				currentSection = "Tiles";
@@ -105,31 +109,113 @@ class LevelParser
 				if (line.indexOf(":") != -1)
 				{
 					startedReadingCurrentRoomDoors = true;
-					var splitLine = line.split(": ");
+					var splitLine = line.split(":");
+					if (splitLine[1].charAt(0) == " ") splitLine[1] = splitLine[1].substr(1); //remove first character if it's " "
 					currentDoorsDictionary.set(splitLine[0],splitLine[1]);
 				}
 				
 				continue;
 			}
 		}
-		/* verification
-		trace(tilesDictionary);
-		trace(entitiesDictionary);
-		for (r in roomsDictionary)
+		
+		var level:Level = new Level();
+		
+		var roomKeyArray:Array<String> = new Array<String>();
+		var doorLocations:Dictionary<String,Dictionary<String,Array<Int>>> = new Dictionary<String,Dictionary<String,Array<Int>>>(); // roomname, doorname, x, y
+		
+		for (roomKey in roomsDictionary)
 		{
-			trace (r);
-			for (sa in roomsDictionary[r])
+			roomKeyArray.push(roomKey);
+			var num_x_tiles:Int = roomsDictionary[roomKey][0].length;
+			var num_y_tiles:Int = roomsDictionary[roomKey].length;
+			
+			var room:LevelRoom = new LevelRoom(num_x_tiles, num_y_tiles);
+			
+			for (j in 0...num_y_tiles)
 			{
-				trace (sa);
+				for (i in 0...num_x_tiles)
+				{
+					var str_at_loc:String = roomsDictionary[roomKey][j][i];
+					
+					if (entitiesDictionary.exists(str_at_loc))
+					{
+						if (entitiesDictionary[str_at_loc] == "PlayerSpawn")
+						{
+							room.playerSpawnX = (i * LevelTile.size) + (LevelTile.size / 2);
+							room.playerSpawnY = (j * LevelTile.size) + (LevelTile.size / 2);
+						}
+						else if (entitiesDictionary[str_at_loc] == "Enemy1")
+						{
+							var enemy:Enemy = new Enemy();
+							enemy.x = (i * LevelTile.size) + (LevelTile.size / 2);
+							enemy.y = (j * LevelTile.size) + (LevelTile.size / 2);
+							enemy.age = Std.int(Math.random() * 1000);
+							room.ents.push(enemy);
+						}
+					}
+					else if (roomDoorsDictionary[roomKey].exists(str_at_loc))
+					{
+						if (!doorLocations.exists(roomKey))
+						{
+							doorLocations.set(roomKey, new Dictionary<String,Array<Int>>());
+						}
+						if (!doorLocations[roomKey].exists(str_at_loc))
+						{
+							doorLocations[roomKey].set(str_at_loc, new Array<Int>());
+						}
+						if (doorLocations[roomKey][str_at_loc].length == 0)
+						{
+							doorLocations[roomKey][str_at_loc].push(i);
+							doorLocations[roomKey][str_at_loc].push(j);
+						}
+						else
+						{
+							trace("Error, this room already has a door with that name");
+						}
+					}
+					else if (tilesDictionary.exists(str_at_loc))
+					{
+						var tileString:String = tilesDictionary[str_at_loc];
+						room.SetTile(LevelTile.CreateTile(tileString), i, j);
+					}
+				}
+			}
+			
+			level.rooms.push(room);
+		}
+		
+		for (rmname in roomDoorsDictionary)
+		{
+			for (drname in roomDoorsDictionary[rmname])
+			{
+				if (roomDoorsDictionary[rmname][drname] != null)
+				{
+					var firstDoorInfo = roomDoorsDictionary[rmname][drname].split(",");
+					
+					if (firstDoorInfo.length != 4) continue;
+					
+					var firstRoomIndex = roomKeyArray.indexOf(rmname);
+					var firstDoorId = drname;
+					var firstDoorTileX = doorLocations[rmname][drname][0];
+					var firstDoorTileY = doorLocations[rmname][drname][1];
+					var secondDoorId = firstDoorInfo[1];
+					var secondRoomIndex = roomKeyArray.indexOf(firstDoorInfo[0]);
+					var secondDoorTileX = doorLocations[firstDoorInfo[0]][secondDoorId][0];
+					var secondDoorTileY = doorLocations[firstDoorInfo[0]][secondDoorId][1];
+					var firstDoorOrientation = 0;
+					if (firstDoorInfo[2] == "Right") firstDoorOrientation = 0;
+					else if (firstDoorInfo[2] == "Down") firstDoorOrientation = 1;
+					else if (firstDoorInfo[2] == "Left") firstDoorOrientation = 2;
+					else if (firstDoorInfo[2] == "Up") firstDoorOrientation = 3;
+					var doorWidth = Std.parseInt(firstDoorInfo[3]);
+					level.CreateDoor(firstRoomIndex, firstDoorId, firstDoorTileX, firstDoorTileY, secondDoorId, secondRoomIndex, secondDoorTileX, secondDoorTileY, firstDoorOrientation, doorWidth);
+				}
 			}
 		}
-		for (rn in roomDoorsDictionary)
-		{
-			trace (rn);
-			trace (roomDoorsDictionary[rn]);
-		}
-		*/
 		
-		return new Level();
+		level.currentRoom = level.rooms[0];
+		level.addChild(level.currentRoom);
+		
+		return level;
 	}
 }

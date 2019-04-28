@@ -202,11 +202,7 @@ class LevelParser
 					var secondRoomIndex = roomKeyArray.indexOf(firstDoorInfo[0]);
 					var secondDoorTileX = doorLocations[firstDoorInfo[0]][secondDoorId][0];
 					var secondDoorTileY = doorLocations[firstDoorInfo[0]][secondDoorId][1];
-					var firstDoorOrientation = 0;
-					if (firstDoorInfo[2] == "Right") firstDoorOrientation = 0;
-					else if (firstDoorInfo[2] == "Down") firstDoorOrientation = 1;
-					else if (firstDoorInfo[2] == "Left") firstDoorOrientation = 2;
-					else if (firstDoorInfo[2] == "Up") firstDoorOrientation = 3;
+					var firstDoorOrientation = firstDoorInfo[2];
 					var doorWidth = Std.parseInt(firstDoorInfo[3]);
 					level.CreateDoor(firstRoomIndex, firstDoorId, firstDoorTileX, firstDoorTileY, secondDoorId, secondRoomIndex, secondDoorTileX, secondDoorTileY, firstDoorOrientation, doorWidth);
 				}

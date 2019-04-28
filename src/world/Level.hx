@@ -101,18 +101,13 @@ class Level extends Sprite
 		return switchedRoom;
 	}
 	
-	public function CreateDoor(firstRoomIndex:Int, firstDoorId:String, firstDoorTileX:Int, firstDoorTileY:Int, secondDoorId:String, secondRoomIndex:Int, secondDoorTileX:Int, secondDoorTileY:Int, firstDoorOrientation:Int, doorWidth:Int)
+	public function CreateDoor(firstRoomIndex:Int, firstDoorId:String, firstDoorTileX:Int, firstDoorTileY:Int, secondDoorId:String, secondRoomIndex:Int, secondDoorTileX:Int, secondDoorTileY:Int, firstDoorOrientation:String, doorWidth:Int)
 	{
-		//firstDoorOrientation
-		//0 = left to right
-		//1 = up to down
-		//2 = right to left
-		//3 = down to up
 		var room1 = rooms[firstRoomIndex];
 		var room2 = rooms[secondRoomIndex];
 		for (i in 0...doorWidth)
 		{
-			if (firstDoorOrientation == 0 || firstDoorOrientation == 2)
+			if (firstDoorOrientation == "Right" || firstDoorOrientation == "Left")
 			{
 				room1.SetDoor(new VDoorTile(firstDoorId), firstDoorTileX, firstDoorTileY + i);
 				room2.SetDoor(new VDoorTile(secondDoorId), secondDoorTileX, secondDoorTileY + i);
@@ -128,28 +123,28 @@ class Level extends Sprite
 		room2.doors[secondDoorId].targetDoor = firstDoorId;
 		room2.doors[secondDoorId].targetRoom = firstRoomIndex;
 		
-		if (firstDoorOrientation == 0)
+		if (firstDoorOrientation == "Right")
 		{
 			room1.doors[firstDoorId].enterDirX = -1;
 			room1.doors[firstDoorId].enterDirY = 0;
 			room2.doors[secondDoorId].enterDirX = 1;
 			room2.doors[secondDoorId].enterDirY = 0;
 		}
-		else if (firstDoorOrientation == 1)
+		else if (firstDoorOrientation == "Down")
 		{
 			room1.doors[firstDoorId].enterDirX = 0;
 			room1.doors[firstDoorId].enterDirY = -1;
 			room2.doors[secondDoorId].enterDirX = 0;
 			room2.doors[secondDoorId].enterDirY = 1;
 		}
-		else if (firstDoorOrientation == 2)
+		else if (firstDoorOrientation == "Left")
 		{
 			room1.doors[firstDoorId].enterDirX = 1;
 			room1.doors[firstDoorId].enterDirY = 0;
 			room2.doors[secondDoorId].enterDirX = -1;
 			room2.doors[secondDoorId].enterDirY = 0;
 		}
-		else if (firstDoorOrientation == 3)
+		else if (firstDoorOrientation == "Up")
 		{
 			room1.doors[firstDoorId].enterDirX = 0;
 			room1.doors[firstDoorId].enterDirY = 1;

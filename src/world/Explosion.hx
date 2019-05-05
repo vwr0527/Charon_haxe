@@ -14,8 +14,8 @@ import openfl.display.Bitmap;
 class Explosion extends Entity 
 {
 	public var age:Float = 0;
-	public var speed:Float = 0.5;
-	public var scale:Float = 1.15;
+	public var speed:Float = 0.15;
+	public var scale:Float = 1.8;
 	
 	private var bang:Sprite;
 	private var med:Sprite;
@@ -61,16 +61,16 @@ class Explosion extends Entity
 	{
 		super.Update(Spawn);
 		
-		dark.scaleX = dark.scaleY = (1.5 + (age / 10));
-		dark.alpha = (10 - age) / 10;
+		dark.scaleX = dark.scaleY = (1.5 + (age / 5));
+		dark.alpha = (10 - age) / 15;
 		if (dark.alpha < 0) dark.visible = false;
 		
-		med.alpha = (10 - age) / 10;
-		med.scaleX = med.scaleY = 1 - (age * 0.03);
+		med.alpha = (6 - age) / 5;
+		med.scaleX = med.scaleY = 1.2 - (age * 0.05);
 		if (med.alpha < 0) med.visible = false;
 		
-		bang.alpha = 1 - (age * 0.75);
-		bang.scaleX = bang.scaleY = 1.2 - (age * 0.1);
+		bang.alpha = 1 - (age * 0.55);
+		bang.scaleX = bang.scaleY = 2.2 - (age * 0.7);
 		if (bang.alpha < 0) bang.visible = false;
 		
 		if (age >= 10)
@@ -78,6 +78,6 @@ class Explosion extends Entity
 			active = false;
 		}
 		
-		age += speed;
+		age += speed * t;
 	}
 }

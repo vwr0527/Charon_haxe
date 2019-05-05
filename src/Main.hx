@@ -1,5 +1,6 @@
 package;
 
+import openfl.ui.Mouse;
 import openfl.display.Sprite;
 import openfl.events.Event;
 import openfl.events.TimerEvent;
@@ -49,6 +50,8 @@ class Main extends Sprite
 		frameTimer = new Timer(1000/TargetFPS);
 		frameTimer.addEventListener(TimerEvent.TIMER, Update);
 		if (!EnterFrameMode) frameTimer.start();
+		
+		Mouse.hide();
 	}
 	
 	public function Update(e)
@@ -57,7 +60,15 @@ class Main extends Sprite
 		
 		if (calculatingFPS) return;
 		
-		if (!menu.isActive()) world.Update();
+		if (!menu.isActive())
+		{
+			Mouse.hide();
+			world.Update();
+		}
+		else
+		{
+			Mouse.show();
+		}
 		menu.Update();
 		input.Update();
 	}

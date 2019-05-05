@@ -20,13 +20,13 @@ class Enemy extends Entity
 	private var shotSpeed = 45;
 	private var shotStartDist = 0.65;
 	private var shotSpread = 4;
-	public var age:Int = 0;
-	public var hp:Int = 10;
+	public var age:Float = 0;
+	public var hp:Float = 10;
 	
 	public function new() 
 	{
 		super();
-		hitbox.MakeSquare(30);
+		hitbox.MakeSquare(50);
 		//showHitbox = true;
 		
 		var bitmapData = openfl.Assets.getBitmapData("img/enemy01.png");
@@ -36,35 +36,37 @@ class Enemy extends Entity
 		sprite.addChild(bitmap);
 		bitmap.x -= bitmap.width * 0.5;
 		bitmap.y -= bitmap.height * 0.6;
-		sprite.scaleX = sprite.scaleY = 0.7;
+		sprite.scaleX = sprite.scaleY = 1;
 		bitmap.smoothing = true;
 		
 		addChild(sprite);
 		
 		rf = 0.2;//0.8;
-		tf = 0.01;//0.98;
+		tf = 0.005;//0.98;
 	}
 	
 	public override function Update(Spawn:Function)
 	{
 		super.Update(Spawn);
-		++age;
+		age += t;
 		
-		if (age % 100 < 50)
+		var speed = t * 0.05;
+		
+		if (Std.int(age) % 100 < 50)
 		{
-			xv += 0.1;
+			xv += speed;
 		}
 		else
 		{
-			xv -= 0.1;
+			xv -= speed;
 		}
-		if (age % 100 < 75 && age % 100 > 25)
+		if (Std.int(age) % 100 < 75 && Std.int(age) % 100 > 25)
 		{
-			yv += 0.1;
+			yv += speed;
 		}
 		else
 		{
-			yv -= 0.1;
+			yv -= speed;
 		}
 		SpawnFcn = Spawn;
 	}

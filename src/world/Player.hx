@@ -38,14 +38,14 @@ class Player extends Entity
 		addChild(sprite);
 		
 		rf = 0.2;//0.8;
-		tf = 0.01;//0.98;
+		tf = 0.0075;//0.98;
 	}
 	
 	public override function Update(Spawn:Function)
 	{
 		super.Update(Spawn);
 		
-		var speed = 0.4 * t;
+		var speed = 0.175 * t;
 		if (Input.KeyHeld(65))
 		{
 			xv -= speed;

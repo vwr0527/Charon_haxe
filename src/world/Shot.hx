@@ -54,6 +54,7 @@ class Shot extends Entity
 		
 		laserSprite.visible = false;
 		hitSprite.visible = true;
+		hitSprite.rotation = Math.random() * 360;
 		
 		hitbox.AddPoint(0, 0);
 		elasticity = 1;
@@ -69,6 +70,7 @@ class Shot extends Entity
 		{
 			laserSprite.visible = false;
 			hitSprite.visible = true;
+			hitSprite.rotation = Math.random() * 360;
 			shotHitAnim -= 1.0;
 			hitSprite.scaleX = hitSprite.scaleY = shotHitAnim * 0.2;
 			if (shotHitAnim < 0)

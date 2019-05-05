@@ -7,6 +7,7 @@ import util.LevelParser;
 import world.Camera;
 import world.Enemy;
 import world.Entity;
+import world.Explosion;
 import world.Level;
 import world.LevelRoom;
 import world.Shot;
@@ -20,6 +21,11 @@ class World extends Sprite
 {
 	private var paused:Bool;
 	private var camera:Camera;
+	private var shake:Float;
+	private var cross1:Crosshair;
+	private var cross2:Crosshair;
+	private var cross3:Crosshair;
+	private var crossi:Crosshair;
 	private var player:Player;
 	private var entityList:Array<Entity>;
 	private var playerShots:Array<Shot>;
@@ -54,6 +60,22 @@ class World extends Sprite
 		camera = new Camera();
 		MoveWorldToCamera();
 		
+		cross1 = new Crosshair();
+		cross1.CreatePrimaryCrosshair();
+		addChild(cross1);
+		
+		cross2 = new Crosshair();
+		cross2.CreateSecondaryCrosshair();
+		addChild(cross2);
+		
+		cross3 = new Crosshair();
+		cross3.CreateTertiaryCrosshair();
+		addChild(cross3);
+		
+		crossi = new Crosshair();
+		
+		shake = 0.0;
+		
 		levelDictionary = new Map();
 		LoadLevels();
 		
@@ -66,6 +88,20 @@ class World extends Sprite
 	{
 		MoveWorldToCamera();
 		MoveCameraToPlayer();
+		cross1.x = mouseX;
+		cross1.y = mouseY;
+		cross2.x = (mouseX + player.x) / 2;
+		cross2.y = (mouseY + player.y) / 2;
+		cross3.x = (mouseX + player.x) / 2;
+		cross3.y = (mouseY + player.y) / 2;
+		cross3.scaleY = Math.sqrt( Math.pow(mouseX - player.x, 2) + Math.pow(mouseY - player.y, 2)) / 40;
+		cross3.rotation = ((180 * Math.atan2(mouseY - player.y, mouseX - player.x)) / Math.PI) + 90;
+		cross1.rotation = cross3.rotation + 45;
+		crossi.x += (((mouseX + player.x) / 2) - crossi.x) / 20;
+		crossi.y += (((mouseY + player.y) / 2) - crossi.y) / 20;
+		camera.zoom = 1 - Math.max(0, ((Math.sqrt( Math.pow(crossi.x - player.x, 2) + Math.pow(crossi.y - player.y, 2)) / 2000)) - 0.02);
+		
+		shake *= 0.8;
 		
 		if (paused) return;
 		
@@ -137,6 +173,8 @@ class World extends Sprite
 			player.y = level.SwitchRoomPlayerPosY();
 			camera.x = player.x;
 			camera.y = player.y;
+			crossi.x = player.x;
+			crossi.y = player.y;
 			MoveWorldToCamera();
 			
 			StoreEntsInRoom(level.previousRoom);
@@ -190,6 +228,11 @@ class World extends Sprite
 		{
 			newEntities.push(newEnt);
 			addChild(newEnt);
+			
+			if (Std.is(newEnt, Explosion))
+			{
+				shake += 12.0;
+			}
 		}
 	}
 	
@@ -205,9 +248,12 @@ class World extends Sprite
 	
 	private function MoveWorldToCamera()
 	{
-		this.x = -camera.x + Lib.application.window.width / 2;
-		this.y = -camera.y + Lib.application.window.height / 2;
+		this.x = (-camera.x * camera.zoom) + Lib.application.window.width / 2;
+		this.y = (-camera.y * camera.zoom) + Lib.application.window.height / 2;
 		this.scaleX = this.scaleY = camera.zoom * (Lib.application.window.height / 540);
+		
+		this.x += (Math.random() * shake) - (shake / 2);
+		this.y += (Math.random() * shake) - (shake / 2);
 	}
 	
 	private function MoveCameraToPlayer() 
@@ -227,6 +273,8 @@ class World extends Sprite
 		
 		camera.x = player.x;
 		camera.y = player.y;
+		crossi.x = player.x;
+		crossi.y = player.y;
 		
 		MoveWorldToCamera();
 	}

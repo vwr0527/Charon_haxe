@@ -135,7 +135,6 @@ class LevelTile extends Sprite
 			result.UsePic(tileDataSplit[1], defaultTilePicRotation);
 		}
 		
-		
 		return result;
 	}
 }

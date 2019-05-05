@@ -86,23 +86,6 @@ class World extends Sprite
 	
 	public function Update()
 	{
-		MoveWorldToCamera();
-		MoveCameraToPlayer();
-		cross1.x = mouseX;
-		cross1.y = mouseY;
-		cross2.x = (mouseX + player.x) / 2;
-		cross2.y = (mouseY + player.y) / 2;
-		cross3.x = (mouseX + player.x) / 2;
-		cross3.y = (mouseY + player.y) / 2;
-		cross3.scaleY = Math.sqrt( Math.pow(mouseX - player.x, 2) + Math.pow(mouseY - player.y, 2)) / 40;
-		cross3.rotation = ((180 * Math.atan2(mouseY - player.y, mouseX - player.x)) / Math.PI) + 90;
-		cross1.rotation = cross3.rotation + 45;
-		crossi.x += (((mouseX + player.x) / 2) - crossi.x) / 20;
-		crossi.y += (((mouseY + player.y) / 2) - crossi.y) / 20;
-		camera.zoom = 1 - Math.max(0, ((Math.sqrt( Math.pow(crossi.x - player.x, 2) + Math.pow(crossi.y - player.y, 2)) / 2000)) - 0.02);
-		
-		shake *= 0.8;
-		
 		if (paused) return;
 		
 		player.LookAt(mouseX, mouseY);
@@ -147,6 +130,7 @@ class World extends Sprite
 			--i;
 		}
 		DebugPage.entcount = entityList.length;
+		
 		i = enemyList.length - 1;
 		while (i >= 0)
 		{
@@ -156,6 +140,7 @@ class World extends Sprite
 			}
 			--i;
 		}
+		
 		i = playerShots.length - 1;
 		while (i >= 0)
 		{
@@ -167,20 +152,36 @@ class World extends Sprite
 		}
 		
 		level.Update();
+		
+		cross1.x = mouseX;
+		cross1.y = mouseY;
+		cross2.x = (mouseX + player.x) / 2;
+		cross2.y = (mouseY + player.y) / 2;
+		cross3.x = (mouseX + player.x) / 2;
+		cross3.y = (mouseY + player.y) / 2;
+		cross3.scaleY = Math.sqrt( Math.pow(mouseX - player.x, 2) + Math.pow(mouseY - player.y, 2)) / 40;
+		cross3.rotation = ((180 * Math.atan2(mouseY - player.y, mouseX - player.x)) / Math.PI) + 90;
+		cross1.rotation = cross3.rotation + 45;
+		crossi.x += (((mouseX + player.x) / 2) - crossi.x) / 20;
+		crossi.y += (((mouseY + player.y) / 2) - crossi.y) / 20;
+		
 		if (level.SwitchedRoom())
 		{
+			var playerDeltaX = player.x;
+			var playerDeltaY = player.y;
 			player.x = level.SwitchRoomPlayerPosX();
 			player.y = level.SwitchRoomPlayerPosY();
-			camera.x = player.x;
-			camera.y = player.y;
-			crossi.x = player.x;
-			crossi.y = player.y;
-			MoveWorldToCamera();
+			playerDeltaX -= player.x;
+			playerDeltaY -= player.y;
+			crossi.x -= playerDeltaX;
+			crossi.y -= playerDeltaY;
 			
 			StoreEntsInRoom(level.previousRoom);
 			RemoveAllEnts();
 			LoadEntsFromRoom(level.currentRoom);
 		}
+		MoveCamera();
+		MoveWorldToCamera();
 	}
 	
 	function RemoveAllEnts() 
@@ -251,15 +252,18 @@ class World extends Sprite
 		this.x = (-camera.x * camera.zoom) + Lib.application.window.width / 2;
 		this.y = (-camera.y * camera.zoom) + Lib.application.window.height / 2;
 		this.scaleX = this.scaleY = camera.zoom * (Lib.application.window.height / 540);
-		
-		this.x += (Math.random() * shake) - (shake / 2);
-		this.y += (Math.random() * shake) - (shake / 2);
 	}
 	
-	private function MoveCameraToPlayer() 
+	private function MoveCamera() 
 	{
-		camera.x += (player.x - camera.x) / 20;
-		camera.y += (player.y - camera.y) / 20;
+		camera.x = (crossi.x + player.x) / 2;
+		camera.y = (crossi.y + player.y) / 2;
+		
+		camera.zoom = Math.max(1 - Math.max(0, ((Math.sqrt( Math.pow(crossi.x - player.x, 2) + Math.pow(crossi.y - player.y, 2)) / 2000)) - 0.1), 0.75);
+		camera.x += (Math.random() * shake) - (shake / 2);
+		camera.y += (Math.random() * shake) - (shake / 2);
+		
+		shake *= 0.8;
 	}
 	
 	private function LoadLevels() 

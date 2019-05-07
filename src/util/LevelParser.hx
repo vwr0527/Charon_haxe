@@ -212,6 +212,8 @@ class LevelParser
 		level.currentRoom = level.rooms[0];
 		level.addChild(level.currentRoom);
 		
+		level.AddBg();
+		
 		return level;
 	}
 }

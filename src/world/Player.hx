@@ -46,6 +46,7 @@ class Player extends Entity
 		super.Update(Spawn);
 		
 		var speed = 0.175 * t;
+		var boostSpeed = 0.4 * t;
 		if (Input.KeyHeld(65))
 		{
 			xv -= speed;
@@ -61,6 +62,12 @@ class Player extends Entity
 		if (Input.KeyHeld(83))
 		{
 			yv += speed;
+		}
+		if (Input.KeyHeld(16))
+		{
+			xv += boostSpeed * (Math.sin((180-rotation) * (Math.PI / 180)));
+			yv += boostSpeed * (Math.cos((180 - rotation) * (Math.PI / 180)));
+			World.shake += 0.3;
 		}
 		if (Input.MouseHeld() && shootCooldown > shootRate)
 		{

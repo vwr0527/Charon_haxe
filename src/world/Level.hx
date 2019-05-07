@@ -1,4 +1,5 @@
 package world;
+import openfl.Lib;
 import openfl.display.Sprite;
 import world.LevelRoom;
 import world.tiles.DoorTile;
@@ -23,11 +24,14 @@ class Level extends Sprite
 	var targetDoorTileIndex:Int;
 	var playerDoorOffsetX:Float;
 	var playerDoorOffsetY:Float;
+	
+	var bgElements:Array<BackgroundElement>;
 
 	public function new() 
 	{
 		super();
 		rooms = new Array();
+		bgElements = new Array();
 	}
 	
 	public function Update()
@@ -42,6 +46,25 @@ class Level extends Sprite
 			addChild(currentRoom);
 			switchedRoom = true;
 		}
+	}
+	
+	public function UpdateBG()
+	{
+		for (bge in bgElements)
+		{
+			bge.scaleX = (1 / parent.scaleX);
+			bge.scaleY = (1 / parent.scaleY);
+			bge.x = ((Lib.application.window.width / 2) - parent.x) * bge.scaleX;
+			bge.y = ((Lib.application.window.height / 2) - parent.y) * bge.scaleY;
+		}
+	}
+	
+	public function AddBg()
+	{
+		var bg:BackgroundElement = new BackgroundElement();
+		bg.UsePic("img/testbg.png", 0, 1.5);
+		addChildAt(bg, 0);
+		bgElements.push(bg);
 	}
 	
 	public function StartRoom():LevelRoom

@@ -21,7 +21,7 @@ class World extends Sprite
 {
 	private var paused:Bool;
 	private var camera:Camera;
-	private var shake:Float;
+	public static var shake:Float;
 	private var cross1:Crosshair;
 	private var cross2:Crosshair;
 	private var cross3:Crosshair;
@@ -182,6 +182,7 @@ class World extends Sprite
 		}
 		MoveCamera();
 		MoveWorldToCamera();
+		level.UpdateBG();
 	}
 	
 	function RemoveAllEnts() 
@@ -270,7 +271,7 @@ class World extends Sprite
 	{
 		level = LevelParser.LoadLevel("levels/testlevel1.txt");
 		levelDictionary.set("test", level);
-		addChild(level);
+		addChildAt(level, 0);
 		
 		player.x = level.StartRoom().playerSpawnX;
 		player.y = level.StartRoom().playerSpawnY;
@@ -281,5 +282,6 @@ class World extends Sprite
 		crossi.y = player.y;
 		
 		MoveWorldToCamera();
+		level.UpdateBG();
 	}
 }

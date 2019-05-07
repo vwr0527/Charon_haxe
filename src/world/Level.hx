@@ -52,19 +52,54 @@ class Level extends Sprite
 	{
 		for (bge in bgElements)
 		{
-			bge.scaleX = (1 / parent.scaleX);
-			bge.scaleY = (1 / parent.scaleY);
-			bge.x = ((Lib.application.window.width / 2) - parent.x) * bge.scaleX;
-			bge.y = ((Lib.application.window.height / 2) - parent.y) * bge.scaleY;
+			bge.scaleX = PickBetweenRatio(1 / parent.scaleX, 1, bge.dist);
+			bge.scaleY = PickBetweenRatio(1 / parent.scaleY, 1, bge.dist);
+			bge.x = PickBetweenRatio(((Lib.application.window.width / 2) - parent.x) * bge.scaleX, bge.xpos, bge.dist);
+			bge.y = PickBetweenRatio(((Lib.application.window.height / 2) - parent.y) * bge.scaleY, bge.ypos, bge.dist);
 		}
 	}
 	
 	public function AddBg()
 	{
 		var bg:BackgroundElement = new BackgroundElement();
+		bg.dist = 0.0;
+		bg.xpos = Lib.application.window.width / 2;
+		bg.ypos = Lib.application.window.height / 2;
 		bg.UsePic("img/testbg.png", 0, 1.5);
 		addChildAt(bg, 0);
 		bgElements.push(bg);
+		
+		var bg2:BackgroundElement = new BackgroundElement();
+		bg2.dist = 0.1;
+		bg2.xpos = (Lib.application.window.width / 2) + 1200;
+		bg2.ypos = (Lib.application.window.height / 2) + 400;
+		bg2.UsePic("img/spacerock-1.png", 400, 0.2);
+		addChildAt(bg2, 1);
+		bgElements.push(bg2);
+		
+		var bg3:BackgroundElement = new BackgroundElement();
+		bg3.dist = 0.2;
+		bg3.xpos = (Lib.application.window.width / 2) - 350;
+		bg3.ypos = (Lib.application.window.height / 2) + 500;
+		bg3.UsePic("img/spacerock-1.png", 300, 0.3);
+		addChildAt(bg3, 2);
+		bgElements.push(bg3);
+		
+		var bg4:BackgroundElement = new BackgroundElement();
+		bg4.dist = 0.3;
+		bg4.xpos = (Lib.application.window.width / 2) - 1000;
+		bg4.ypos = (Lib.application.window.height / 2) - 150;
+		bg4.UsePic("img/spacerock-1.png", 200, 0.4);
+		addChildAt(bg4, 3);
+		bgElements.push(bg4);
+		
+		var bg5:BackgroundElement = new BackgroundElement();
+		bg5.dist = 0.4;
+		bg5.xpos = (Lib.application.window.width / 2) + 200;
+		bg5.ypos = (Lib.application.window.height / 2) - 300;
+		bg5.UsePic("img/spacerock-1.png", 100, 0.5);
+		addChildAt(bg5, 4);
+		bgElements.push(bg5);
 	}
 	
 	public function StartRoom():LevelRoom
@@ -174,5 +209,10 @@ class Level extends Sprite
 			room2.doors[secondDoorId].enterDirX = 0;
 			room2.doors[secondDoorId].enterDirY = -1;
 		}
+	}
+	
+	function PickBetweenRatio(a:Float, b:Float, ratio:Float):Float
+	{
+		return a + ((b - a) * ratio);
 	}
 }

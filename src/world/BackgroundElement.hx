@@ -14,11 +14,15 @@ class BackgroundElement extends Sprite
 {
 	var sprite:Sprite;
 	public var dist:Float;
+	public var xpos:Float;
+	public var ypos:Float;
 
 	public function new() 
 	{
 		super();
 		dist = 0;
+		xpos = 0;
+		ypos = 0;
 	}
 	
 	public function UsePic(assetName:String, rot:Float = 0, scaling:Float = 1.0)

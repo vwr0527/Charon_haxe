@@ -176,6 +176,8 @@ class World extends Sprite
 			crossi.x -= playerDeltaX;
 			crossi.y -= playerDeltaY;
 			
+			level.BgSwitchRoom(playerDeltaX, playerDeltaY);
+			
 			StoreEntsInRoom(level.previousRoom);
 			RemoveAllEnts();
 			LoadEntsFromRoom(level.currentRoom);

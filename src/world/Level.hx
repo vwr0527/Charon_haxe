@@ -102,6 +102,15 @@ class Level extends Sprite
 		bgElements.push(bg5);
 	}
 	
+	public function BgSwitchRoom(deltaX:Float, deltaY:Float)
+	{
+		for (bge in bgElements)
+		{
+			bge.xpos -= deltaX;
+			bge.ypos -= deltaY;
+		}
+	}
+	
 	public function StartRoom():LevelRoom
 	{
 		return rooms[0];

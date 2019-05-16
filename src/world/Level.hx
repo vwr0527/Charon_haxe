@@ -52,8 +52,8 @@ class Level extends Sprite
 	{
 		for (bge in bgElements)
 		{
-			bge.scaleX = PickBetweenRatio(1 / parent.scaleX, 1, bge.dist);
-			bge.scaleY = bge.scaleX;
+			//bge.scaleX = 1; //1 / parent.scaleX; //PickBetweenRatio(1 / parent.scaleX, 1, bge.dist);
+			//bge.scaleY = bge.scaleX;
 			bge.x = PickBetweenRatio(((Lib.application.window.width / 2) - parent.x) * (1 / parent.scaleX), bge.xpos, bge.dist);
 			bge.y = PickBetweenRatio(((Lib.application.window.height / 2) - parent.y) * (1 / parent.scaleX), bge.ypos, bge.dist);
 		}
@@ -65,7 +65,7 @@ class Level extends Sprite
 		bg.dist = 0.0;
 		bg.xpos = Lib.application.window.width / 2;
 		bg.ypos = Lib.application.window.height / 2;
-		bg.UsePic("img/testbg.png", 0, 1.5);
+		bg.UsePic("img/testbg.png", 0, 2);
 		addChildAt(bg, 0);
 		bgElements.push(bg);
 		

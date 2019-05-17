@@ -62,7 +62,6 @@ class Entity extends Sprite
 	
 	public function LevelCollide(level:Level)
 	{
-		var room:LevelRoom = level.currentRoom;
 		CollideLevelTiles(level);
 		CollideLevelBorders(level);
 	}
@@ -117,14 +116,14 @@ class Entity extends Sprite
 			{
 				for (j in xmin...xmax + 1)
 				{
-					if (room.tiles[i][j] == null) continue;
+					if (room.tiles[i][j] == null || room.tiles[i][j].hitShape == null) continue;
 					else
 					{
 						if (hitbox.RectOverlap(px, py, room.tiles[i][j].x, room.tiles[i][j].y, room.tiles[i][j].hitShape))
 						{
 							HitTile(room.tiles[i][j], level);
 						}
-						else if (!room.tiles[i][j].NoCollide())
+						else if (!room.tiles[i][j].noclip)
 						{
 							var collisionResult:CollisionResult = hitbox.Collide(room.tiles[i][j].x - x, room.tiles[i][j].y - y, x - tpx, y - tpy, room.tiles[i][j].hitShape);
 							if (collisionResult.movefraction < lowestMoveFraction)

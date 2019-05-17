@@ -130,7 +130,7 @@ class Shot extends Entity
 			{
 				for (j in xmin...xmax + 1)
 				{
-					if (room.tiles[i][j] == null) continue;
+					if (room.tiles[i][j] == null || room.tiles[i][j].hitShape == null) continue;
 					else
 					{
 						if (room.tiles[i][j].PointInside(tpx, tpy))

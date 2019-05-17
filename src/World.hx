@@ -21,11 +21,6 @@ class World extends Sprite
 {
 	private var paused:Bool;
 	private var camera:Camera;
-	public static var shake:Float;
-	private var cross1:Crosshair;
-	private var cross2:Crosshair;
-	private var cross3:Crosshair;
-	private var crossi:Crosshair;
 	private var player:Player;
 	private var entityList:Array<Entity>;
 	private var playerShots:Array<Shot>;
@@ -40,7 +35,18 @@ class World extends Sprite
 	private var shotLayer:Sprite;
 	private var levelLayer:Sprite;
 	
+	private var cross1:Crosshair;
+	private var cross2:Crosshair;
+	private var cross3:Crosshair;
+	private var crossi:Crosshair;
+	private var blinder_left:Sprite;
+	private var blinder_right:Sprite;
+	private var blinder_up:Sprite;
+	private var blinder_down:Sprite;
+	
 	private var entMax = 4000;
+	
+	public static var shake:Float;
 	
 	public function new() 
 	{
@@ -60,19 +66,8 @@ class World extends Sprite
 		camera = new Camera();
 		MoveWorldToCamera();
 		
-		cross1 = new Crosshair();
-		cross1.CreatePrimaryCrosshair();
-		addChild(cross1);
-		
-		cross2 = new Crosshair();
-		cross2.CreateSecondaryCrosshair();
-		addChild(cross2);
-		
-		cross3 = new Crosshair();
-		cross3.CreateTertiaryCrosshair();
-		addChild(cross3);
-		
-		crossi = new Crosshair();
+		CreateCrosshairs();
+		CreateBlinders();
 		
 		shake = 0.0;
 		
@@ -82,6 +77,7 @@ class World extends Sprite
 		addChild(player);
 		
 		LoadEntsFromRoom(level.currentRoom);
+		AdjustBlinders(level.currentRoom);
 	}
 	
 	public function Update()
@@ -90,12 +86,14 @@ class World extends Sprite
 		
 		player.LookAt(mouseX, mouseY);
 		
+		// Update all Ents, Ents collide with Level
 		for (ent in entityList)
 		{
 			ent.Update(Spawn);
 			ent.LevelCollide(level);
 		}
 		
+		// Update Enemy AI and enemy hit detection
 		for (enemy in enemyList)
 		{
 			enemy.LookAt(player.x, player.y);
@@ -105,6 +103,7 @@ class World extends Sprite
 			}
 		}
 		
+		// Spawn new Ents, and put them in the right list
 		for (ent in newEntities)
 		{
 			if (Std.is(ent, Enemy))
@@ -119,6 +118,7 @@ class World extends Sprite
 		}
 		newEntities = new Array();
 		
+		// Delete inactive Ents
 		var i = entityList.length - 1;
 		while (i >= 0)
 		{
@@ -131,6 +131,7 @@ class World extends Sprite
 		}
 		DebugPage.entcount = entityList.length;
 		
+		// Delete inactive Enemies from Enemy list
 		i = enemyList.length - 1;
 		while (i >= 0)
 		{
@@ -141,6 +142,7 @@ class World extends Sprite
 			--i;
 		}
 		
+		// Delete inactive Shots from Shot list
 		i = playerShots.length - 1;
 		while (i >= 0)
 		{
@@ -153,35 +155,13 @@ class World extends Sprite
 		
 		level.Update();
 		
-		cross1.x = mouseX;
-		cross1.y = mouseY;
-		cross2.x = (mouseX + player.x) / 2;
-		cross2.y = (mouseY + player.y) / 2;
-		cross3.x = (mouseX + player.x) / 2;
-		cross3.y = (mouseY + player.y) / 2;
-		cross3.scaleY = Math.sqrt( Math.pow(mouseX - player.x, 2) + Math.pow(mouseY - player.y, 2)) / 40;
-		cross3.rotation = ((180 * Math.atan2(mouseY - player.y, mouseX - player.x)) / Math.PI) + 90;
-		cross1.rotation = cross3.rotation + 45;
-		crossi.x += (((mouseX + player.x) / 2) - crossi.x) / 20;
-		crossi.y += (((mouseY + player.y) / 2) - crossi.y) / 20;
+		UpdateCrosshairs();
 		
 		if (level.SwitchedRoom())
 		{
-			var playerDeltaX = player.x;
-			var playerDeltaY = player.y;
-			player.x = level.SwitchRoomPlayerPosX();
-			player.y = level.SwitchRoomPlayerPosY();
-			playerDeltaX -= player.x;
-			playerDeltaY -= player.y;
-			crossi.x -= playerDeltaX;
-			crossi.y -= playerDeltaY;
-			
-			level.BgSwitchRoom(playerDeltaX, playerDeltaY);
-			
-			StoreEntsInRoom(level.previousRoom);
-			RemoveAllEnts();
-			LoadEntsFromRoom(level.currentRoom);
+			SwitchRoom();
 		}
+		
 		MoveCamera();
 		MoveWorldToCamera();
 		level.UpdateBG();
@@ -262,7 +242,7 @@ class World extends Sprite
 		camera.x = (crossi.x + player.x) / 2;
 		camera.y = (crossi.y + player.y) / 2;
 		
-		camera.zoom = Math.max(1 - Math.max(0, ((Math.sqrt( Math.pow(crossi.x - player.x, 2) + Math.pow(crossi.y - player.y, 2)) / 2000)) - 0.1), 0.75);
+		camera.zoom = Math.max(1 - Math.max(0, ((Math.sqrt( Math.pow(crossi.x - player.x, 2) + Math.pow((crossi.y - player.y) * 1.778, 2)) / 2000)) - 0.075), 0.75);
 		camera.x += (Math.random() * shake) - (shake / 2);
 		camera.y += (Math.random() * shake) - (shake / 2);
 		
@@ -285,5 +265,108 @@ class World extends Sprite
 		
 		MoveWorldToCamera();
 		level.UpdateBG();
+	}
+	
+	private function SwitchRoom()
+	{
+		var playerDeltaX = player.x;
+		var playerDeltaY = player.y;
+		player.x = level.SwitchRoomPlayerPosX();
+		player.y = level.SwitchRoomPlayerPosY();
+		playerDeltaX -= player.x;
+		playerDeltaY -= player.y;
+		crossi.x -= playerDeltaX;
+		crossi.y -= playerDeltaY;
+		
+		level.BgSwitchRoom(playerDeltaX, playerDeltaY);
+		
+		StoreEntsInRoom(level.previousRoom);
+		RemoveAllEnts();
+		LoadEntsFromRoom(level.currentRoom);
+		AdjustBlinders(level.currentRoom);
+	}
+	
+	private function CreateCrosshairs()
+	{
+		cross1 = new Crosshair();
+		cross1.CreatePrimaryCrosshair();
+		addChild(cross1);
+		
+		cross2 = new Crosshair();
+		cross2.CreateSecondaryCrosshair();
+		addChild(cross2);
+		
+		cross3 = new Crosshair();
+		cross3.CreateTertiaryCrosshair();
+		addChild(cross3);
+		
+		crossi = new Crosshair();
+	}
+	
+	private function UpdateCrosshairs() 
+	{
+		cross1.x = mouseX;
+		cross1.y = mouseY;
+		cross2.x = (mouseX + player.x) / 2;
+		cross2.y = (mouseY + player.y) / 2;
+		cross3.x = (mouseX + player.x) / 2;
+		cross3.y = (mouseY + player.y) / 2;
+		cross3.scaleY = Math.sqrt( Math.pow(mouseX - player.x, 2) + Math.pow(mouseY - player.y, 2)) / 40;
+		cross3.rotation = ((180 * Math.atan2(mouseY - player.y, mouseX - player.x)) / Math.PI) + 90;
+		cross1.rotation = cross3.rotation + 45;
+		crossi.x += (((mouseX + player.x) / 2) - crossi.x) / 20;
+		crossi.y += (((mouseY + player.y) / 2) - crossi.y) / 20;
+	}
+	
+	private function CreateBlinders() 
+	{
+		blinder_left = new Sprite();
+		blinder_left.graphics.beginFill();
+		blinder_left.graphics.drawRect( 0, 0, 100, 100);
+		blinder_left.graphics.endFill();
+		addChild(blinder_left);
+		
+		blinder_right = new Sprite();
+		blinder_right.graphics.beginFill();
+		blinder_right.graphics.drawRect( 0, 0, 100, 100);
+		blinder_right.graphics.endFill();
+		addChild(blinder_right);
+		
+		blinder_up = new Sprite();
+		blinder_up.graphics.beginFill();
+		blinder_up.graphics.drawRect( 0, 0, 100, 100);
+		blinder_up.graphics.endFill();
+		addChild(blinder_up);
+		
+		blinder_down = new Sprite();
+		blinder_down.graphics.beginFill();
+		blinder_down.graphics.drawRect( 0, 0, 100, 100);
+		blinder_down.graphics.endFill();
+		addChild(blinder_down);
+	}
+	
+	private function AdjustBlinders(room:LevelRoom) 
+	{
+		var thickness:Float = 5000;
+		
+		blinder_left.x = -thickness;
+		blinder_left.width = thickness;
+		blinder_left.y = -thickness;
+		blinder_left.height = (2 * thickness) + room.ymax;
+		
+		blinder_right.x = room.xmax;
+		blinder_right.width = thickness;
+		blinder_right.y = -thickness;
+		blinder_right.height = (2 * thickness) + room.ymax;
+		
+		blinder_up.x = 0;
+		blinder_up.width = room.xmax;
+		blinder_up.y = -thickness;
+		blinder_up.height = thickness;
+		
+		blinder_down.x = 0;
+		blinder_down.width = room.xmax;
+		blinder_down.y = room.ymax;
+		blinder_down.height = thickness;
 	}
 }

@@ -17,8 +17,10 @@ import world.tiles.WallTile;
 class LevelTile extends Sprite
 {
 	public var hitShape:HitShape;
-	private var sprite:Sprite;
-	private var noclip:Bool;
+	public var sprite:Sprite;
+	public var noclip:Bool;
+	
+	public static var size:Float = 32;
 	
 	public function new() 
 	{
@@ -57,6 +59,29 @@ class LevelTile extends Sprite
 		}
 	}
 	
+	public function Black()
+	{
+		if (sprite != null)
+		{
+			removeChild(sprite);
+			sprite = null;
+		}
+		sprite = new Sprite();
+		sprite.graphics.beginFill();
+		sprite.graphics.drawRect( -size / 2, -size / 2, size, size);
+		sprite.graphics.endFill();
+		addChild(sprite);
+	}
+	
+	public function Invis()
+	{
+		if (sprite != null)
+		{
+			removeChild(sprite);
+			sprite = null;
+		}
+	}
+	
 	public function Update()
 	{
 		
@@ -69,6 +94,7 @@ class LevelTile extends Sprite
 	
 	public function PointInside(xpos:Float, ypos:Float):Bool
 	{
+		if (hitShape == null) return false;
 		xpos -= x;
 		ypos -= y;
 		if (hitShape.GetNumPts() == 4)
@@ -81,13 +107,6 @@ class LevelTile extends Sprite
 		}
 		return false;
 	}
-	
-	public function NoCollide() 
-	{
-		return noclip;
-	}
-	
-	public static var size:Float = 32;
 	
 	public static function CreateTile(tileData:String):LevelTile
 	{
@@ -132,7 +151,18 @@ class LevelTile extends Sprite
 		}
 		else if (tileDataSplit.length > 1)
 		{
-			result.UsePic(tileDataSplit[1], defaultTilePicRotation);
+			if (tileDataSplit[1] == "black")
+			{
+				result.Black();
+			}
+			else if (tileDataSplit[1] == "invis")
+			{
+				result.Invis();
+			}
+			else
+			{
+				result.UsePic(tileDataSplit[1], defaultTilePicRotation);
+			}
 		}
 		
 		return result;

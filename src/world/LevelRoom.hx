@@ -1,4 +1,5 @@
 package world;
+import menu.DebugPage;
 import openfl.display.Sprite;
 import openfl.utils.Dictionary;
 import world.LevelTile;
@@ -52,13 +53,21 @@ class LevelRoom extends Sprite
 	
 	public function Update() 
 	{
+		var numtiles:Int = 0;
+		
 		for (i in 0...ytiles)
 		{
 			for (j in 0...xtiles)
 			{
-				if (tiles[i][j] != null) tiles[i][j].Update();
+				if (tiles[i][j] != null)
+				{
+					tiles[i][j].Update();
+					if (tiles[i][j].sprite != null) ++numtiles;
+				}
 			}
 		}
+		DebugPage.tilecount = numtiles;
+		
 		for (id in doors)
 		{
 			doors[id].Update();

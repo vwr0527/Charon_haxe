@@ -13,6 +13,7 @@ class DebugPage extends MenuPage
 	var consolemsg:MenuElement;
 	
 	public static var entcount:Int = 0;
+	public static var tilecount:Int = 0;
 	
 	static var logmsg:Array<String>;
 	static var maxLog:Int = 6;
@@ -53,6 +54,7 @@ class DebugPage extends MenuPage
 		
 		counter.textField.text = "fps: " + Main.getFPS();
 		counter.textField.text += "\nents: " + entcount;
+		counter.textField.text += "\ntiles: " + tilecount;
 		counter.textField.text += "\nmem: " + Math.floor(System.totalMemory / 1000000.0);
 		
 		for (j in 0...msgDecay.length)

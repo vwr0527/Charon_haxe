@@ -1,5 +1,6 @@
 package world;
 
+import menu.DebugPage;
 import openfl.geom.Point;
 import openfl.utils.Function;
 import openfl.Assets;
@@ -109,6 +110,11 @@ class Enemy extends Entity
 				explosion.x = x;
 				explosion.y = y;
 				SpawnFcn(explosion);
+				DebugPage.Log("Destroyed Enemy " + name);
+			}
+			else
+			{
+				DebugPage.Log("Hit Enemy " + name);
 			}
 		}
 	}

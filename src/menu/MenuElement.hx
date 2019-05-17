@@ -44,7 +44,7 @@ class MenuElement extends Sprite
 		textField.defaultTextFormat = textFormat;
 		textField.setTextFormat(textFormat);
 		textField.embedFonts = true;
-		textField.autoSize = "left";
+		textField.autoSize = align;
 		textField.text = str;
 		
 		addChild(textField);

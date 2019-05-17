@@ -1,4 +1,5 @@
 package world;
+import menu.DebugPage;
 import openfl.Lib;
 import openfl.display.Sprite;
 import world.LevelRoom;
@@ -123,6 +124,7 @@ class Level extends Sprite
 	
 	public function EnteredDoor(door:DoorTile, offset:Float) 
 	{
+		if (switchingRoom == true) return;
 		switchingRoom = true;
 		switchRoomIndex = currentRoom.doors[door.GetID()].targetRoom;
 		targetDoor = currentRoom.doors[door.GetID()].targetDoor;
@@ -149,6 +151,8 @@ class Level extends Sprite
 			playerDoorOffsetX = playerDoorOffsetY;
 			playerDoorOffsetY = temp;
 		}
+			
+		DebugPage.Log("Entered room: " + switchRoomIndex);
 	}
 	
 	public function SwitchRoomPlayerPosX():Float

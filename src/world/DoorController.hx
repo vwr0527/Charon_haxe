@@ -33,7 +33,6 @@ class DoorController
 	public function SetOpen(open:Bool)
 	{
 		isOpen = open;
-		trace("open" + targetDoor);
 		for (i in 0...doorTiles.length)
 		{
 			doorTiles[i].SetOpen(open);

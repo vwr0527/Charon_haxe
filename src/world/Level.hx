@@ -27,12 +27,18 @@ class Level extends Sprite
 	var playerDoorOffsetY:Float;
 	
 	var bgElements:Array<BackgroundElement>;
+	
+	var blinder_left:Sprite;
+	var blinder_right:Sprite;
+	var blinder_up:Sprite;
+	var blinder_down:Sprite;
 
 	public function new() 
 	{
 		super();
 		rooms = new Array();
 		bgElements = new Array();
+		CreateBlinders();
 	}
 	
 	public function Update()
@@ -49,13 +55,15 @@ class Level extends Sprite
 		}
 	}
 	
-	public function UpdateBG()
+	public function UpdateDisplay(cam:Camera)
 	{
+		currentRoom.SetVisibleTiles(cam);
 		for (bge in bgElements)
 		{
 			bge.x = PickBetweenRatio(((Lib.application.window.width / 2) - parent.x) * (1 / parent.scaleX), bge.xpos, bge.dist);
 			bge.y = PickBetweenRatio(((Lib.application.window.height / 2) - parent.y) * (1 / parent.scaleX), bge.ypos, bge.dist);
 		}
+		AdjustBlinders(currentRoom);
 	}
 	
 	public function AddBg()
@@ -220,6 +228,58 @@ class Level extends Sprite
 			room2.doors[secondDoorId].enterDirX = 0;
 			room2.doors[secondDoorId].enterDirY = -1;
 		}
+	}
+	
+	function CreateBlinders() 
+	{
+		blinder_left = new Sprite();
+		blinder_left.graphics.beginFill();
+		blinder_left.graphics.drawRect( 0, 0, 100, 100);
+		blinder_left.graphics.endFill();
+		addChild(blinder_left);
+		
+		blinder_right = new Sprite();
+		blinder_right.graphics.beginFill();
+		blinder_right.graphics.drawRect( 0, 0, 100, 100);
+		blinder_right.graphics.endFill();
+		addChild(blinder_right);
+		
+		blinder_up = new Sprite();
+		blinder_up.graphics.beginFill();
+		blinder_up.graphics.drawRect( 0, 0, 100, 100);
+		blinder_up.graphics.endFill();
+		addChild(blinder_up);
+		
+		blinder_down = new Sprite();
+		blinder_down.graphics.beginFill();
+		blinder_down.graphics.drawRect( 0, 0, 100, 100);
+		blinder_down.graphics.endFill();
+		addChild(blinder_down);
+	}
+	
+	function AdjustBlinders(room:LevelRoom) 
+	{
+		var thickness:Float = 5000;
+		
+		blinder_left.x = -thickness;
+		blinder_left.width = thickness;
+		blinder_left.y = -thickness;
+		blinder_left.height = (2 * thickness) + room.ymax;
+		
+		blinder_right.x = room.xmax;
+		blinder_right.width = thickness;
+		blinder_right.y = -thickness;
+		blinder_right.height = (2 * thickness) + room.ymax;
+		
+		blinder_up.x = 0;
+		blinder_up.width = room.xmax;
+		blinder_up.y = -thickness;
+		blinder_up.height = thickness;
+		
+		blinder_down.x = 0;
+		blinder_down.width = room.xmax;
+		blinder_down.y = room.ymax;
+		blinder_down.height = thickness;
 	}
 	
 	function PickBetweenRatio(a:Float, b:Float, ratio:Float):Float

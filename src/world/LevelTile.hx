@@ -71,6 +71,7 @@ class LevelTile extends Sprite
 		sprite.graphics.drawRect( -size / 2, -size / 2, size, size);
 		sprite.graphics.endFill();
 		addChild(sprite);
+		visible = false;
 	}
 	
 	public function Invis()

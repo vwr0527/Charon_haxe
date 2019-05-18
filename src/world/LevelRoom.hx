@@ -2,6 +2,7 @@ package world;
 import menu.DebugPage;
 import openfl.display.Sprite;
 import openfl.utils.Dictionary;
+import world.Camera;
 import world.LevelTile;
 import world.tiles.DoorTile;
 
@@ -62,7 +63,7 @@ class LevelRoom extends Sprite
 				if (tiles[i][j] != null)
 				{
 					tiles[i][j].Update();
-					if (tiles[i][j].sprite != null) ++numtiles;
+					if (tiles[i][j].sprite != null && tiles[i][j].visible) ++numtiles;
 				}
 			}
 		}
@@ -104,5 +105,32 @@ class LevelRoom extends Sprite
 		ypos -= tsize / 2;
 		ypos /= tsize;
 		return Std.int(Math.min(Math.max(Math.round(ypos), 0), ytiles - 1));
+	}
+	
+	public function SetVisibleTiles(cam:Camera) 
+	{
+		var camVisW = 480 * (1 / cam.zoom);
+		var camVisH = 270 * (1 / cam.zoom);
+		var startx:Int = GetIndexAtX(cam.x - camVisW);
+		var starty:Int = GetIndexAtY(cam.y - camVisH);
+		var endx:Int = GetIndexAtX(cam.x + camVisW);
+		var endy:Int = GetIndexAtY(cam.y + camVisH);
+		for (i in 0...ytiles)
+		{
+			for (j in 0...xtiles)
+			{
+				if (tiles[i][j] != null)
+				{
+					if (i >= starty && i <= endy && j >= startx && j <= endx)
+					{
+						tiles[i][j].visible = true;
+					}
+					else
+					{
+						tiles[i][j].visible = false;
+					}
+				}
+			}
+		}
 	}
 }

@@ -67,7 +67,6 @@ class World extends Sprite
 		MoveWorldToCamera();
 		
 		CreateCrosshairs();
-		CreateBlinders();
 		
 		shake = 0.0;
 		
@@ -77,7 +76,6 @@ class World extends Sprite
 		addChild(player);
 		
 		LoadEntsFromRoom(level.currentRoom);
-		AdjustBlinders(level.currentRoom);
 	}
 	
 	public function Update()
@@ -164,7 +162,7 @@ class World extends Sprite
 		
 		MoveCamera();
 		MoveWorldToCamera();
-		level.UpdateBG();
+		level.UpdateDisplay(camera);
 	}
 	
 	function RemoveAllEnts() 
@@ -264,7 +262,7 @@ class World extends Sprite
 		crossi.y = player.y;
 		
 		MoveWorldToCamera();
-		level.UpdateBG();
+		level.UpdateDisplay(camera);
 	}
 	
 	private function SwitchRoom()
@@ -283,7 +281,6 @@ class World extends Sprite
 		StoreEntsInRoom(level.previousRoom);
 		RemoveAllEnts();
 		LoadEntsFromRoom(level.currentRoom);
-		AdjustBlinders(level.currentRoom);
 	}
 	
 	private function CreateCrosshairs()
@@ -316,57 +313,5 @@ class World extends Sprite
 		cross1.rotation = cross3.rotation + 45;
 		crossi.x += (((mouseX + player.x) / 2) - crossi.x) / 20;
 		crossi.y += (((mouseY + player.y) / 2) - crossi.y) / 20;
-	}
-	
-	private function CreateBlinders() 
-	{
-		blinder_left = new Sprite();
-		blinder_left.graphics.beginFill();
-		blinder_left.graphics.drawRect( 0, 0, 100, 100);
-		blinder_left.graphics.endFill();
-		addChild(blinder_left);
-		
-		blinder_right = new Sprite();
-		blinder_right.graphics.beginFill();
-		blinder_right.graphics.drawRect( 0, 0, 100, 100);
-		blinder_right.graphics.endFill();
-		addChild(blinder_right);
-		
-		blinder_up = new Sprite();
-		blinder_up.graphics.beginFill();
-		blinder_up.graphics.drawRect( 0, 0, 100, 100);
-		blinder_up.graphics.endFill();
-		addChild(blinder_up);
-		
-		blinder_down = new Sprite();
-		blinder_down.graphics.beginFill();
-		blinder_down.graphics.drawRect( 0, 0, 100, 100);
-		blinder_down.graphics.endFill();
-		addChild(blinder_down);
-	}
-	
-	private function AdjustBlinders(room:LevelRoom) 
-	{
-		var thickness:Float = 5000;
-		
-		blinder_left.x = -thickness;
-		blinder_left.width = thickness;
-		blinder_left.y = -thickness;
-		blinder_left.height = (2 * thickness) + room.ymax;
-		
-		blinder_right.x = room.xmax;
-		blinder_right.width = thickness;
-		blinder_right.y = -thickness;
-		blinder_right.height = (2 * thickness) + room.ymax;
-		
-		blinder_up.x = 0;
-		blinder_up.width = room.xmax;
-		blinder_up.y = -thickness;
-		blinder_up.height = thickness;
-		
-		blinder_down.x = 0;
-		blinder_down.width = room.xmax;
-		blinder_down.y = room.ymax;
-		blinder_down.height = thickness;
 	}
 }

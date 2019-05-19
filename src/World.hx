@@ -96,7 +96,13 @@ class World extends Sprite
 			ent.LevelCollide(level);
 		}
 		
-		// Update Enemy AI and enemy hit detection
+		// Check to see if enemy's shots hit player
+		for (eshot in enemyShots)
+		{
+			if (!eshot.AlreadyHit()) player.CheckShotHit(eshot);
+		}
+		
+		// Update Enemy AI and check if player's shot hit enemy
 		for (enemy in enemyList)
 		{
 			enemy.LookAt(player.x, player.y);
@@ -112,16 +118,24 @@ class World extends Sprite
 			if (Std.is(ent, Enemy))
 			{
 				enemyList.push(cast(ent, Enemy));
-			} else 
-			if (Std.is(ent, Shot))
+			}
+			else if (Std.is(ent, Shot))
 			{
-				playerShots.push(cast(ent, Shot));
+				var shot:Shot = cast(ent, Shot);
+				if (shot.isPlayerShot)
+				{
+					playerShots.push(shot);
+				}
+				else
+				{
+					enemyShots.push(shot);
+				}
 			}
 			entityList.push(ent);
 		}
 		newEntities = new Array();
 		
-		// Delete inactive Ents
+		// Delete inactive Ents from Entity List
 		var i = entityList.length - 1;
 		while (i >= 0)
 		{
@@ -152,13 +166,24 @@ class World extends Sprite
 			--i;
 		}
 		
-		// Delete inactive Shots from Shot list
+		// Delete inactive Player's Shots from playerShot list
 		i = playerShots.length - 1;
 		while (i >= 0)
 		{
 			if (playerShots[i].active == false)
 			{
 				playerShots.splice(i, 1);
+			}
+			--i;
+		}
+		
+		// Delete inactive Enemy's Shots from enemyShot list
+		i = enemyShots.length - 1;
+		while (i >= 0)
+		{
+			if (enemyShots[i].active == false)
+			{
+				enemyShots.splice(i, 1);
 			}
 			--i;
 		}
@@ -224,7 +249,7 @@ class World extends Sprite
 	
 	private function Spawn(newEnt:Entity)
 	{
-		if (entityList.length < entMax)
+		if ((entityList.length + newEntities.length) < entMax)
 		{
 			newEntities.push(newEnt);
 			

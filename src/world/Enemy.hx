@@ -7,6 +7,7 @@ import openfl.Assets;
 import openfl.display.Sprite;
 import openfl.display.Bitmap;
 import world.HitShape.CollisionResult;
+import world.shots.PlasmaBall;
 
 /**
  * ...
@@ -17,10 +18,10 @@ class Enemy extends Entity
 	private var sprite:Sprite;
 	private var shootCooldown:Float = 0;
 	private var turnSpeed = 6;
-	private var shootRate = 10;
-	private var shotSpeed = 45;
-	private var shotStartDist = 0.65;
+	private var shootRate = 40;
+	private var shotSpeed = 15;
 	private var shotSpread = 4;
+	private var shotSide = false;
 	public var age:Float = 0;
 	public var hp:Float = 10;
 	
@@ -69,6 +70,40 @@ class Enemy extends Entity
 		{
 			yv -= speed;
 		}
+		
+		if (shootCooldown > shootRate)
+		{
+			if (Math.random() > 0.5)
+			{
+				var shot:Shot = new PlasmaBall();
+				shot.isPlayerShot = false;
+				shot.x = x;
+				shot.y = y;
+				shot.rotation = rotation + ((Math.random() - 0.5) * (Math.random() - 0.5)) * shotSpread;
+				shot.xv = shotSpeed * Math.sin((180 - shot.rotation) * (Math.PI / 180));
+				shot.yv = shotSpeed * Math.cos((180 - shot.rotation) * (Math.PI / 180));
+				
+				shot.x += shot.xv * 2; //shot starts a little distance away from the ship
+				shot.y += shot.yv * 2;
+				if (shotSide)
+				{
+					shot.x += shot.yv * 1.5;
+					shot.y -= shot.xv * 1.5;
+				}
+				else
+				{
+					shot.x -= shot.yv * 1.5;
+					shot.y += shot.xv * 1.5;
+				}
+				
+				shotSide = !shotSide;
+				
+				Spawn(shot);
+			}
+			shootCooldown = 0;
+		}
+		shootCooldown += t + (Math.random());
+		
 		SpawnFcn = Spawn;
 	}
 	

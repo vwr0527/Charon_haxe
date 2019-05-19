@@ -4,8 +4,10 @@ import menu.DebugPage;
 import openfl.display.Sprite;
 import openfl.display.Bitmap;
 import openfl.display.BitmapData;
+import openfl.geom.ColorTransform;
 import openfl.geom.Point;
 import openfl.Assets;
+import openfl.geom.Rectangle;
 import openfl.utils.Function;
 import world.HitShape.CollisionResult;
 import world.tiles.DoorTile;
@@ -16,6 +18,8 @@ import world.tiles.DoorTile;
  */
 class Shot extends Entity 
 {
+	public var isPlayerShot = true;
+	
 	var shotHit = false;
 	var shotHitAnim = 5.0;
 	var shotStart = true;
@@ -23,34 +27,17 @@ class Shot extends Entity
 	var laserSprite:Sprite;
 	var hitSprite:Sprite;
 	
-	var age = 0;
+	var maxAge:Float = 60;
+	
+	var age:Float = 0;
 	
 	public function new() 
 	{
 		super();
 		
-		var bmd:BitmapData = openfl.Assets.getBitmapData("img/shot2.png");
-		var bmd2:BitmapData = new BitmapData(bmd.width, bmd.height);
-		bmd2.threshold(bmd, bmd2.rect, new Point(0, 0), "==", 0xff000000, 0x00000000, 0xffffffff, true);
-		
-		var bitmap = new Bitmap(bmd2);
 		laserSprite = new Sprite();
-		laserSprite.addChild(bitmap);
-		bitmap.x -= bitmap.width * 0.5;
-		//bitmap.y -= bitmap.height * 0.5;
-		bitmap.smoothing = true;
-		laserSprite.scaleY = 1.5;
-		laserSprite.scaleX = 0.5;
 		addChild(laserSprite);
-		
-		var bmd3:BitmapData = openfl.Assets.getBitmapData("img/hit01.png");
-		
-		var bitmap2 = new Bitmap(bmd3);
 		hitSprite = new Sprite();
-		hitSprite.addChild(bitmap2);
-		bitmap2.x -= bitmap2.width * 0.5;
-		bitmap2.y -= bitmap2.height * 0.5;
-		bitmap2.smoothing = true;
 		addChild(hitSprite);
 		
 		laserSprite.visible = false;
@@ -64,7 +51,7 @@ class Shot extends Entity
 	public override function Update(Spawn:Function)
 	{
 		super.Update(Spawn);
-		age += 1;
+		age += t;
 		laserSprite.visible = true;
 		hitSprite.visible = false;
 		if (shotHit)
@@ -72,7 +59,7 @@ class Shot extends Entity
 			laserSprite.visible = false;
 			hitSprite.visible = true;
 			hitSprite.rotation = Math.random() * 360;
-			shotHitAnim -= 1.0;
+			shotHitAnim -= t;
 			hitSprite.scaleX = hitSprite.scaleY = shotHitAnim * 0.2;
 			if (shotHitAnim < 0)
 			{
@@ -80,7 +67,7 @@ class Shot extends Entity
 				hitSprite.visible = false;
 			}
 		}
-		if (age > 60) active = false;
+		if (age > maxAge) active = false;
 	}
 	
 	public override function LevelCollide(level:Level)
@@ -179,7 +166,7 @@ class Shot extends Entity
 	public override function HitTile(levelTile:LevelTile, level:Level)
 	{
 		var room:LevelRoom = level.currentRoom;
-		if (Std.is(levelTile, DoorTile))
+		if (Std.is(levelTile, DoorTile) && isPlayerShot)
 		{
 			var door:DoorTile = cast(levelTile, DoorTile);
 			var targetRoom:Int = room.doors[door.GetID()].targetRoom;

@@ -9,6 +9,8 @@ import openfl.utils.Function;
 import openfl.Assets;
 import openfl.display.Sprite;
 import openfl.display.Bitmap;
+import world.HitShape.CollisionResult;
+import world.shots.NormalLaser;
 import world.tiles.DoorTile;
 
 /**
@@ -105,7 +107,7 @@ class Player extends Entity
 		}
 		if (Input.MouseHeld() && shootCooldown > shootRate)
 		{
-			var shot:Shot = new Shot();
+			var shot:Shot = new NormalLaser();
 			shot.x = x;
 			shot.y = y;
 			shot.rotation = rotation + ((Math.random() - 0.5) * (Math.random() - 0.5)) * shotSpread;
@@ -158,6 +160,18 @@ class Player extends Entity
 		}
 	}
 	
+	public function CheckShotHit(shot:Shot)
+	{
+		var collisionResult:CollisionResult = hitbox.Collide(shot.x - x, shot.y - y, (shot.px - px) - (shot.x - x), (shot.py - py) - (shot.y - y), shot.hitbox);
+		if (collisionResult.movefraction < 1)
+		{
+			av += (Math.random() - 0.5) * 50;
+			xv += shot.xv / 30;
+			yv += shot.yv / 30;
+			shot.ShotHit(collisionResult);
+		}
+	}
+	
 	function CreateThrustEffect() 
 	{
 		var thrustAsset = Assets.getBitmapData("img/thrust01.png");
@@ -169,7 +183,7 @@ class Player extends Entity
 			if (i == 5)
 			{
 				thrustBmp.bitmapData = thrustBmp.bitmapData.clone();
-				thrustBmp.bitmapData.colorTransform(new Rectangle(0, 0, thrustBmp.width, thrustBmp.height), new ColorTransform(1, 0, 0, 1, 255, 150, 0, 0));
+				thrustBmp.bitmapData.colorTransform(thrustBmp.bitmapData.rect, new ColorTransform(1, 0, 0, 1, 255, 150, 0, 0));
 			}
 			thrustSprite.addChild(thrustBmp);
 			thrustSprite.getChildAt(0).x -= thrustSprite.getChildAt(0).width / 2;

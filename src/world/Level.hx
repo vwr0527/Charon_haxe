@@ -58,10 +58,11 @@ class Level extends Sprite
 	public function UpdateDisplay(cam:Camera)
 	{
 		currentRoom.SetVisibleTiles(cam);
+		
 		for (bge in bgElements)
 		{
-			bge.x = PickBetweenRatio(((Lib.application.window.width / 2) - parent.x) * (1 / parent.scaleX), bge.xpos, bge.dist);
-			bge.y = PickBetweenRatio(((Lib.application.window.height / 2) - parent.y) * (1 / parent.scaleX), bge.ypos, bge.dist);
+			bge.x = PickBetweenRatio(cam.x, bge.xpos, bge.dist);
+			bge.y = PickBetweenRatio(cam.y, bge.ypos, bge.dist);
 		}
 		AdjustBlinders(currentRoom);
 	}
@@ -158,7 +159,7 @@ class Level extends Sprite
 			playerDoorOffsetY = temp;
 		}
 			
-		DebugPage.Log("Entered room: " + switchRoomIndex);
+		//DebugPage.Log("Entered room: " + switchRoomIndex);
 	}
 	
 	public function SwitchRoomPlayerPosX():Float

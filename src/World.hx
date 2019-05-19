@@ -46,7 +46,7 @@ class World extends Sprite
 	
 	private var entMax = 4000;
 	
-	public static var shake:Float;
+	public static var shake:Float = 0.0;
 	
 	public function new() 
 	{
@@ -55,25 +55,30 @@ class World extends Sprite
 		entityList = new Array();
 		newEntities = new Array();
 		
-		player = new Player();
-		entityList.push(player);
-		
 		playerShots = new Array();
 		enemyShots = new Array();
 		enemyList = new Array();
 		itemList = new Array();
+		
+		shipLayer = new Sprite();
+		shotLayer = new Sprite();
+		levelLayer = new Sprite();
+		
+		addChild(levelLayer);
+		addChild(shotLayer);
+		addChild(shipLayer);
+		
+		player = new Player();
+		entityList.push(player);
+		shipLayer.addChild(player);
 		
 		camera = new Camera();
 		MoveWorldToCamera();
 		
 		CreateCrosshairs();
 		
-		shake = 0.0;
-		
 		levelDictionary = new Map();
 		LoadLevels();
-		
-		addChild(player);
 		
 		LoadEntsFromRoom(level.currentRoom);
 	}
@@ -122,7 +127,14 @@ class World extends Sprite
 		{
 			if (entityList[i].active == false)
 			{
-				removeChild(entityList[i]);
+				if (Std.is(entityList[i], Shot))
+				{
+					shotLayer.removeChild(entityList[i]);
+				} else 
+				{
+					shipLayer.removeChild(entityList[i]);
+				}
+				
 				entityList.splice(i, 1);
 			}
 			--i;
@@ -170,7 +182,13 @@ class World extends Sprite
 		var i = entityList.length - 1;
 		while (i >= 1)
 		{
-			removeChild(entityList[i]);
+			if (Std.is(entityList[i], Shot))
+			{
+				shotLayer.removeChild(entityList[i]);
+			} else 
+			{
+				shipLayer.removeChild(entityList[i]);
+			}
 			entityList.splice(i, 1);
 			--i;
 		}
@@ -209,7 +227,15 @@ class World extends Sprite
 		if (entityList.length < entMax)
 		{
 			newEntities.push(newEnt);
-			addChild(newEnt);
+			
+			if (Std.is(newEnt, Shot))
+			{
+				shotLayer.addChild(newEnt);
+			}
+			else
+			{
+				shipLayer.addChild(newEnt);
+			}
 			
 			if (Std.is(newEnt, Explosion))
 			{
@@ -251,7 +277,7 @@ class World extends Sprite
 	{
 		level = LevelParser.LoadLevel("levels/testlevel1.txt");
 		levelDictionary.set("test", level);
-		addChildAt(level, 0);
+		levelLayer.addChild(level);
 		
 		player.x = level.StartRoom().playerSpawnX;
 		player.y = level.StartRoom().playerSpawnY;

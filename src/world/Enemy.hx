@@ -110,11 +110,11 @@ class Enemy extends Entity
 				explosion.x = x;
 				explosion.y = y;
 				SpawnFcn(explosion);
-				DebugPage.Log("Destroyed Enemy " + name);
+				//DebugPage.Log("Destroyed Enemy " + name);
 			}
 			else
 			{
-				DebugPage.Log("Hit Enemy " + name);
+				//DebugPage.Log("Hit Enemy " + name);
 			}
 		}
 	}

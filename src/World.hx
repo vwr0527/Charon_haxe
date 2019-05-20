@@ -2,6 +2,7 @@ package;
 
 import menu.DebugPage;
 import openfl.Lib;
+import openfl.display.Shape;
 import openfl.display.Sprite;
 import util.LevelParser;
 import world.Camera;
@@ -224,6 +225,18 @@ class World extends Sprite
 			enemyList.splice(i, 1);
 			--i;
 		}
+		i = playerShots.length - 1;
+		while (i >= 0)
+		{
+			playerShots.splice(i, 1);
+			--i;
+		}
+		i = enemyShots.length - 1;
+		while (i >= 0)
+		{
+			enemyShots.splice(i, 1);
+			--i;
+		}
 	}
 	
 	function StoreEntsInRoom(room:LevelRoom) 
@@ -303,6 +316,24 @@ class World extends Sprite
 		level = LevelParser.LoadLevel("levels/testlevel1.txt");
 		levelDictionary.set("test", level);
 		levelLayer.addChild(level);
+		
+		var shape:Shape = new Shape();
+		
+		level.rooms[6].addChildAt(shape, 0);
+		shape.graphics.beginFill();
+		shape.graphics.moveTo(-1, -1);
+		shape.graphics.lineTo(level.rooms[6].width - (32 * 1), -1);
+		shape.graphics.lineTo(-1, level.rooms[6].height - (32 * 4));
+		shape.graphics.endFill();
+		
+		var shape2:Shape = new Shape();
+		
+		level.rooms[6].addChildAt(shape2, 0);
+		shape2.graphics.beginFill();
+		shape2.graphics.moveTo(level.rooms[6].width+1, level.rooms[6].height+1);
+		shape2.graphics.lineTo((32 * 4), level.rooms[6].height+1);
+		shape2.graphics.lineTo(level.rooms[6].width + 1, (32 * 7));
+		shape2.graphics.endFill();
 		
 		player.x = level.StartRoom().playerSpawnX;
 		player.y = level.StartRoom().playerSpawnY;

@@ -165,10 +165,11 @@ class Player extends Entity
 		var collisionResult:CollisionResult = hitbox.Collide(shot.x - x, shot.y - y, (shot.px - px) - (shot.x - x), (shot.py - py) - (shot.y - y), shot.hitbox);
 		if (collisionResult.movefraction < 1)
 		{
-			av += (Math.random() - 0.5) * 50;
-			xv += shot.xv / 30;
-			yv += shot.yv / 30;
+			av += (Math.random() - 0.5) * 20;
+			xv += shot.xv / 10;
+			yv += shot.yv / 10;
 			shot.ShotHit(collisionResult);
+			World.shake += 5;
 		}
 	}
 	

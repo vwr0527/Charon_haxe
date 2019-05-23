@@ -1,5 +1,7 @@
 package world;
+import openfl.display.Bitmap;
 import menu.DebugPage;
+import openfl.display.BitmapData;
 import openfl.display.Sprite;
 import openfl.utils.Dictionary;
 import world.Camera;
@@ -27,6 +29,8 @@ class LevelRoom extends Sprite
 	
 	public var playerSpawnX:Float;
 	public var playerSpawnY:Float;
+	
+	public var blackTiles:Bitmap;
 
 	public function new(num_x_tiles:Int, num_y_tiles:Int) 
 	{
@@ -132,5 +136,20 @@ class LevelRoom extends Sprite
 				}
 			}
 		}
+	}
+	
+	public function SetBlackTile(i:Int, j:Int) 
+	{
+		if (blackTiles == null)
+		{
+			blackTiles = new Bitmap(new BitmapData(xtiles, ytiles, true, 0x00000000));
+			addChildAt(blackTiles, 0);
+			blackTiles.x = 0;
+			blackTiles.y = 0;
+			blackTiles.width = xmax;
+			blackTiles.height = ymax;
+		}
+		
+		blackTiles.bitmapData.setPixel32(i, j, 0xFF000000);
 	}
 }

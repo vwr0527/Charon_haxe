@@ -36,6 +36,7 @@ class LevelTile extends Sprite
 			removeChild(sprite);
 			sprite = null;
 		}
+		
 		try {
 			var bmd:BitmapData = Assets.getBitmapData(assetName);
 			var bmd2:BitmapData = new BitmapData(bmd.width, bmd.height);
@@ -56,30 +57,6 @@ class LevelTile extends Sprite
 			sprite = hitShape.graphic;
 			addChild(sprite);
 			return;
-		}
-	}
-	
-	public function Black()
-	{
-		if (sprite != null)
-		{
-			removeChild(sprite);
-			sprite = null;
-		}
-		sprite = new Sprite();
-		sprite.graphics.beginFill();
-		sprite.graphics.drawRect( -size / 2, -size / 2, size, size);
-		sprite.graphics.endFill();
-		addChild(sprite);
-		visible = false;
-	}
-	
-	public function Invis()
-	{
-		if (sprite != null)
-		{
-			removeChild(sprite);
-			sprite = null;
 		}
 	}
 	
@@ -141,6 +118,10 @@ class LevelTile extends Sprite
 			result = new TRWallTile();
 			defaultTilePicRotation = 90;
 		}
+		else
+		{
+			return null;
+		}
 		
 		if (tileDataSplit.length > 3)
 		{
@@ -152,18 +133,7 @@ class LevelTile extends Sprite
 		}
 		else if (tileDataSplit.length > 1)
 		{
-			if (tileDataSplit[1] == "black")
-			{
-				result.Black();
-			}
-			else if (tileDataSplit[1] == "invis")
-			{
-				result.Invis();
-			}
-			else
-			{
-				result.UsePic(tileDataSplit[1], defaultTilePicRotation);
-			}
+			result.UsePic(tileDataSplit[1], defaultTilePicRotation);
 		}
 		
 		return result;

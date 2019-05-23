@@ -176,7 +176,14 @@ class LevelParser
 					else if (tilesDictionary.exists(str_at_loc))
 					{
 						var tileString:String = tilesDictionary[str_at_loc];
-						room.SetTile(LevelTile.CreateTile(tileString), i, j);
+						if (tileString == "black")
+						{
+							room.SetBlackTile(i, j);
+						}
+						else
+						{
+							room.SetTile(LevelTile.CreateTile(tileString), i, j);
+						}
 					}
 				}
 			}

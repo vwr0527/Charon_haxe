@@ -40,6 +40,8 @@ class Player extends Entity
 	private var thrustPics:Array<Sprite>;
 	private var thrustVec:Point;
 	
+	private var shieldEffects:Sprite;
+	private var shieldRippleContainer:Sprite;
 	private var shieldPic:Sprite;
 	private var shieldHitPic:Sprite;
 	private var shieldRipplePic:Sprite;
@@ -182,20 +184,37 @@ class Player extends Entity
 			yv += shot.yv / 10;
 			shot.ShotHit(collisionResult);
 			World.shake += 5;
-			shieldPic.alpha = 1.0;
+			
+			shieldPic.alpha = 0.5;
+			
+			shieldHitPic.alpha = 1.0;
+			shieldHitPic.x = shot.x - x;
+			shieldHitPic.y = shot.y - y;
+			shieldHitPic.rotation = ((180 * Math.atan2(shieldHitPic.y, shieldHitPic.x)) / Math.PI) + 90;
+			
+			shieldRippleContainer.rotation = shieldHitPic.rotation;
+			shieldRipplePic.y = -10;
+			shieldRipplePic.alpha = 1.0;
 		}
 	}
 	
 	function CreateShieldEffect() 
 	{
-		var shieldAsset = Assets.getBitmapData("img/shieldhit3.png");
-		var shieldHitAsset = Assets.getBitmapData("img/shieldhit4.png");
-		var shieldRippleAsset = Assets.getBitmapData("img/shieldripple.png");
+		var blueGreenTinge:ColorTransform = new ColorTransform(0, 1, 1, 1, 0, 100, 255, 0);
+		
+		var shieldAsset = Assets.getBitmapData("img/shieldhit3.png").clone();
+		shieldAsset.colorTransform(shieldAsset.rect, blueGreenTinge);
+		var shieldHitAsset = Assets.getBitmapData("img/shieldhit4.png").clone();
+		shieldHitAsset.colorTransform(shieldHitAsset.rect, blueGreenTinge);
+		var shieldRippleAsset = Assets.getBitmapData("img/shieldripple.png").clone();
+		shieldRippleAsset.colorTransform(shieldRippleAsset.rect, blueGreenTinge);
 		
 		var shieldBmp = new Bitmap(shieldAsset);
 		var shieldHitBmp = new Bitmap(shieldHitAsset);
 		var shieldRippleBmp = new Bitmap(shieldRippleAsset);
 		
+		shieldEffects = new Sprite();
+		shieldRippleContainer = new Sprite();
 		shieldPic = new Sprite();
 		shieldHitPic = new Sprite();
 		shieldRipplePic = new Sprite();
@@ -205,20 +224,39 @@ class Player extends Entity
 		shieldBmp.y -= shieldBmp.height / 2;
 		shieldHitPic.addChild(shieldHitBmp);
 		shieldHitBmp.x -= shieldHitBmp.width / 2;
-		shieldHitBmp.y -= shieldHitBmp.height / 2;
+		shieldHitBmp.y -= shieldHitBmp.height;
 		shieldRipplePic.addChild(shieldRippleBmp);
 		shieldRippleBmp.x -= shieldRippleBmp.width / 2;
 		shieldRippleBmp.y -= shieldRippleBmp.height / 2;
 		
-		shieldPic.y -= 5;
+		shieldPic.y = -5;
 		shieldPic.scaleX = shieldPic.scaleY = 1.1;
 		shieldPic.alpha = 0;
 		shieldHitPic.alpha = 0;
+		shieldHitPic.scaleX = 1.5;
+		shieldHitPic.scaleY = 1.5;
 		shieldRipplePic.alpha = 0;
+		shieldRipplePic.scaleX = 1.2;
+		shieldRippleContainer.scaleX = shieldRippleContainer.scaleY = 2.0;
 		
-		addChild(shieldPic);
-		addChild(shieldHitPic);
-		addChild(shieldRipplePic);
+		shieldEffects.addChild(shieldPic);
+		shieldEffects.addChild(shieldHitPic);
+		shieldRippleContainer.addChild(shieldRipplePic);
+		shieldEffects.addChild(shieldRippleContainer);
+		addChild(shieldEffects);
+	}
+	
+	function UpdateShieldAnimation()
+	{
+		shieldEffects.rotation = -rotation;
+		shieldPic.rotation = Math.random() * 360;
+		shieldPic.alpha *= 0.8;
+		shieldHitPic.alpha *= 0.8;
+		shieldRipplePic.alpha *= 0.8;
+		if (shieldRipplePic.y < 10)
+		{
+			shieldRipplePic.y += 2;
+		}
 	}
 	
 	function CreateThrustEffect() 
@@ -269,14 +307,6 @@ class Player extends Entity
 		thrustPics[5].y = 14;
 		thrustPics[5].scaleX = 1.2;
 		thrustPics[5].alpha = 0;
-	}
-	
-	function UpdateShieldAnimation()
-	{
-		shieldPic.rotation = Math.random() * 360;
-		shieldPic.alpha *= 0.8;
-		shieldHitPic.alpha *= 0.8;
-		shieldRipplePic.alpha *= 0.8;
 	}
 	
 	function UpdateThrustAnimation() 

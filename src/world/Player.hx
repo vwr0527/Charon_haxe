@@ -229,7 +229,6 @@ class Player extends Entity
 		shieldRippleBmp.x -= shieldRippleBmp.width / 2;
 		shieldRippleBmp.y -= shieldRippleBmp.height / 2;
 		
-		shieldPic.y = -5;
 		shieldPic.scaleX = shieldPic.scaleY = 1.1;
 		shieldPic.alpha = 0;
 		shieldHitPic.alpha = 0;
@@ -244,6 +243,7 @@ class Player extends Entity
 		shieldRippleContainer.addChild(shieldRipplePic);
 		shieldEffects.addChild(shieldRippleContainer);
 		addChild(shieldEffects);
+		shieldEffects.y = -5;
 	}
 	
 	function UpdateShieldAnimation()

@@ -30,14 +30,25 @@ class Player extends Entity
 	private var boostSpeed = 0.4;
 	private var boostFuel:Float = 0;
 	private var maxBoostFuel:Float = 25;
+	private var shield:Float = 25;
+	private var maxShield:Float = 25;
+	private var shieldRechargeRate:Float = 1.0;
+	private var shieldPause:Float = 2.0;
+	private var shieldBreakPause:Float = 4.0;
+	private var health:Float = 20;
 	
 	private var thrustPics:Array<Sprite>;
 	private var thrustVec:Point;
+	
+	private var shieldPic:Sprite;
+	private var shieldHitPic:Sprite;
+	private var shieldRipplePic:Sprite;
 	
 	public function new() 
 	{
 		super();
 		hitbox.MakeSquare(30);
+		thrustVec = new Point();
 		//showHitbox = true;
 		
 		var bitmapData = openfl.Assets.getBitmapData("img/ship2.png");
@@ -51,8 +62,8 @@ class Player extends Entity
 		
 		addChild(sprite);
 		
+		CreateShieldEffect();
 		CreateThrustEffect();
-		thrustVec = new Point();
 		
 		rf = 0.2;//0.8;
 		tf = 0.0075;//0.98;
@@ -121,6 +132,7 @@ class Player extends Entity
 		}
 		
 		UpdateThrustAnimation();
+		UpdateShieldAnimation();
 		
 		shootCooldown += t;
 	}
@@ -170,7 +182,43 @@ class Player extends Entity
 			yv += shot.yv / 10;
 			shot.ShotHit(collisionResult);
 			World.shake += 5;
+			shieldPic.alpha = 1.0;
 		}
+	}
+	
+	function CreateShieldEffect() 
+	{
+		var shieldAsset = Assets.getBitmapData("img/shieldhit3.png");
+		var shieldHitAsset = Assets.getBitmapData("img/shieldhit4.png");
+		var shieldRippleAsset = Assets.getBitmapData("img/shieldripple.png");
+		
+		var shieldBmp = new Bitmap(shieldAsset);
+		var shieldHitBmp = new Bitmap(shieldHitAsset);
+		var shieldRippleBmp = new Bitmap(shieldRippleAsset);
+		
+		shieldPic = new Sprite();
+		shieldHitPic = new Sprite();
+		shieldRipplePic = new Sprite();
+		
+		shieldPic.addChild(shieldBmp);
+		shieldBmp.x -= shieldBmp.width / 2;
+		shieldBmp.y -= shieldBmp.height / 2;
+		shieldHitPic.addChild(shieldHitBmp);
+		shieldHitBmp.x -= shieldHitBmp.width / 2;
+		shieldHitBmp.y -= shieldHitBmp.height / 2;
+		shieldRipplePic.addChild(shieldRippleBmp);
+		shieldRippleBmp.x -= shieldRippleBmp.width / 2;
+		shieldRippleBmp.y -= shieldRippleBmp.height / 2;
+		
+		shieldPic.y -= 5;
+		shieldPic.scaleX = shieldPic.scaleY = 1.1;
+		shieldPic.alpha = 0;
+		shieldHitPic.alpha = 0;
+		shieldRipplePic.alpha = 0;
+		
+		addChild(shieldPic);
+		addChild(shieldHitPic);
+		addChild(shieldRipplePic);
 	}
 	
 	function CreateThrustEffect() 
@@ -221,6 +269,14 @@ class Player extends Entity
 		thrustPics[5].y = 14;
 		thrustPics[5].scaleX = 1.2;
 		thrustPics[5].alpha = 0;
+	}
+	
+	function UpdateShieldAnimation()
+	{
+		shieldPic.rotation = Math.random() * 360;
+		shieldPic.alpha *= 0.8;
+		shieldHitPic.alpha *= 0.8;
+		shieldRipplePic.alpha *= 0.8;
 	}
 	
 	function UpdateThrustAnimation() 

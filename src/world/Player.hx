@@ -33,9 +33,11 @@ class Player extends Entity
 	private var maxBoostFuel:Float = 25;
 	private var shield:Float = 25;
 	private var maxShield:Float = 25;
-	private var shieldRechargeRate:Float = 0.025;
-	private var shieldPause:Float = 2.0;
-	private var shieldBreakPause:Float = 4.0;
+	private var shieldRechargeRate:Float = 0.1;
+	private var shieldPauseTime:Float = 0;
+	private var shieldRechargePause:Float = 80.0;
+	private var shieldBreakPause:Float = 240.0;
+	private var shieldBreakAnim:Float = 0;
 	private var health:Float = 20;
 	private var maxHealth:Float = 20;
 	
@@ -142,7 +144,16 @@ class Player extends Entity
 		
 		if (shield < maxShield)
 		{
-			shield += shieldRechargeRate * t;
+			if (shieldPauseTime >= 0)
+			{
+				shieldPauseTime -= t;
+			}
+			else
+			{
+				shieldPauseTime = 0;
+				shield += shieldRechargeRate * t;
+				shieldPic.alpha += (0.03 - (0.02 * (shield / maxShield))) * t;
+			}
 		}
 		else
 		{
@@ -214,24 +225,40 @@ class Player extends Entity
 			shot.ShotHit(collisionResult);
 			World.shake += 5;
 			
-			shieldPic.alpha += 0.2;
+			var damage:Float = 5;
 			
-			shieldHitPic.alpha = 1.0;
-			shieldHitPic.x = shot.x - x;
-			shieldHitPic.y = shot.y - y;
-			shieldHitPic.rotation = ((180 * Math.atan2(shieldHitPic.y, shieldHitPic.x)) / Math.PI) + 90;
-			
-			shieldRippleContainer.rotation = shieldHitPic.rotation;
-			shieldRipplePic.y = -10;
-			shieldRipplePic.alpha = 1.0;
-			
-			shield -= 5;
-			
-			if (shield < 0)
+			if (shield > 0)
 			{
-				health += shield;
+				shield -= damage;
+				
+				if (shield <= 0)
+				{
+					shield = 0;
+					shieldPauseTime = shieldBreakPause;
+					shieldBreakAnim = 10;
+					shieldPic.alpha = 1.0;
+					shieldPic.scaleX = shieldPic.scaleY = 1.2;
+				}
+				else
+				{
+					shieldPauseTime = shieldRechargePause;
+					
+					shieldPic.alpha += (damage * 0.04);
+					
+					shieldHitPic.alpha = 1.0;
+					shieldHitPic.x = shot.x - x;
+					shieldHitPic.y = shot.y - y;
+					shieldHitPic.rotation = ((180 * Math.atan2(shieldHitPic.y, shieldHitPic.x)) / Math.PI) + 90;
+					
+					shieldRippleContainer.rotation = shieldHitPic.rotation;
+					shieldRipplePic.y = -10;
+					shieldRipplePic.alpha = 1.0;
+				}
+			}
+			else if (shield == 0)
+			{
+				health -= damage;
 				if (health < 0) health = 0;
-				shield = 0;
 			}
 		}
 	}
@@ -294,6 +321,22 @@ class Player extends Entity
 		if (shieldRipplePic.y < 10)
 		{
 			shieldRipplePic.y += 1 * t;
+		}
+		
+		if (shield <= 0)
+		{
+			if (shieldBreakAnim > 0)
+			{
+				shieldBreakAnim -= t;
+				if (shieldBreakAnim < 0) shieldBreakAnim = 0;
+				shieldPic.scaleX = shieldPic.scaleY = 1.1 + (0.4 - (shieldBreakAnim * 0.02));
+				shieldPic.alpha = shieldBreakAnim * 0.15;
+			}
+			else
+			{
+				shieldPic.scaleX = shieldPic.scaleY = 1.1;
+				shieldPic.alpha = 0;
+			}
 		}
 	}
 	

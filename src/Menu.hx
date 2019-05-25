@@ -3,6 +3,7 @@ package;
 import openfl.display.Sprite;
 import menu.MainMenu;
 import menu.DebugPage;
+import menu.HudPage;
 
 /**
  * ...
@@ -12,11 +13,14 @@ class Menu extends Sprite
 {
 	private var mainPage:MainMenu;
 	private var debugPage:DebugPage;
+	private var hudPage:HudPage;
 	
 	public function new()
 	{
 		super();
 		
+		hudPage = new HudPage();
+		addChild(hudPage);
 		mainPage = new MainMenu();
 		addChild(mainPage);
 		debugPage = new DebugPage();
@@ -25,6 +29,7 @@ class Menu extends Sprite
 	
 	public function Update()
 	{
+		hudPage.Update();
 		mainPage.Update();
 		debugPage.Update();
 	}

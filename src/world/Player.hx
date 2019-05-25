@@ -1,6 +1,7 @@
 package world;
 
 import menu.DebugPage;
+import menu.HudPage;
 import openfl.display.BlendMode;
 import openfl.geom.ColorTransform;
 import openfl.geom.Point;
@@ -32,10 +33,11 @@ class Player extends Entity
 	private var maxBoostFuel:Float = 25;
 	private var shield:Float = 25;
 	private var maxShield:Float = 25;
-	private var shieldRechargeRate:Float = 1.0;
+	private var shieldRechargeRate:Float = 0.025;
 	private var shieldPause:Float = 2.0;
 	private var shieldBreakPause:Float = 4.0;
 	private var health:Float = 20;
+	private var maxHealth:Float = 20;
 	
 	private var thrustPics:Array<Sprite>;
 	private var thrustVec:Point;
@@ -93,14 +95,6 @@ class Player extends Entity
 			thrustVec.y += 1;
 		}
 		
-		thrustVec.normalize(1);
-		xv += thrustVec.x * speed * t;
-		yv += thrustVec.y * speed * t;
-		
-		if (boostFuel < maxBoostFuel)
-		{
-			boostFuel += 0.2 * t;
-		}
 		if (Input.KeyHeld(16))
 		{
 			if (boostFuel >= 1)
@@ -133,10 +127,45 @@ class Player extends Entity
 			shootCooldown = 0;
 		}
 		
+		thrustVec.normalize(1);
+		xv += thrustVec.x * speed * t;
+		yv += thrustVec.y * speed * t;
+		
+		if (boostFuel < maxBoostFuel)
+		{
+			boostFuel += 0.2 * t;
+		}
+		else
+		{
+			boostFuel = maxBoostFuel;
+		}
+		
+		if (shield < maxShield)
+		{
+			shield += shieldRechargeRate * t;
+		}
+		else
+		{
+			shield = maxShield;
+		}
+		
+		if (health < maxHealth)
+		{
+			health += 0.01 * t;
+		}
+		else
+		{
+			health = maxHealth;
+		}
+		
 		UpdateThrustAnimation();
 		UpdateShieldAnimation();
 		
 		shootCooldown += t;
+		
+		HudPage.Boost = boostFuel / maxBoostFuel;
+		HudPage.Shield = shield / maxShield;
+		HudPage.Health = health / maxHealth;
 	}
 	
 	public function LookAt(xpos:Float, ypos:Float)
@@ -185,7 +214,7 @@ class Player extends Entity
 			shot.ShotHit(collisionResult);
 			World.shake += 5;
 			
-			shieldPic.alpha = 0.5;
+			shieldPic.alpha += 0.2;
 			
 			shieldHitPic.alpha = 1.0;
 			shieldHitPic.x = shot.x - x;
@@ -195,6 +224,15 @@ class Player extends Entity
 			shieldRippleContainer.rotation = shieldHitPic.rotation;
 			shieldRipplePic.y = -10;
 			shieldRipplePic.alpha = 1.0;
+			
+			shield -= 5;
+			
+			if (shield < 0)
+			{
+				health += shield;
+				if (health < 0) health = 0;
+				shield = 0;
+			}
 		}
 	}
 	
@@ -250,7 +288,7 @@ class Player extends Entity
 	{
 		shieldEffects.rotation = -rotation;
 		shieldPic.rotation = Math.random() * 360;
-		shieldPic.alpha *= 1 / Math.pow(10, 0.1 * t);
+		shieldPic.alpha *= 1 / Math.pow(10, 0.025 * t);
 		shieldHitPic.alpha *= 1 / Math.pow(10, 0.1 * t);
 		shieldRipplePic.alpha *= 1 / Math.pow(10, 0.05 * t);
 		if (shieldRipplePic.y < 10)

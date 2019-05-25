@@ -108,13 +108,13 @@ class Player extends Entity
 				xv += boostSpeed * t * (Math.sin((180 - rotation) * (Math.PI / 180)));
 				yv += boostSpeed * t * (Math.cos((180 - rotation) * (Math.PI / 180)));
 				World.shake += 0.3;
-				thrustPics[5].alpha += 0.3;
+				thrustPics[5].alpha += 0.3 * t;
 				boostFuel -= 1.0 * t;
 			} else if (boostFuel > 0)
 			{
 				xv += 0.2 * boostSpeed * t * (Math.sin((180 - rotation) * (Math.PI / 180)));
 				yv += 0.2 * boostSpeed * t * (Math.cos((180 - rotation) * (Math.PI / 180)));
-				thrustPics[5].alpha += 0.05;
+				thrustPics[5].alpha += 0.08 * t;
 				boostFuel -= 0.5 * t;
 			}
 		}
@@ -250,12 +250,12 @@ class Player extends Entity
 	{
 		shieldEffects.rotation = -rotation;
 		shieldPic.rotation = Math.random() * 360;
-		shieldPic.alpha *= 0.8;
-		shieldHitPic.alpha *= 0.8;
-		shieldRipplePic.alpha *= 0.8;
+		shieldPic.alpha *= 1 / Math.pow(10, 0.1 * t);
+		shieldHitPic.alpha *= 1 / Math.pow(10, 0.1 * t);
+		shieldRipplePic.alpha *= 1 / Math.pow(10, 0.05 * t);
 		if (shieldRipplePic.y < 10)
 		{
-			shieldRipplePic.y += 2;
+			shieldRipplePic.y += 1 * t;
 		}
 	}
 	
@@ -313,32 +313,32 @@ class Player extends Entity
 	{
 		for (thrustSprite in thrustPics)
 		{
-			if (thrustSprite.alpha > 0.01) thrustSprite.alpha *=  0.8;
+			if (thrustSprite.alpha > 0.01) thrustSprite.alpha *= 1 / Math.pow(10, 0.1 * t);
 		}
 		
 		var thrustDir = Math.atan2(thrustVec.y, thrustVec.x);
 		var localThrustDir = thrustDir - ((rotation / 180) * Math.PI);
-		var intensity = 0.15;
+		var intensity = 0.18;
 		var randomize = (4 + Math.random()) / 4;
 		
 		if (thrustVec.x == 0 && thrustVec.y == 0) intensity = 0;
 		
-		thrustPics[0].alpha += Math.max(0, -Math.sin(localThrustDir)) * intensity;
+		thrustPics[0].alpha += Math.max(0, -Math.sin(localThrustDir)) * intensity * t;
 		thrustPics[0].scaleY = 0.01 + (0.6 * thrustPics[0].alpha * randomize);
 		
-		thrustPics[1].alpha += Math.max(0, Math.cos(localThrustDir)) * intensity;
+		thrustPics[1].alpha += Math.max(0, Math.cos(localThrustDir)) * intensity * t;
 		thrustPics[1].scaleY = 0.01 + (thrustPics[1].alpha * randomize);
 		
-		thrustPics[2].alpha += Math.max(0, Math.sin(localThrustDir)) * intensity;
+		thrustPics[2].alpha += Math.max(0, Math.sin(localThrustDir)) * intensity * t;
 		thrustPics[2].scaleY = 0.01 + (0.8 * thrustPics[2].alpha * randomize);
 		thrustPics[3].alpha = thrustPics[2].alpha;
 		thrustPics[3].scaleY = thrustPics[2].scaleY;
 		
-		thrustPics[4].alpha += Math.max(0,-Math.cos(localThrustDir)) * intensity;
+		thrustPics[4].alpha += Math.max(0,-Math.cos(localThrustDir)) * intensity * t;
 		thrustPics[4].scaleY = 0.01 + (thrustPics[4].alpha * randomize);
 		
 		thrustPics[5].scaleY = 0.01 + (1.6 * thrustPics[5].alpha * randomize);
-		thrustPics[0].alpha += thrustPics[5].alpha;
-		thrustPics[0].scaleY += 0.3 * thrustPics[5].alpha * randomize;
+		thrustPics[0].alpha += 0.7 * thrustPics[5].alpha * t;
+		thrustPics[0].scaleY += 0.3 * thrustPics[5].alpha * randomize * t;
 	}
 }

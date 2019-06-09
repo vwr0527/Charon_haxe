@@ -2,6 +2,7 @@ package world;
 import openfl.Assets;
 import openfl.display.Bitmap;
 import openfl.display.BitmapData;
+import openfl.display.CanvasRenderer;
 import openfl.display.Sprite;
 import openfl.geom.Point;
 import world.tiles.BLWallTile;
@@ -17,7 +18,7 @@ import world.tiles.WallTile;
 class LevelTile extends Sprite
 {
 	public var hitShape:HitShape;
-	public var sprite:Sprite;
+	public var pic:Bitmap;
 	public var noclip:Bool;
 	
 	public static var size:Float = 32;
@@ -31,31 +32,29 @@ class LevelTile extends Sprite
 	
 	public function UsePic(assetName:String, rot:Float = 0, scaling:Float = 1.0)
 	{
-		if (sprite != null)
+		removeChildren();
+		
+		if (pic != null)
 		{
-			removeChild(sprite);
-			sprite = null;
+			pic = null;
 		}
 		
 		try {
 			var bmd:BitmapData = Assets.getBitmapData(assetName);
-			var bmd2:BitmapData = new BitmapData(bmd.width, bmd.height);
+			var bmd2:BitmapData = bmd.clone();
 			bmd2.threshold(bmd, bmd2.rect, new Point(0, 0), "==", 0xff000000, 0x00000000, 0xffffffff, true);
 			
-			var bitmap = new Bitmap(bmd2);
-			sprite = new Sprite();
-			sprite.addChild(bitmap);
-			bitmap.x -= bitmap.width * 0.5;
-			bitmap.y -= bitmap.height * 0.5;
-			bitmap.smoothing = true;
-			sprite.scaleY = sprite.scaleX = scaling;
-			sprite.rotation = rot;
-			addChild(sprite);
+			pic = new Bitmap(bmd2);
+			pic.x -= pic.width * 0.5;
+			pic.y -= pic.height * 0.5;
+			pic.smoothing = true;
+			scaleY = scaleX = scaling;
+			rotation = rot;
+			addChild(pic);
 		} catch (msg:String) {
 			trace(msg);
 			hitShape.graphic.visible = true;
-			sprite = hitShape.graphic;
-			addChild(sprite);
+			addChild(hitShape.graphic);
 			return;
 		}
 	}

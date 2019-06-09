@@ -38,11 +38,11 @@ class DoorTile extends LevelTile
 		noclip = open;
 		if (open)
 		{
-			sprite.alpha = 0.2;
+			pic.alpha = 0.2;
 		}
 		else
 		{
-			sprite.alpha = 1.0;
+			pic.alpha = 1.0;
 		}
 	}
 	

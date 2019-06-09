@@ -9,8 +9,7 @@ class VDoorTile extends DoorTile
 	public function new(id:String) 
 	{
 		super(true, id);
-		UsePic("img/testdoor.bmp");
-		sprite.rotation = 90;
+		UsePic("img/testdoor.bmp", 90);
 		
 		var size = LevelTile.size;
 		

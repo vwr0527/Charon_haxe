@@ -67,7 +67,7 @@ class LevelRoom extends Sprite
 				if (tiles[i][j] != null)
 				{
 					tiles[i][j].Update();
-					if (tiles[i][j].sprite != null && tiles[i][j].visible) ++numtiles;
+					if (tiles[i][j].pic != null && tiles[i][j].visible) ++numtiles;
 				}
 			}
 		}

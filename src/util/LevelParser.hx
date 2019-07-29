@@ -220,6 +220,7 @@ class LevelParser
 		level.addChild(level.currentRoom);
 		
 		level.AddBg();
+		level.currentRoom.AddPic();
 		
 		return level;
 	}

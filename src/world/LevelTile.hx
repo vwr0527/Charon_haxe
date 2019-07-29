@@ -2,7 +2,6 @@ package world;
 import openfl.Assets;
 import openfl.display.Bitmap;
 import openfl.display.BitmapData;
-import openfl.display.CanvasRenderer;
 import openfl.display.Sprite;
 import openfl.geom.Point;
 import world.tiles.BLWallTile;
@@ -57,6 +56,8 @@ class LevelTile extends Sprite
 			addChild(hitShape.graphic);
 			return;
 		}
+		
+		
 	}
 	
 	public function Update()

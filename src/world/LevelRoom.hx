@@ -26,6 +26,7 @@ class LevelRoom extends Sprite
 	public var tiles:Array<Array<LevelTile>>;
 	public var doors:Dictionary<String,DoorController>;
 	public var ents:Array<Entity>;
+	public var pics:Array<LevelPic>;
 	
 	public var playerSpawnX:Float;
 	public var playerSpawnY:Float;
@@ -54,6 +55,7 @@ class LevelRoom extends Sprite
 				newRow.push(null);
 			}
 		}
+		pics = new Array();
 	}
 	
 	public function Update() 
@@ -151,5 +153,14 @@ class LevelRoom extends Sprite
 		}
 		
 		blackTiles.bitmapData.setPixel32(i, j, 0xFF000000);
+	}
+	
+	public function AddPic()
+	{
+		var newpic = new LevelPic();
+		newpic.UsePic("img/mtile00.png", 0, 10);
+		addChild(newpic);
+		pics.push(newpic);
+		trace("newpic = " + newpic.x + ", " + newpic.y);
 	}
 }

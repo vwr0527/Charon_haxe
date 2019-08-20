@@ -39,6 +39,8 @@ class World extends Sprite
 	private var shipLayer:Sprite;
 	private var shotLayer:Sprite;
 	private var levelLayer:Sprite;
+	private var backgroundLayer:Sprite;
+	private var foregroundLayer:Sprite;
 	
 	private var cross1:Crosshair;
 	private var cross2:Crosshair;
@@ -68,10 +70,14 @@ class World extends Sprite
 		shipLayer = new Sprite();
 		shotLayer = new Sprite();
 		levelLayer = new Sprite();
+		backgroundLayer = new Sprite();
+		foregroundLayer = new Sprite();
 		
+		addChild(backgroundLayer);
 		addChild(levelLayer);
 		addChild(shotLayer);
 		addChild(shipLayer);
+		addChild(foregroundLayer);
 		
 		player = new Player();
 		entityList.push(player);
@@ -298,9 +304,10 @@ class World extends Sprite
 	
 	private function MoveWorldToCamera()
 	{
-		this.x = (-camera.x * camera.zoom) + Lib.application.window.width / 2;
-		this.y = (-camera.y * camera.zoom) + Lib.application.window.height / 2;
-		this.scaleX = this.scaleY = camera.zoom * (Lib.application.window.height / 540);
+		var zzoom = camera.GetZZoom();
+		this.x = (-camera.x * camera.zoom * zzoom) + Lib.application.window.width / 2;
+		this.y = (-camera.y * camera.zoom * zzoom) + Lib.application.window.height / 2;
+		this.scaleX = this.scaleY = camera.zoom * zzoom * (Lib.application.window.height / 540);
 	}
 	
 	private function MoveCamera() 
@@ -308,7 +315,9 @@ class World extends Sprite
 		camera.x = (crossi.x + player.x) / 2;
 		camera.y = (crossi.y + player.y) / 2;
 		
-		camera.zoom = Math.max(1 - Math.max(0, ((Math.sqrt( Math.pow(crossi.x - player.x, 2) + Math.pow((crossi.y - player.y) * 1.778, 2)) / 2000)) - 0.075), 0.75);
+		camera.z = 100 + (100 * (1 - Math.max(1 - Math.max(0, ((Math.sqrt( Math.pow(crossi.x - player.x, 2) + Math.pow((crossi.y - player.y) * 1.778, 2)) / 2000)) - 0.075), 0.75)));
+		if (camera.z < 1) camera.z = 1;
+		//camera.zoom = Math.max(1 - Math.max(0, ((Math.sqrt( Math.pow(crossi.x - player.x, 2) + Math.pow((crossi.y - player.y) * 1.778, 2)) / 2000)) - 0.075), 0.75);
 		camera.x += (Math.random() * shake) - (shake / 2);
 		camera.y += (Math.random() * shake) - (shake / 2);
 		

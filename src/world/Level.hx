@@ -61,50 +61,98 @@ class Level extends Sprite
 		
 		for (bge in bgElements)
 		{
-			bge.x = PickBetweenRatio(cam.x, bge.xpos, bge.dist);
-			bge.y = PickBetweenRatio(cam.y, bge.ypos, bge.dist);
+			var ratio = 0.0;
+			bge.x = cam.x + (bge.xpos * (1 / cam.GetZZoom()));
+			bge.y = cam.y + (bge.ypos * (1 / cam.GetZZoom()));
+			bge.scaleX = bge.scaleY = 1 / cam.GetZZoom();
+			/*
+			bge.x = (Lib.application.window.width / 2) + (bge.xpos);
+			bge.y = (Lib.application.window.height / 2) + (bge.ypos);
+			*/
 		}
 		AdjustBlinders(currentRoom);
 	}
 	
 	public function AddBg()
 	{
+		/*
 		var bg:BackgroundElement = new BackgroundElement();
-		bg.dist = 0.0;
-		bg.xpos = Lib.application.window.width / 2;
-		bg.ypos = Lib.application.window.height / 2;
+		bg.dist = 10000.0;
+		bg.xpos = (Lib.application.window.width / 2) + 0;
+		bg.ypos = (Lib.application.window.height / 2) + 0;
 		bg.UsePic("img/testbg.png", 0, 2);
 		addChildAt(bg, 0);
 		bgElements.push(bg);
 		
 		var bg2:BackgroundElement = new BackgroundElement();
-		bg2.dist = 0.1;
-		bg2.xpos = (Lib.application.window.width / 2) + 1200;
-		bg2.ypos = (Lib.application.window.height / 2) + 400;
+		bg2.dist = 10;
+		bg2.xpos = (Lib.application.window.width / 2) + 120;
+		bg2.ypos = (Lib.application.window.height / 2) + 40;
 		bg2.UsePic("img/spacerock-1.png", 400, 0.2);
 		addChildAt(bg2, 1);
 		bgElements.push(bg2);
 		
 		var bg3:BackgroundElement = new BackgroundElement();
-		bg3.dist = 0.2;
-		bg3.xpos = (Lib.application.window.width / 2) - 350;
-		bg3.ypos = (Lib.application.window.height / 2) + 500;
+		bg3.dist = 5;
+		bg3.xpos = (Lib.application.window.width / 2) + -35;
+		bg3.ypos = (Lib.application.window.height / 2) + 50;
 		bg3.UsePic("img/spacerock-1.png", 300, 0.3);
 		addChildAt(bg3, 2);
 		bgElements.push(bg3);
 		
 		var bg4:BackgroundElement = new BackgroundElement();
-		bg4.dist = 0.3;
-		bg4.xpos = (Lib.application.window.width / 2) - 1000;
-		bg4.ypos = (Lib.application.window.height / 2) - 150;
+		bg4.dist = 3.33;
+		bg4.xpos = (Lib.application.window.width / 2) + -100;
+		bg4.ypos = (Lib.application.window.height / 2) + -15;
 		bg4.UsePic("img/spacerock-1.png", 200, 0.4);
 		addChildAt(bg4, 3);
 		bgElements.push(bg4);
 		
 		var bg5:BackgroundElement = new BackgroundElement();
-		bg5.dist = 0.4;
-		bg5.xpos = (Lib.application.window.width / 2) + 200;
-		bg5.ypos = (Lib.application.window.height / 2) - 300;
+		bg5.dist = 2.5;
+		bg5.xpos = (Lib.application.window.width / 2) + 20;
+		bg5.ypos = (Lib.application.window.height / 2) + -30;
+		bg5.UsePic("img/spacerock-1.png", 100, 0.5);
+		addChildAt(bg5, 4);
+		bgElements.push(bg5);
+		*/
+		
+		var bg:BackgroundElement = new BackgroundElement();
+		bg.dist = 10000.0;
+		bg.xpos = 0;
+		bg.ypos = 0;
+		bg.UsePic("img/testbg.png", 0, 2);
+		addChildAt(bg, 0);
+		bgElements.push(bg);
+		
+		var bg2:BackgroundElement = new BackgroundElement();
+		bg2.dist = 10;
+		bg2.xpos = 120;
+		bg2.ypos = 40;
+		bg2.UsePic("img/spacerock-1.png", 400, 0.2);
+		addChildAt(bg2, 1);
+		bgElements.push(bg2);
+		
+		var bg3:BackgroundElement = new BackgroundElement();
+		bg3.dist = 5;
+		bg3.xpos = -35;
+		bg3.ypos = 50;
+		bg3.UsePic("img/spacerock-1.png", 300, 0.3);
+		addChildAt(bg3, 2);
+		bgElements.push(bg3);
+		
+		var bg4:BackgroundElement = new BackgroundElement();
+		bg4.dist = 3.33;
+		bg4.xpos = -100;
+		bg4.ypos = -15;
+		bg4.UsePic("img/spacerock-1.png", 200, 0.4);
+		addChildAt(bg4, 3);
+		bgElements.push(bg4);
+		
+		var bg5:BackgroundElement = new BackgroundElement();
+		bg5.dist = 2.5;
+		bg5.xpos = 20;
+		bg5.ypos = -30;
 		bg5.UsePic("img/spacerock-1.png", 100, 0.5);
 		addChildAt(bg5, 4);
 		bgElements.push(bg5);
@@ -112,11 +160,13 @@ class Level extends Sprite
 	
 	public function BgSwitchRoom(deltaX:Float, deltaY:Float)
 	{
+		/*
 		for (bge in bgElements)
 		{
 			bge.xpos -= deltaX;
 			bge.ypos -= deltaY;
 		}
+		*/
 	}
 	
 	public function StartRoom():LevelRoom

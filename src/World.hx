@@ -84,7 +84,6 @@ class World extends Sprite
 		shipLayer.addChild(player);
 		
 		camera = new Camera();
-		MoveWorldToCamera();
 		
 		CreateCrosshairs();
 		
@@ -92,11 +91,18 @@ class World extends Sprite
 		LoadLevels();
 		
 		LoadEntsFromRoom(level.currentRoom);
+		
+		MoveCamera();
+		MoveWorldToCamera();
+		level.UpdateDisplay(camera);
 	}
 	
+	var timer:Float = 0;
 	public function Update()
 	{
 		if (paused) return;
+		
+		timer += 1;
 		
 		player.LookAt(mouseX, mouseY);
 		
@@ -315,11 +321,14 @@ class World extends Sprite
 		camera.x = (crossi.x + player.x) / 2;
 		camera.y = (crossi.y + player.y) / 2;
 		
-		camera.z = 100 + (100 * (1 - Math.max(1 - Math.max(0, ((Math.sqrt( Math.pow(crossi.x - player.x, 2) + Math.pow((crossi.y - player.y) * 1.778, 2)) / 2000)) - 0.075), 0.75)));
+		camera.z = 100 + (100 * (1 - Math.max(1 - Math.max(0, (Math.sqrt( Math.pow(crossi.x - player.x, 2) + Math.pow((crossi.y - player.y) * 1.778, 2)) / 2000) - 0.075), 0.75)));
+		
 		if (camera.z < 1) camera.z = 1;
 		//camera.zoom = Math.max(1 - Math.max(0, ((Math.sqrt( Math.pow(crossi.x - player.x, 2) + Math.pow((crossi.y - player.y) * 1.778, 2)) / 2000)) - 0.075), 0.75);
 		camera.x += (Math.random() * shake) - (shake / 2);
 		camera.y += (Math.random() * shake) - (shake / 2);
+		
+		//DebugPage.Log(" " + Lib.application.window.width);
 		
 		shake *= 0.8;
 	}

@@ -30,4 +30,17 @@ class Camera
 			return 1.0;
 		}
 	}
+	
+	//used for distant background objects
+	public function GetDistZZoom(dist:Float):Float
+	{
+		if ((z+dist) >= 1.0)
+		{
+			return 100 / (z+dist);
+		}
+		else
+		{
+			return 1.0;
+		}
+	}
 }

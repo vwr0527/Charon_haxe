@@ -61,10 +61,13 @@ class Level extends Sprite
 		
 		for (bge in bgElements)
 		{
-			var ratio = 0.0;
-			bge.x = cam.x + (bge.xpos * (1 / cam.GetZZoom()));
-			bge.y = cam.y + (bge.ypos * (1 / cam.GetZZoom()));
-			bge.scaleX = bge.scaleY = 1 / cam.GetZZoom();
+			var fakex:Float = (bge.xpos - cam.x + (Lib.application.window.width / 2)) * cam.GetDistZZoom(bge.dist);
+			var fakey:Float = (bge.ypos - cam.y + (Lib.application.window.height / 2)) * cam.GetDistZZoom(bge.dist);
+			var fakesize:Float = bge.size * cam.GetDistZZoom(bge.dist);
+			bge.x = cam.x + (fakex * (1 / cam.GetZZoom()));
+			bge.y = cam.y + (fakey * (1 / cam.GetZZoom()));
+			bge.scaleX = bge.scaleY = fakesize / cam.GetZZoom();
+			
 			/*
 			bge.x = (Lib.application.window.width / 2) + (bge.xpos);
 			bge.y = (Lib.application.window.height / 2) + (bge.ypos);
@@ -121,10 +124,11 @@ class Level extends Sprite
 		bg.dist = 10000.0;
 		bg.xpos = 0;
 		bg.ypos = 0;
+		bg.size = 100.0;
 		bg.UsePic("img/testbg.png", 0, 2);
 		addChildAt(bg, 0);
 		bgElements.push(bg);
-		
+		/*
 		var bg2:BackgroundElement = new BackgroundElement();
 		bg2.dist = 10;
 		bg2.xpos = 120;
@@ -156,6 +160,16 @@ class Level extends Sprite
 		bg5.UsePic("img/spacerock-1.png", 100, 0.5);
 		addChildAt(bg5, 4);
 		bgElements.push(bg5);
+		*/
+		for (i in 1...20) {
+			var bg2:BackgroundElement = new BackgroundElement();
+			bg2.dist = (40.0 * (25-i)) - (Math.random() * 40.0);
+			bg2.xpos = (Math.random() * 5000) - 2500;
+			bg2.ypos = (Math.random() * 3000) - 1500;
+			bg2.UsePic("img/spacerock-1.png", Math.random() * 360, (Math.random() * 2) + 0.5);
+			addChildAt(bg2, i);
+			bgElements.push(bg2);
+		}
 	}
 	
 	public function BgSwitchRoom(deltaX:Float, deltaY:Float)

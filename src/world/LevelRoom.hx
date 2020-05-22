@@ -7,6 +7,7 @@ import openfl.utils.Dictionary;
 import world.Camera;
 import world.LevelTile;
 import world.tiles.DoorTile;
+import openfl.Lib;
 
 /**
  * ...
@@ -115,8 +116,8 @@ class LevelRoom extends Sprite
 	
 	public function SetVisibleTiles(cam:Camera) 
 	{
-		var camVisW = 480 * (1 / cam.zoom);
-		var camVisH = 270 * (1 / cam.zoom);
+		var camVisW = (Lib.application.window.width / 2) * (1 / (cam.zoom*cam.GetZZoom()));
+		var camVisH = (Lib.application.window.height / 2) * (1 / (cam.zoom*cam.GetZZoom()));
 		var startx:Int = GetIndexAtX(cam.x - camVisW);
 		var starty:Int = GetIndexAtY(cam.y - camVisH);
 		var endx:Int = GetIndexAtX(cam.x + camVisW);

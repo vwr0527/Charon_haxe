@@ -7,21 +7,21 @@ import openfl.system.System;
  * ...
  * @author Victor Reynolds
  */
-class MainMenu extends MenuPage 
+class OptionsMenu extends MenuPage 
 {
+	var title:MenuElement;
 	var info:MenuElement;
-	var resumeGame:Bool = false;
-	var switchToOptions:Bool = false;
+	var returnToMainMenu:Bool = false;
 	
 	public function new() 
 	{
 		super();
 		
-		addSelection("resume", 0.4);
-		addSelection("new game", 0.5);
-		addSelection("load game", 0.6);
-		addSelection("options", 0.7);
-		addSelection("exit", 0.8);
+		addSelection("option 1", 0.4);
+		addSelection("option 2", 0.5);
+		addSelection("option 3", 0.6);
+		addSelection("option 4", 0.7);
+		addSelection("main menu", 0.8);
 		
 		super.Update();
 	}
@@ -38,6 +38,8 @@ class MainMenu extends MenuPage
 	{
 		super.Update();
 		
+		if (Input.KeyDown(27)) returnToMainMenu = true;
+		
 		for (i in 0...(elements.length))
 		{
 			var elem:MenuElement = elements[i];
@@ -50,12 +52,8 @@ class MainMenu extends MenuPage
 				{
 					switch (i) 
 					{
-						case 0:
-							resumeGame = true;
-						case 3:
-							switchToOptions = true;
 						case 4:
-							System.exit(0);
+							returnToMainMenu = true;
 					}
 				}
 			}
@@ -66,21 +64,11 @@ class MainMenu extends MenuPage
 		}
 	}
 	
-	public function SwitchToOptions():Bool
+	public function ReturnToMainMenu():Bool
 	{
-		if (switchToOptions)
+		if (returnToMainMenu)
 		{
-			switchToOptions = false;
-			return true;
-		}
-		return false;
-	}
-	
-	public function ResumeGame():Bool
-	{
-		if (resumeGame)
-		{
-			resumeGame = false;
+			returnToMainMenu = false;
 			return true;
 		}
 		return false;

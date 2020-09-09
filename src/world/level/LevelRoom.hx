@@ -60,9 +60,12 @@ class LevelRoom extends Sprite
 			}
 		}
 		pics = new Array();
+		triangles = new Array<LevelTriangle>();
+		triangles.push(new LevelTriangle(110, 110,  200, 110, 110, 200));
+		addChild(triangles[0]);
 	}
 	
-	public function Update() 
+	public function Update()
 	{
 		var numtiles:Int = 0;
 		

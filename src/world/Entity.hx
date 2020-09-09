@@ -5,6 +5,7 @@ import openfl.utils.Function;
 import world.HitShape.CollisionResult;
 import world.level.LevelRoom;
 import world.level.LevelTile;
+import world.level.LevelTriangle;
 import world.level.Level;
 
 /**
@@ -65,6 +66,67 @@ class Entity extends Sprite
 	{
 		CollideLevelTiles(level);
 		CollideLevelBorders(level);
+		CollideLevelTriangles(level);
+	}
+	
+	public function CollideLevelTriangles(level:Level) 
+	{
+		var room:LevelRoom = level.currentRoom;
+		var tpx = px;
+		var tpy = py;
+		var didHit = false;
+		var bounceLimit = 6;
+		var numBounces = 0;
+		
+		do
+		{
+			didHit = false;
+			var pushOutX:Float = 0.0;
+			var pushOutY:Float = 0.0;
+			
+			var lastHitTri:LevelTriangle = room.triangles[0];
+			var lowestMoveFraction:Float = 1.0;
+			
+			for (i in 0...room.triangles.length)
+			{
+				if (!room.triangles[i].noclip)
+				{
+					var collisionResult:CollisionResult = hitbox.Collide(room.triangles[i].x - x, room.triangles[i].y - y, x - tpx, y - tpy, room.triangles[i].hitShape);
+					if (collisionResult.movefraction < lowestMoveFraction)
+					{
+						lowestMoveFraction = collisionResult.movefraction;
+						lastHitTri = room.triangles[i];
+						pushOutX = collisionResult.pushOutX;
+						pushOutY = collisionResult.pushOutY;
+					}
+				}
+			}
+			if (lowestMoveFraction < 1.0)
+			{
+				++numBounces;
+				didHit = true;
+				
+				var ox = x;
+				var oy = y;
+				var wx = (x - ((x - tpx) * (1.001 - lowestMoveFraction))) + (pushOutX / 1000);
+				var wy = (y - ((y - tpy) * (1.001 - lowestMoveFraction))) - (pushOutY / 1000);
+				
+				var factor = -(1 + elasticity) * dotprod(pushOutX, -pushOutY, ox - wx, oy - wy);
+				x = ox + (factor * pushOutX) + (pushOutX / 1000);
+				y = oy + (factor * -pushOutY) - (pushOutY / 1000);
+				
+				tpx = wx;
+				tpy = wy;
+				
+				factor = -(1 + elasticity) * dotprod(pushOutX, -pushOutY, xv, yv);
+				xv += factor * pushOutX;
+				yv += factor * -pushOutY;
+			}
+			if (numBounces >= bounceLimit)
+			{
+				didHit = false;
+			}
+		} while (didHit);
 	}
 	
 	public function CollideLevelBorders(level:Level)

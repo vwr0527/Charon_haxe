@@ -75,6 +75,8 @@ class Player extends Entity
 		
 		rf = 0.2;//0.8;
 		tf = 0.0075;//0.98;
+		tf = 0.01;
+		speed = 0.3;
 	}
 	
 	public override function Update(Spawn:Function)

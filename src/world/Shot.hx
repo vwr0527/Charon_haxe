@@ -13,6 +13,7 @@ import world.HitShape.CollisionResult;
 import world.level.Level;
 import world.level.LevelRoom;
 import world.level.LevelTile;
+import world.level.LevelTriangle;
 import world.level.tiles.DoorTile;
 
 /**
@@ -77,11 +78,74 @@ class Shot extends Entity
 	{
 		CollideLevelTiles(level);
 		CollideLevelBorders(level);
+		CollideLevelTriangles(level);
 		if (shotHit && age <= 1)
 		{
 			var shotwidth = Math.sqrt(Math.pow(x - px, 2) + Math.pow(y - py, 2)) / 45;
 			laserSprite.scaleY = shotwidth;
 		}
+	}
+	
+	public override function CollideLevelTriangles(level:Level)
+	{
+		var room:LevelRoom = level.currentRoom;
+		var tpx = px;
+		var tpy = py;
+		var didHit = false;
+		var bounceLimit = 6;
+		var numBounces = 0;
+		
+		do
+		{
+			didHit = false;
+			var pushOutX:Float = 0.0;
+			var pushOutY:Float = 0.0;
+			
+			var lastHitTri:LevelTriangle = room.triangles[0];
+			var lowestMoveFraction:Float = 1.0;
+			
+			for (i in 0...room.triangles.length)
+			{
+				if (!room.triangles[i].noclip)
+				{
+					if (room.triangles[i].PointInside(tpx, tpy))
+					{
+						shotHit = true;
+						x = tpx;
+						y = tpy;
+						xv = 0;
+						yv = 0;
+						
+						return;
+					}
+						
+					var collisionResult:CollisionResult = hitbox.Collide(room.triangles[i].x - x, room.triangles[i].y - y, x - tpx, y - tpy, room.triangles[i].hitShape);
+					if (collisionResult.movefraction < lowestMoveFraction)
+					{
+						lowestMoveFraction = collisionResult.movefraction;
+						lastHitTri = room.triangles[i];
+						pushOutX = collisionResult.pushOutX;
+						pushOutY = collisionResult.pushOutY;
+					}
+				}
+			}
+			if (lowestMoveFraction < 1.0)
+			{
+				++numBounces;
+				didHit = true;
+				
+				x = x - ((x - tpx) * (1 - lowestMoveFraction));
+				y = y - ((y - tpy) * (1 - lowestMoveFraction));
+				xv = 0;
+				yv = 0;
+				
+				shotHit = true;
+			}
+			if (numBounces >= bounceLimit)
+			{
+				didHit = false;
+			}
+		} while (didHit);
 	}
 	
 	public override function CollideLevelBorders(level:Level)

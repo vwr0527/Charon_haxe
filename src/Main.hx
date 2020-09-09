@@ -157,6 +157,7 @@ class Main extends Sprite
 		{
 			prevFPS[i] = 1;
 		}
+		time = Lib.getTimer();
 		trace("back");
 	}
 	

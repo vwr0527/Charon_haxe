@@ -2,9 +2,9 @@ package util;
 import openfl.Assets;
 import openfl.utils.Dictionary;
 import world.Enemy;
-import world.Level;
-import world.LevelRoom;
-import world.LevelTile;
+import world.level.Level;
+import world.level.LevelRoom;
+import world.level.LevelTile;
 
 /**
  * ...

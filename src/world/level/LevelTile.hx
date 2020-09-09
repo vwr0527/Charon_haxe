@@ -1,14 +1,14 @@
-package world;
+package world.level;
 import openfl.Assets;
 import openfl.display.Bitmap;
 import openfl.display.BitmapData;
 import openfl.display.Sprite;
 import openfl.geom.Point;
-import world.tiles.BLWallTile;
-import world.tiles.BRWallTile;
-import world.tiles.TLWallTile;
-import world.tiles.TRWallTile;
-import world.tiles.WallTile;
+import world.level.tiles.BLWallTile;
+import world.level.tiles.BRWallTile;
+import world.level.tiles.TLWallTile;
+import world.level.tiles.TRWallTile;
+import world.level.tiles.WallTile;
 import openfl.Vector;
 
 /**
@@ -53,8 +53,6 @@ class LevelTile extends Sprite
 			addChild(pic);
 			
 			//hitShape.graphic.visible = true;
-			//hitShape.graphic.graphics.beginFill(0xFF8000); 
-			//hitShape.graphic.graphics.drawTriangles( new Vector<Float>([ 10,10,  100,10,  10,100, 110,10, 110,100, 20,100]));
 			//addChild(hitShape.graphic);
 			
 		} catch (msg:String) {

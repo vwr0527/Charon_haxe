@@ -13,8 +13,8 @@ import world.Camera;
 import world.Enemy;
 import world.Entity;
 import world.Explosion;
-import world.Level;
-import world.LevelRoom;
+import world.level.Level;
+import world.level.LevelRoom;
 import world.Shot;
 import world.Player;
 

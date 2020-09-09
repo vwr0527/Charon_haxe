@@ -11,8 +11,10 @@ import openfl.Assets;
 import openfl.display.Sprite;
 import openfl.display.Bitmap;
 import world.HitShape.CollisionResult;
+import world.level.Level;
+import world.level.LevelTile;
 import world.shots.NormalLaser;
-import world.tiles.DoorTile;
+import world.level.tiles.DoorTile;
 
 /**
  * ...

@@ -10,7 +10,10 @@ import openfl.Assets;
 import openfl.geom.Rectangle;
 import openfl.utils.Function;
 import world.HitShape.CollisionResult;
-import world.tiles.DoorTile;
+import world.level.Level;
+import world.level.LevelRoom;
+import world.level.LevelTile;
+import world.level.tiles.DoorTile;
 
 /**
  * ...

@@ -1,12 +1,14 @@
-package world;
+package world.level;
 import openfl.display.Bitmap;
 import menu.DebugPage;
 import openfl.display.BitmapData;
 import openfl.display.Sprite;
 import openfl.utils.Dictionary;
 import world.Camera;
-import world.LevelTile;
-import world.tiles.DoorTile;
+import world.level.LevelTile;
+import world.level.DoorController;
+import world.level.LevelPic;
+import world.level.tiles.DoorTile;
 import openfl.Lib;
 
 /**
@@ -25,6 +27,7 @@ class LevelRoom extends Sprite
 	public var ytiles:Int;
 	
 	public var tiles:Array<Array<LevelTile>>;
+	public var triangles:Array<LevelTriangle>;
 	public var doors:Dictionary<String,DoorController>;
 	public var ents:Array<Entity>;
 	public var pics:Array<LevelPic>;

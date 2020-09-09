@@ -1,5 +1,5 @@
-package world;
-import world.tiles.DoorTile;
+package world.level;
+import world.level.tiles.DoorTile;
 
 /**
  * ...

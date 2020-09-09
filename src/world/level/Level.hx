@@ -1,11 +1,11 @@
-package world;
+package world.level;
 import menu.DebugPage;
 import openfl.Lib;
 import openfl.display.Sprite;
-import world.LevelRoom;
-import world.tiles.DoorTile;
-import world.tiles.HDoorTile;
-import world.tiles.VDoorTile;
+import world.level.LevelRoom;
+import world.level.tiles.DoorTile;
+import world.level.tiles.HDoorTile;
+import world.level.tiles.VDoorTile;
 
 /**
  * ...

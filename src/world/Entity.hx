@@ -3,8 +3,9 @@ package world;
 import openfl.display.Sprite;
 import openfl.utils.Function;
 import world.HitShape.CollisionResult;
-import world.LevelRoom;
-import world.LevelTile;
+import world.level.LevelRoom;
+import world.level.LevelTile;
+import world.level.Level;
 
 /**
  * ...

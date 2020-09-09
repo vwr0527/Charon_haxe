@@ -34,6 +34,8 @@ class NormalLaser extends Shot
 		
 		var bitmap2 = new Bitmap(openfl.Assets.getBitmapData("img/hit01.png"));
 		hitSprite.addChild(bitmap2);
+		bitmap2.width *= 2.0;
+		bitmap2.height = bitmap2.width;
 		bitmap2.x -= bitmap2.width * 0.5;
 		bitmap2.y -= bitmap2.height * 0.5;
 		bitmap2.smoothing = true;

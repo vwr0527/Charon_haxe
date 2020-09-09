@@ -9,6 +9,7 @@ import world.tiles.BRWallTile;
 import world.tiles.TLWallTile;
 import world.tiles.TRWallTile;
 import world.tiles.WallTile;
+import openfl.Vector;
 
 /**
  * ...
@@ -50,6 +51,12 @@ class LevelTile extends Sprite
 			scaleY = scaleX = scaling;
 			rotation = rot;
 			addChild(pic);
+			
+			//hitShape.graphic.visible = true;
+			//hitShape.graphic.graphics.beginFill(0xFF8000); 
+			//hitShape.graphic.graphics.drawTriangles( new Vector<Float>([ 10,10,  100,10,  10,100, 110,10, 110,100, 20,100]));
+			//addChild(hitShape.graphic);
+			
 		} catch (msg:String) {
 			trace(msg);
 			hitShape.graphic.visible = true;

@@ -6,6 +6,7 @@ import openfl.events.Event;
 import openfl.events.TimerEvent;
 import openfl.utils.Timer;
 import openfl.net.SharedObject;
+import openfl.Lib;
 
 /**
  * ...
@@ -18,17 +19,20 @@ class Main extends Sprite
 	var input:Input;
 	var storage:SharedObject;
 	
-	var calcFpsTimer:Timer;
-	var frameTimer:Timer;
-	var calculatingFPS:Bool = true;
-	var count = 0;
-	var prevcount = 0;
+	var updateTimer:Timer;
+	var stopped:Bool = false;
 	
 	static var EnterFrameMode = true;
 	static var TargetFPS = 60;
 	
 	static var FrameModeChange = false;
-	static var fps = 0;
+	static public var fps = 60.0;
+	static public var prevFPS:Array<Float>;
+	static var pfpsc:Int;
+	
+	static var time:Int;
+	static var currenttime:Int;
+	static var elapsed:Int;
 	
 	public function new() 
 	{
@@ -59,22 +63,73 @@ class Main extends Sprite
 		addEventListener(Event.DEACTIVATE, LostFocus);
 		addEventListener(Event.ACTIVATE, RegainedFocus);
 		
-		calcFpsTimer = new Timer(1000);
-		calcFpsTimer.addEventListener(TimerEvent.TIMER, CalcFPS);
-		calcFpsTimer.start();
-		
-		frameTimer = new Timer(1000/TargetFPS);
-		frameTimer.addEventListener(TimerEvent.TIMER, Update);
-		if (!EnterFrameMode) frameTimer.start();
+		updateTimer = new Timer(1000/TargetFPS);
+		updateTimer.addEventListener(TimerEvent.TIMER, Update);
+		if (!EnterFrameMode) updateTimer.start();
+		else updateTimer.stop();
 		
 		Mouse.hide();
+		time = 0;
+		prevFPS = new Array<Float>();
+		for (i in 0...60)
+		{
+			prevFPS.push(1);
+		}
+		pfpsc = 0;
+		time = Lib.getTimer();
 	}
 	
 	public function Update(e)
 	{
-		++count;
+		currenttime = Lib.getTimer();
+		elapsed = currenttime - time;
+		time = currenttime;
+		prevFPS[pfpsc] = (elapsed * 1.0);
+		pfpsc += 1;
+		if (pfpsc >= 60) pfpsc = 0;
+		fps = 0;
 		
-		if (calculatingFPS) return;
+		for (i in 0...60)
+		{
+			fps += prevFPS[i];
+		}
+		fps = 1000 / (fps / 60);
+		
+		if (EnterFrameMode == false)
+		{
+			if (fps > TargetFPS)
+			{
+				updateTimer.delay = (1000 / TargetFPS);
+			}
+			else if (fps < TargetFPS - 1)
+			{
+				updateTimer.delay = (1000 / TargetFPS) - 2;
+			}
+			else if (fps < TargetFPS - 0.5)
+			{
+				updateTimer.delay = (1000 / TargetFPS) - 1;
+			}
+		}
+		
+		//fps = 1000.0 / ((Lib.getTimer() - time) * 1.0);
+		//time = Lib.getTimer();
+		
+		if (stopped) return;
+		
+		if (FrameModeChange)
+		{
+			if (EnterFrameMode == true)
+			{
+				updateTimer.stop();
+				addEventListener(Event.ENTER_FRAME, Update);
+			}
+			else
+			{
+				updateTimer.start();
+				removeEventListener(Event.ENTER_FRAME, Update);
+			}
+			FrameModeChange = false;
+		}
 		
 		if (!menu.isActive)
 		{
@@ -91,40 +146,18 @@ class Main extends Sprite
 	
 	public function LostFocus(e)
 	{
-		calcFpsTimer.stop();
+		stopped = true;
+		trace("hello");
 	}
 	
 	public function RegainedFocus(e)
 	{
-		calcFpsTimer.reset();
-		calcFpsTimer.start();
-		
-		calculatingFPS = true;
-		count = 0;
-		prevcount = 0;
-		fps = 0;
-	}
-	
-	public function CalcFPS(e)
-	{	
-		fps = count - prevcount;
-		prevcount = count;
-		calculatingFPS = false;
-		
-		if (FrameModeChange)
+		stopped = false;
+		for (i in 0...60)
 		{
-			if (EnterFrameMode == true)
-			{
-				frameTimer.stop();
-				addEventListener(Event.ENTER_FRAME, Update);
-			}
-			else
-			{
-				frameTimer.start();
-				removeEventListener(Event.ENTER_FRAME, Update);
-			}
-			FrameModeChange = false;
+			prevFPS[i] = 1;
 		}
+		trace("back");
 	}
 	
 	public static function ChangeFrameMode(setEnterFrameMode)

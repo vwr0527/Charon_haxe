@@ -21,7 +21,7 @@ class MainMenu extends MenuPage
 		addSelection("new game", 0.5);
 		addSelection("load game", 0.6);
 		addSelection("options", 0.7);
-		addSelection("exit", 0.8);
+		addSelection("edit level", 0.8);
 		
 		super.Update();
 	}

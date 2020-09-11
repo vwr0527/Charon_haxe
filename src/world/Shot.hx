@@ -100,15 +100,34 @@ class Shot extends Entity
 			didHit = false;
 			var pushOutX:Float = 0.0;
 			var pushOutY:Float = 0.0;
+			var xmin = room.GetIndexAtX(Math.min(tpx, x) + hitbox.GetXmin());
+			var xmax = room.GetIndexAtX(Math.max(tpx, x) + hitbox.GetXmax());
+			var ymin = room.GetIndexAtY(Math.min(tpy, y) + hitbox.GetYmin());
+			var ymax = room.GetIndexAtY(Math.max(tpy, y) + hitbox.GetYmax());
 			
-			var lastHitTri:LevelTriangle = room.triangles[0];
+			var lastHitTri:LevelTriangle = null;
 			var lowestMoveFraction:Float = 1.0;
 			
-			for (i in 0...room.triangles.length)
+			var allTriangles:Array<LevelTriangle> = new Array<LevelTriangle>();
+			
+			for (i in ymin...ymax + 1)
 			{
-				if (!room.triangles[i].noclip)
+				for (j in xmin...xmax + 1)
 				{
-					if (room.triangles[i].PointInside(tpx, tpy))
+					if (room.tiles[i][j] != null && room.tiles[i][j].levelTris.length > 0)
+					{
+						for (k in 0...room.tiles[i][j].levelTris.length)
+						{
+							allTriangles.push(room.tiles[i][j].levelTris[k]);
+						}
+					}
+				}
+			}
+			for (i in 0...allTriangles.length)
+			{
+				if (!allTriangles[i].noclip)
+				{
+					if (allTriangles[i].PointInside(tpx, tpy))
 					{
 						shotHit = true;
 						x = tpx;
@@ -119,11 +138,11 @@ class Shot extends Entity
 						return;
 					}
 						
-					var collisionResult:CollisionResult = hitbox.Collide(room.triangles[i].x - x, room.triangles[i].y - y, x - tpx, y - tpy, room.triangles[i].hitShape);
+					var collisionResult:CollisionResult = hitbox.Collide(allTriangles[i].x - x, allTriangles[i].y - y, x - tpx, y - tpy, allTriangles[i].hitShape);
 					if (collisionResult.movefraction < lowestMoveFraction)
 					{
 						lowestMoveFraction = collisionResult.movefraction;
-						lastHitTri = room.triangles[i];
+						lastHitTri = allTriangles[i];
 						pushOutX = collisionResult.pushOutX;
 						pushOutY = collisionResult.pushOutY;
 					}
@@ -184,7 +203,7 @@ class Shot extends Entity
 			{
 				for (j in xmin...xmax + 1)
 				{
-					if (room.tiles[i][j] == null || room.tiles[i][j].hitShape == null) continue;
+					if (room.tiles[i][j] == null || room.tiles[i][j].hitShape == null || (room.tiles[i][j].noclip && !Std.is(room.tiles[i][j],DoorTile))) continue;
 					else
 					{
 						if (room.tiles[i][j].PointInside(tpx, tpy))

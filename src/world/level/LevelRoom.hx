@@ -5,6 +5,7 @@ import openfl.display.BitmapData;
 import openfl.display.Sprite;
 import openfl.utils.Dictionary;
 import world.Camera;
+import world.HitShape;
 import world.level.LevelTile;
 import world.level.DoorController;
 import world.level.LevelPic;
@@ -61,8 +62,6 @@ class LevelRoom extends Sprite
 		}
 		pics = new Array();
 		triangles = new Array<LevelTriangle>();
-		triangles.push(new LevelTriangle(110, 110,  200, 110, 110, 200));
-		addChild(triangles[0]);
 	}
 	
 	public function Update()
@@ -86,6 +85,44 @@ class LevelRoom extends Sprite
 		{
 			doors[id].Update();
 		}
+	}
+	
+	public function AddTriangle(x1:Float, y1:Float, x2:Float, y2:Float, x3:Float, y3:Float)
+	{
+		var tri:LevelTriangle = new LevelTriangle(x1, y1, x2, y2, x3, y3);
+		triangles.push(tri);
+		
+		var minxi:Int = GetIndexAtX(tri.hitShape.GetXmin());
+		var maxxi:Int = GetIndexAtX(tri.hitShape.GetXmax());
+		var minyi:Int = GetIndexAtY(tri.hitShape.GetYmin());
+		var maxyi:Int = GetIndexAtY(tri.hitShape.GetYmax());
+		for (i in minyi...maxyi + 1)
+		{
+			for (j in minxi...maxxi + 1)
+			{
+				var tileX = (j * tsize) + tsize / 2;
+				var tileY = (i * tsize) + tsize / 2;
+				
+				var tileHitbox:HitShape = new HitShape();
+				tileHitbox.MakeSquare(tsize);
+				
+				if (tri.hitShape.TriangleRectOverlap(0,0,tileX,tileY,tileHitbox))
+				{
+					tiles[i][j] = new LevelTile();
+					tiles[i][j].hitShape = tileHitbox;
+					tiles[i][j].x = tileX;
+					tiles[i][j].y = tileY;
+					tiles[i][j].noclip = true;
+					tiles[i][j].levelTris.push(tri);
+					//tiles[i][j].hitShape.graphic.visible = true;
+					//tiles[i][j].addChild(tiles[i][j].hitShape.graphic);
+					addChild(tiles[i][j]);
+				}
+			}
+		}
+		addChild(tri);
+		
+		trace("minxi : " + minxi + " maxxi : " + maxxi + " minyi : " + minyi + " maxyi : " + maxyi);
 	}
 	
 	public function SetTile(tile:LevelTile, xi:Int, yi:Int)

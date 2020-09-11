@@ -9,10 +9,10 @@ import openfl.geom.Point;
 class HitShape
 {
 	var p:Array<Point>;
-	var xmin:Float = 0;
-	var xmax:Float = 0;
-	var ymin:Float = 0;
-	var ymax:Float = 0;
+	var xmin:Float = Math.POSITIVE_INFINITY;
+	var xmax:Float = Math.NEGATIVE_INFINITY;
+	var ymin:Float = Math.POSITIVE_INFINITY;
+	var ymax:Float = Math.NEGATIVE_INFINITY;
 	public var graphic:Sprite;
 	
 	public function new() 
@@ -149,6 +149,23 @@ class HitShape
 		}
 	}
 	
+	public function LineLineIntersect(startx:Float, starty:Float, endx:Float, endy:Float, wallx1:Float, wally1:Float, wallx2:Float, wally2:Float):Bool
+	{
+		var s1_x:Float = endx - startx;
+		var s1_y:Float = endy - starty;
+		var s2_x:Float = wallx2 - wallx1;
+		var s2_y:Float = wally2 - wally1;
+		
+		var s:Float = ( -s1_y * (startx - wallx1) + s1_x * (starty - wally1)) / ( -s2_x * s1_y + s1_x * s2_y);
+		var t:Float = ( s2_x * (starty - wally1) - s2_y * (startx - wallx1)) / ( -s2_x * s1_y + s1_x * s2_y);
+		
+		if (s >= 0 && s <= 1 && t >= 0 && t <= 1)
+		{
+			return true;
+		}
+		return false;
+	}
+	
 	//copied from http://blackpawn.com/texts/pointinpoly/
 	public function PointInTriangle(xpos:Float, ypos:Float):Bool
 	{
@@ -194,6 +211,45 @@ class HitShape
 			if (ymax + y1 < other.ymin + y2 || ymin + y1 > other.ymax + y2) return false;
 			
 			return true;
+		}
+		return false;
+	}
+	
+	public function TriangleRectOverlap(x1:Float, y1:Float, x2:Float, y2:Float, other:HitShape):Bool
+	{
+		if (p.length == 3 && other.GetNumPts() == 4)
+		{
+			for (i in 0...3)
+			{
+				var ax = p[i].x + x1;
+				var ay = p[i].y + y1;
+				
+				var k = (i + 1) % 3;
+				
+				var bx = p[k].x + x1;
+				var by = p[k].y + y1;
+				
+				for (j in 0...4)
+				{
+					var l = (j + 1) % 3;
+					
+					var cx = other.GetX(j) + x2;
+					var cy = other.GetY(j) + y2;
+					
+					var dx = other.GetX(l) + x2;
+					var dy = other.GetY(l) + y2;
+					
+					if (LineLineIntersect(ax, ay, bx, by, cx, cy, dx, dy))
+						return true;
+				}
+				if (other.PointInRect(ax - x2, ay - y2))
+					return true;
+			}
+			for (j in 0...4)
+			{
+				if (PointInTriangle(other.GetX(j) + x2, other.GetY(j) + y2))
+					return true;
+			}
 		}
 		return false;
 	}

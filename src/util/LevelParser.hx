@@ -188,6 +188,8 @@ class LevelParser
 				}
 			}
 			
+			room.AddTriangle(110, 110, 210, 110, 110, 210);
+			
 			level.rooms.push(room);
 		}
 		

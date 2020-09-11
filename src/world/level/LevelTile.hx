@@ -20,6 +20,7 @@ class LevelTile extends Sprite
 	public var hitShape:HitShape;
 	public var pic:Bitmap;
 	public var noclip:Bool;
+	public var levelTris:Array<LevelTriangle>;
 	
 	public static var size:Float = 32;
 	
@@ -28,6 +29,7 @@ class LevelTile extends Sprite
 		super();
 		hitShape = new HitShape();
 		noclip = false;
+		levelTris = new Array<LevelTriangle>();
 	}
 	
 	public function UsePic(assetName:String, rot:Float = 0, scaling:Float = 1.0)

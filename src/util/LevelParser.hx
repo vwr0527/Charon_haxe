@@ -188,7 +188,7 @@ class LevelParser
 				}
 			}
 			
-			room.AddTriangle(110, 110, 210, 110, 110, 210);
+			room.AddTriangle(123, 513, 54, 234, 312, 155);
 			
 			level.rooms.push(room);
 		}

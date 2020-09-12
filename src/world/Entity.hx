@@ -66,87 +66,6 @@ class Entity extends Sprite
 	{
 		CollideLevelTiles(level);
 		CollideLevelBorders(level);
-		CollideLevelTriangles(level);
-	}
-	
-	public function CollideLevelTriangles(level:Level) 
-	{
-		var room:LevelRoom = level.currentRoom;
-		var tpx = px;
-		var tpy = py;
-		var didHit = false;
-		var bounceLimit = 6;
-		var numBounces = 0;
-			
-		do
-		{
-			didHit = false;
-			var pushOutX:Float = 0.0;
-			var pushOutY:Float = 0.0;
-			
-			var xmin = room.GetIndexAtX(Math.min(tpx, x) + hitbox.GetXmin());
-			var xmax = room.GetIndexAtX(Math.max(tpx, x) + hitbox.GetXmax());
-			var ymin = room.GetIndexAtY(Math.min(tpy, y) + hitbox.GetYmin());
-			var ymax = room.GetIndexAtY(Math.max(tpy, y) + hitbox.GetYmax());
-			
-			var lastHitTri:LevelTriangle = null;
-			var lowestMoveFraction:Float = 1.0;
-			
-			var allTriangles:Array<LevelTriangle> = new Array<LevelTriangle>();
-			
-			for (i in ymin...ymax + 1)
-			{
-				for (j in xmin...xmax + 1)
-				{
-					if (room.tiles[i][j] != null && room.tiles[i][j].levelTris.length > 0)
-					{
-						for (k in 0...room.tiles[i][j].levelTris.length)
-						{
-							allTriangles.push(room.tiles[i][j].levelTris[k]);
-						}
-					}
-				}
-			}
-			for (i in 0...allTriangles.length)
-			{
-				if (!allTriangles[i].noclip)
-				{
-					var collisionResult:CollisionResult = hitbox.Collide(allTriangles[i].x - x, allTriangles[i].y - y, x - tpx, y - tpy, allTriangles[i].hitShape);
-					if (collisionResult.movefraction < lowestMoveFraction)
-					{
-						lowestMoveFraction = collisionResult.movefraction;
-						lastHitTri = allTriangles[i];
-						pushOutX = collisionResult.pushOutX;
-						pushOutY = collisionResult.pushOutY;
-					}
-				}
-			}
-			if (lowestMoveFraction < 1.0)
-			{
-				++numBounces;
-				didHit = true;
-				
-				var ox = x;
-				var oy = y;
-				var wx = (x - ((x - tpx) * (1.001 - lowestMoveFraction))) + (pushOutX / 1000);
-				var wy = (y - ((y - tpy) * (1.001 - lowestMoveFraction))) - (pushOutY / 1000);
-				
-				var factor = -(1 + elasticity) * dotprod(pushOutX, -pushOutY, ox - wx, oy - wy);
-				x = ox + (factor * pushOutX) + (pushOutX / 1000);
-				y = oy + (factor * -pushOutY) - (pushOutY / 1000);
-				
-				tpx = wx;
-				tpy = wy;
-				
-				factor = -(1 + elasticity) * dotprod(pushOutX, -pushOutY, xv, yv);
-				xv += factor * pushOutX;
-				yv += factor * -pushOutY;
-			}
-			if (numBounces >= bounceLimit)
-			{
-				didHit = false;
-			}
-		} while (didHit);
 	}
 	
 	public function CollideLevelBorders(level:Level)
@@ -192,13 +111,24 @@ class Entity extends Sprite
 			var ymin = room.GetIndexAtY(Math.min(tpy, y) + hitbox.GetYmin());
 			var ymax = room.GetIndexAtY(Math.max(tpy, y) + hitbox.GetYmax());
 			
-			var lastHitTile:LevelTile = room.tiles[0][0];
+			var lastHitTile:LevelTile = null;
+			var lastHitTri:LevelTriangle = null;
 			var lowestMoveFraction:Float = 1.0;
+			
+			var hitTriangles:Array<LevelTriangle> = new Array<LevelTriangle>();
 			
 			for (i in ymin...ymax + 1)
 			{
 				for (j in xmin...xmax + 1)
 				{
+					if (room.tiles[i][j] != null && room.tiles[i][j].levelTris.length > 0)
+					{
+						for (k in 0...room.tiles[i][j].levelTris.length)
+						{
+							hitTriangles.push(room.tiles[i][j].levelTris[k]);
+						}
+					}
+					
 					if (room.tiles[i][j] == null || room.tiles[i][j].hitShape == null) continue;
 					else
 					{
@@ -217,6 +147,20 @@ class Entity extends Sprite
 								pushOutY = collisionResult.pushOutY;
 							}
 						}
+					}
+				}
+			}
+			for (i in 0...hitTriangles.length)
+			{
+				if (!hitTriangles[i].noclip)
+				{
+					var collisionResult:CollisionResult = hitbox.Collide(hitTriangles[i].x - x, hitTriangles[i].y - y, x - tpx, y - tpy, hitTriangles[i].hitShape);
+					if (collisionResult.movefraction < lowestMoveFraction)
+					{
+						lowestMoveFraction = collisionResult.movefraction;
+						lastHitTri = hitTriangles[i];
+						pushOutX = collisionResult.pushOutX;
+						pushOutY = collisionResult.pushOutY;
 					}
 				}
 			}
@@ -245,6 +189,9 @@ class Entity extends Sprite
 			if (numBounces >= bounceLimit)
 			{
 				didHit = false;
+				trace("bouncelimit exceeded!");
+				x = px;
+				y = py;
 			}
 		} while (didHit);
 	}

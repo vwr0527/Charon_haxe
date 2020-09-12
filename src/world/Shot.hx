@@ -78,93 +78,11 @@ class Shot extends Entity
 	{
 		CollideLevelTiles(level);
 		CollideLevelBorders(level);
-		CollideLevelTriangles(level);
 		if (shotHit && age <= 1)
 		{
 			var shotwidth = Math.sqrt(Math.pow(x - px, 2) + Math.pow(y - py, 2)) / 45;
 			laserSprite.scaleY = shotwidth;
 		}
-	}
-	
-	public override function CollideLevelTriangles(level:Level)
-	{
-		var room:LevelRoom = level.currentRoom;
-		var tpx = px;
-		var tpy = py;
-		var didHit = false;
-		var bounceLimit = 6;
-		var numBounces = 0;
-		
-		do
-		{
-			didHit = false;
-			var pushOutX:Float = 0.0;
-			var pushOutY:Float = 0.0;
-			var xmin = room.GetIndexAtX(Math.min(tpx, x) + hitbox.GetXmin());
-			var xmax = room.GetIndexAtX(Math.max(tpx, x) + hitbox.GetXmax());
-			var ymin = room.GetIndexAtY(Math.min(tpy, y) + hitbox.GetYmin());
-			var ymax = room.GetIndexAtY(Math.max(tpy, y) + hitbox.GetYmax());
-			
-			var lastHitTri:LevelTriangle = null;
-			var lowestMoveFraction:Float = 1.0;
-			
-			var allTriangles:Array<LevelTriangle> = new Array<LevelTriangle>();
-			
-			for (i in ymin...ymax + 1)
-			{
-				for (j in xmin...xmax + 1)
-				{
-					if (room.tiles[i][j] != null && room.tiles[i][j].levelTris.length > 0)
-					{
-						for (k in 0...room.tiles[i][j].levelTris.length)
-						{
-							allTriangles.push(room.tiles[i][j].levelTris[k]);
-						}
-					}
-				}
-			}
-			for (i in 0...allTriangles.length)
-			{
-				if (!allTriangles[i].noclip)
-				{
-					if (allTriangles[i].PointInside(tpx, tpy))
-					{
-						shotHit = true;
-						x = tpx;
-						y = tpy;
-						xv = 0;
-						yv = 0;
-						
-						return;
-					}
-						
-					var collisionResult:CollisionResult = hitbox.Collide(allTriangles[i].x - x, allTriangles[i].y - y, x - tpx, y - tpy, allTriangles[i].hitShape);
-					if (collisionResult.movefraction < lowestMoveFraction)
-					{
-						lowestMoveFraction = collisionResult.movefraction;
-						lastHitTri = allTriangles[i];
-						pushOutX = collisionResult.pushOutX;
-						pushOutY = collisionResult.pushOutY;
-					}
-				}
-			}
-			if (lowestMoveFraction < 1.0)
-			{
-				++numBounces;
-				didHit = true;
-				
-				x = x - ((x - tpx) * (1 - lowestMoveFraction));
-				y = y - ((y - tpy) * (1 - lowestMoveFraction));
-				xv = 0;
-				yv = 0;
-				
-				shotHit = true;
-			}
-			if (numBounces >= bounceLimit)
-			{
-				didHit = false;
-			}
-		} while (didHit);
 	}
 	
 	public override function CollideLevelBorders(level:Level)
@@ -182,71 +100,98 @@ class Shot extends Entity
 		var room:LevelRoom = level.currentRoom;
 		var tpx = px;
 		var tpy = py;
-		var didHit = false;
 		var bounceLimit = 6;
 		var numBounces = 0;
 		
-		do
+		var pushOutX:Float = 0.0;
+		var pushOutY:Float = 0.0;
+		var xmin = room.GetIndexAtX(Math.min(tpx, x) + hitbox.GetXmin());
+		var xmax = room.GetIndexAtX(Math.max(tpx, x) + hitbox.GetXmax());
+		var ymin = room.GetIndexAtY(Math.min(tpy, y) + hitbox.GetYmin());
+		var ymax = room.GetIndexAtY(Math.max(tpy, y) + hitbox.GetYmax());
+		
+		var lastHitTri:LevelTriangle = null;
+		var lastHitTile:LevelTile = null;
+		var lowestMoveFraction:Float = 1.0;
+		
+		var hitTriangles:Array<LevelTriangle> = new Array<LevelTriangle>();
+		
+		for (i in ymin...ymax + 1)
 		{
-			didHit = false;
-			var pushOutX:Float = 0.0;
-			var pushOutY:Float = 0.0;
-			var xmin = room.GetIndexAtX(Math.min(tpx, x) + hitbox.GetXmin());
-			var xmax = room.GetIndexAtX(Math.max(tpx, x) + hitbox.GetXmax());
-			var ymin = room.GetIndexAtY(Math.min(tpy, y) + hitbox.GetYmin());
-			var ymax = room.GetIndexAtY(Math.max(tpy, y) + hitbox.GetYmax());
-			
-			var lastHitTile:LevelTile = room.tiles[0][0];
-			var lowestMoveFraction:Float = 1.0;
-			
-			for (i in ymin...ymax + 1)
+			for (j in xmin...xmax + 1)
 			{
-				for (j in xmin...xmax + 1)
+				if (room.tiles[i][j] != null && room.tiles[i][j].levelTris.length > 0)
 				{
-					if (room.tiles[i][j] == null || room.tiles[i][j].hitShape == null || (room.tiles[i][j].noclip && !Std.is(room.tiles[i][j],DoorTile))) continue;
-					else
+					for (k in 0...room.tiles[i][j].levelTris.length)
 					{
-						if (room.tiles[i][j].PointInside(tpx, tpy))
-						{
-							shotHit = true;
-							x = tpx;
-							y = tpy;
-							xv = 0;
-							yv = 0;
-							
-							HitTile(room.tiles[i][j], level);
-							
-							return;
-						}
-						var collisionResult:CollisionResult = hitbox.Collide(room.tiles[i][j].x - x, room.tiles[i][j].y - y, x - tpx, y - tpy, room.tiles[i][j].hitShape);
-						if (collisionResult.movefraction < lowestMoveFraction)
-						{
-							lowestMoveFraction = collisionResult.movefraction;
-							lastHitTile = room.tiles[i][j];
-							pushOutX = collisionResult.pushOutX;
-							pushOutY = collisionResult.pushOutY;
-						}
+						hitTriangles.push(room.tiles[i][j].levelTris[k]);
+					}
+				}
+				
+				if (room.tiles[i][j] == null || room.tiles[i][j].hitShape == null || (room.tiles[i][j].noclip && !Std.is(room.tiles[i][j],DoorTile))) continue;
+				else
+				{
+					if (room.tiles[i][j].PointInside(tpx, tpy))
+					{
+						shotHit = true;
+						x = tpx;
+						y = tpy;
+						xv = 0;
+						yv = 0;
+						
+						HitTile(room.tiles[i][j], level);
+						
+						return;
+					}
+					var collisionResult:CollisionResult = hitbox.Collide(room.tiles[i][j].x - x, room.tiles[i][j].y - y, x - tpx, y - tpy, room.tiles[i][j].hitShape);
+					if (collisionResult.movefraction < lowestMoveFraction)
+					{
+						lowestMoveFraction = collisionResult.movefraction;
+						lastHitTile = room.tiles[i][j];
+						pushOutX = collisionResult.pushOutX;
+						pushOutY = collisionResult.pushOutY;
 					}
 				}
 			}
-			if (lowestMoveFraction < 1.0)
+		}
+		
+		for (i in 0...hitTriangles.length)
+		{
+			if (!hitTriangles[i].noclip)
 			{
-				++numBounces;
-				didHit = true;
-				HitTile(lastHitTile, level);
-				
-				x = x - ((x - tpx) * (1 - lowestMoveFraction));
-				y = y - ((y - tpy) * (1 - lowestMoveFraction));
-				xv = 0;
-				yv = 0;
-				
-				shotHit = true;
+				if (hitTriangles[i].PointInside(tpx, tpy))
+				{
+					shotHit = true;
+					x = tpx;
+					y = tpy;
+					xv = 0;
+					yv = 0;
+					
+					return;
+				}
+					
+				var collisionResult:CollisionResult = hitbox.Collide(hitTriangles[i].x - x, hitTriangles[i].y - y, x - tpx, y - tpy, hitTriangles[i].hitShape);
+				if (collisionResult.movefraction < lowestMoveFraction)
+				{
+					lowestMoveFraction = collisionResult.movefraction;
+					lastHitTri = hitTriangles[i];
+					pushOutX = collisionResult.pushOutX;
+					pushOutY = collisionResult.pushOutY;
+				}
 			}
-			if (numBounces >= bounceLimit)
-			{
-				didHit = false;
-			}
-		} while (didHit);
+		}
+		if (lowestMoveFraction < 1.0)
+		{
+			++numBounces;
+			HitTile(lastHitTile, level);
+			
+			x = x - ((x - tpx) * (1.001 - lowestMoveFraction));
+			y = y - ((y - tpy) * (1.001 - lowestMoveFraction));
+			xv = 0;
+			yv = 0;
+			
+			shotHit = true;
+		}
 	}
 	
 	public override function HitTile(levelTile:LevelTile, level:Level)

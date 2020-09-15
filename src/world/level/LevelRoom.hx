@@ -8,7 +8,6 @@ import world.Camera;
 import world.HitShape;
 import world.level.LevelTile;
 import world.level.DoorController;
-import world.level.LevelPic;
 import world.level.tiles.DoorTile;
 import openfl.Lib;
 
@@ -31,7 +30,8 @@ class LevelRoom extends Sprite
 	public var triangles:Array<LevelTriangle>;
 	public var doors:Dictionary<String,DoorController>;
 	public var ents:Array<Entity>;
-	public var pics:Array<LevelPic>;
+	public var bgElements:Array<BackgroundElement>;
+	public var fgElements:Array<BackgroundElement>;
 	
 	public var playerSpawnX:Float;
 	public var playerSpawnY:Float;
@@ -60,8 +60,10 @@ class LevelRoom extends Sprite
 				newRow.push(null);
 			}
 		}
-		pics = new Array();
 		triangles = new Array<LevelTriangle>();
+		
+		bgElements = new Array<BackgroundElement>();
+		fgElements = new Array<BackgroundElement>();
 	}
 	
 	public function Update()
@@ -199,12 +201,23 @@ class LevelRoom extends Sprite
 		blackTiles.bitmapData.setPixel32(i, j, 0xFF000000);
 	}
 	
-	public function AddPic()
+	/*TEMPORARY, for testing purposes only!*/
+	public function AddBgFg()
 	{
-		var newpic = new LevelPic();
-		newpic.UsePic("img/mtile00.png", 0, 10);
-		addChild(newpic);
-		pics.push(newpic);
-		trace("newpic = " + newpic.x + ", " + newpic.y);
+		var bg:BackgroundElement = new BackgroundElement();
+		bg.dist = 40;
+		bg.xpos = 0;
+		bg.ypos = 0;
+		bg.size = 2.0;
+		bg.UsePic("img/mtile00.png", 0, 2);
+		bgElements.push(bg);
+		
+		var bg2:BackgroundElement = new BackgroundElement();
+		bg2.dist = -10;
+		bg2.xpos = -550;
+		bg2.ypos = -350;
+		bg2.size = 5.0;
+		bg2.UsePic("img/mtile00.png", 45, 2);
+		fgElements.push(bg2);
 	}
 }

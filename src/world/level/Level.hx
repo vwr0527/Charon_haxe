@@ -26,19 +26,25 @@ class Level extends Sprite
 	var playerDoorOffsetX:Float;
 	var playerDoorOffsetY:Float;
 	
-	var bgElements:Array<BackgroundElement>;
+	var gbgElements:Array<BackgroundElement>; //global background
 	
 	var blinder_left:Sprite;
 	var blinder_right:Sprite;
 	var blinder_up:Sprite;
 	var blinder_down:Sprite;
+	
+	
+	var backgroundLayer:Sprite;
+	var foregroundLayer:Sprite;
 
-	public function new() 
+	public function new(bg:Sprite, fg:Sprite)
 	{
 		super();
 		rooms = new Array();
-		bgElements = new Array();
+		gbgElements = new Array();
 		CreateBlinders();
+		backgroundLayer = bg;
+		foregroundLayer = fg;
 	}
 	
 	public function Update()
@@ -59,7 +65,7 @@ class Level extends Sprite
 	{
 		currentRoom.SetVisibleTiles(cam);
 		
-		for (bge in bgElements)
+		for (bge in gbgElements)
 		{
 			var fakex:Float = (bge.xpos - cam.x + (Lib.application.window.width / 2)) * cam.GetDistZZoom(bge.dist);
 			var fakey:Float = (bge.ypos - cam.y + (Lib.application.window.height / 2)) * cam.GetDistZZoom(bge.dist);
@@ -68,9 +74,31 @@ class Level extends Sprite
 			bge.y = cam.y + (fakey * (1 / cam.GetZZoom()));
 			bge.scaleX = bge.scaleY = fakesize / cam.GetZZoom();
 		}
+		
+		for (bge in currentRoom.bgElements)
+		{
+			var fakex:Float = (bge.xpos - cam.x + (Lib.application.window.width / 2)) * cam.GetDistZZoom(bge.dist);
+			var fakey:Float = (bge.ypos - cam.y + (Lib.application.window.height / 2)) * cam.GetDistZZoom(bge.dist);
+			var fakesize:Float = bge.size * cam.GetDistZZoom(bge.dist);
+			bge.x = cam.x + (fakex * (1 / cam.GetZZoom()));
+			bge.y = cam.y + (fakey * (1 / cam.GetZZoom()));
+			bge.scaleX = bge.scaleY = fakesize / cam.GetZZoom();
+		}
+		
+		for (bge in currentRoom.fgElements)
+		{
+			var fakex:Float = (bge.xpos - cam.x + (Lib.application.window.width / 2)) * cam.GetDistZZoom(bge.dist);
+			var fakey:Float = (bge.ypos - cam.y + (Lib.application.window.height / 2)) * cam.GetDistZZoom(bge.dist);
+			var fakesize:Float = bge.size * cam.GetDistZZoom(bge.dist);
+			bge.x = cam.x + (fakex * (1 / cam.GetZZoom()));
+			bge.y = cam.y + (fakey * (1 / cam.GetZZoom()));
+			bge.scaleX = bge.scaleY = fakesize / cam.GetZZoom();
+		}
+		
 		AdjustBlinders(currentRoom);
 	}
 	
+	/*TEMPORARY, for testing purposes only!*/
 	public function AddBg()
 	{
 		var bg:BackgroundElement = new BackgroundElement();
@@ -79,8 +107,8 @@ class Level extends Sprite
 		bg.ypos = 0;
 		bg.size = 100.0;
 		bg.UsePic("img/testbg.png", 0, 2);
-		addChildAt(bg, 0);
-		bgElements.push(bg);
+		backgroundLayer.addChildAt(bg, 0);
+		gbgElements.push(bg);
 		
 		for (i in 1...20) {
 			var bg2:BackgroundElement = new BackgroundElement();
@@ -88,17 +116,42 @@ class Level extends Sprite
 			bg2.xpos = (Math.random() * 5000) - 2500;
 			bg2.ypos = (Math.random() * 3000) - 1500;
 			bg2.UsePic("img/spacerock-1.png", Math.random() * 360, (Math.random() * 2) + 0.5);
-			addChildAt(bg2, i);
-			bgElements.push(bg2);
+			backgroundLayer.addChildAt(bg2, i);
+			gbgElements.push(bg2);
 		}
 	}
 	
 	public function BgSwitchRoom(deltaX:Float, deltaY:Float)
 	{
-		for (bge in bgElements)
+		for (bge in gbgElements)
 		{
 			bge.xpos -= deltaX;
 			bge.ypos -= deltaY;
+		}
+		
+		for (bge in previousRoom.bgElements)
+		{
+			backgroundLayer.removeChild(bge);
+		}
+		
+		for (bge in previousRoom.fgElements)
+		{
+			foregroundLayer.removeChild(bge);
+		}
+		
+		LoadBgFg();
+	}
+	
+	public function LoadBgFg()
+	{
+		for (bge in currentRoom.bgElements)
+		{
+			backgroundLayer.addChild(bge);
+		}
+		
+		for (bge in currentRoom.fgElements)
+		{
+			foregroundLayer.addChild(bge);
 		}
 	}
 	

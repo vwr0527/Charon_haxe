@@ -1,5 +1,6 @@
 package util;
 import openfl.Assets;
+import openfl.display.Sprite;
 import openfl.utils.Dictionary;
 import world.Enemy;
 import world.level.Level;
@@ -12,7 +13,7 @@ import world.level.LevelTile;
  */
 class LevelParser 
 {
-	public static function LoadLevel(levelname:String):Level
+	public static function LoadLevel(levelname:String, bg:Sprite, fg:Sprite):Level
 	{
 		var leveltext = Assets.getText(levelname).split("\n");
 		leveltext.push("");
@@ -118,7 +119,7 @@ class LevelParser
 			}
 		}
 		
-		var level:Level = new Level();
+		var level:Level = new Level(bg, fg);
 		
 		var roomKeyArray:Array<String> = new Array<String>();
 		var doorLocations:Dictionary<String,Dictionary<String,Array<Int>>> = new Dictionary<String,Dictionary<String,Array<Int>>>(); // roomname, doorname, x, y
@@ -188,8 +189,6 @@ class LevelParser
 				}
 			}
 			
-			room.AddTriangle(123, 513, 54, 234, 312, 155);
-			
 			level.rooms.push(room);
 		}
 		
@@ -222,7 +221,10 @@ class LevelParser
 		level.addChild(level.currentRoom);
 		
 		level.AddBg();
-		//level.currentRoom.AddPic();
+		
+		level.currentRoom.AddBgFg();
+		
+		//level.currentRoom.AddTriangle(123, 513, 54, 234, 312, 155);
 		
 		return level;
 	}

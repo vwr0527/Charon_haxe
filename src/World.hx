@@ -324,7 +324,7 @@ class World extends Sprite
 		camera.z = 100 + (100 * (1 - Math.max(1 - Math.max(0, (Math.sqrt( Math.pow(crossi.x - player.x, 2) + Math.pow((crossi.y - player.y) * 1.778, 2)) / 2000) - 0.075), 0.75)));
 		
 		if (camera.z < 1) camera.z = 1;
-		//camera.zoom = Math.max(1 - Math.max(0, ((Math.sqrt( Math.pow(crossi.x - player.x, 2) + Math.pow((crossi.y - player.y) * 1.778, 2)) / 4000)) - 0.075), 0.75);
+		camera.zoom = Math.max(1 - Math.max(0, ((Math.sqrt( Math.pow(crossi.x - player.x, 2) + Math.pow((crossi.y - player.y) * 1.778, 2)) / 4000)) - 0.075), 0.75);
 		camera.x += (Math.random() * shake) - (shake / 2);
 		camera.y += (Math.random() * shake) - (shake / 2);
 		
@@ -335,9 +335,10 @@ class World extends Sprite
 	
 	private function LoadLevels() 
 	{
-		level = LevelParser.LoadLevel("levels/testlevel1.txt");
+		level = LevelParser.LoadLevel("levels/testlevel1.txt", backgroundLayer, foregroundLayer);
 		levelDictionary.set("test", level);
 		levelLayer.addChild(level);
+		level.LoadBgFg();
 		
 		player.x = level.StartRoom().playerSpawnX;
 		player.y = level.StartRoom().playerSpawnY;

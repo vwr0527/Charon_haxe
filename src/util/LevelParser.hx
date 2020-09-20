@@ -1,4 +1,5 @@
 package util;
+import haxe.Json;
 import openfl.Assets;
 import openfl.display.Sprite;
 import openfl.utils.Dictionary;
@@ -13,22 +14,34 @@ import world.level.LevelTile;
  */
 class LevelParser 
 {
-	public static function LoadLevel(levelname:String, bg:Sprite, fg:Sprite):Level
+	var leveltext:Array<String>;
+	var level:Level;
+	var leveldata:LevelData;
+	
+	public function new()
 	{
-		var leveltext = Assets.getText(levelname).split("\n");
-		leveltext.push("");
-		var tilesDictionary:Dictionary<String,String> = new Dictionary<String,String>();
-		var entitiesDictionary:Dictionary<String,String> = new Dictionary<String,String>();
-		var roomsDictionary:Dictionary<String,Array<Array<String>>> = new Dictionary<String,Array<Array<String>>>();
-		var roomDoorsDictionary:Dictionary<String,Dictionary<String,String>> = new Dictionary<String,Dictionary<String,String>>();
-		var currentDoorsDictionary:Dictionary<String,String> = new Dictionary<String,String>();
+		leveltext = new Array<String>();
+		leveldata = {
+			tilesDictionary : new Dictionary<String,String>(),
+			entitiesDictionary : new Dictionary<String,String>(),
+			roomsDictionary : new Dictionary<String,Array<Array<String>>>(),
+			roomDoorsDictionary : new Dictionary<String,Dictionary<String,String>>()
+		};
+	}
+		
+	public function ReadLevel(levelname:String)
+	{
+		leveltext = Assets.getText(levelname).split("\n");
 		var currentSection:String = "none";
 		var currentRoom:String = "none";
+		var currentDoorsDictionary:Dictionary<String,String> = new Dictionary<String,String>();
 		var currentRoomContent:Array<Array<String>> = new Array<Array<String>>();
 		var startedReadingCurrentRoom:Bool = false;
 		var finishedReadingCurrentRoom:Bool = false;
 		var startedReadingCurrentRoomDoors:Bool = false;
 		var finishedReadingCurrentRoomDoors:Bool = false;
+		leveltext.push("");
+		
 		for (line in leveltext)
 		{
 			if (line.charCodeAt(line.length - 1) == 13) line = line.substr(0, line.length - 1); //remove last character if it's "\n"
@@ -65,7 +78,7 @@ class LevelParser
 				if (line.indexOf(": ") == -1) continue;
 				
 				var splitLine = line.split(": ");
-				tilesDictionary.set(splitLine[0], splitLine[1]);
+				leveldata.tilesDictionary.set(splitLine[0], splitLine[1]);
 				
 				continue;
 			}
@@ -74,7 +87,7 @@ class LevelParser
 				if (line.indexOf(": ") == -1) continue;
 				
 				var splitLine = line.split(": ");
-				entitiesDictionary.set(splitLine[0], splitLine[1]);
+				leveldata.entitiesDictionary.set(splitLine[0], splitLine[1]);
 				
 				continue;
 			}
@@ -84,7 +97,7 @@ class LevelParser
 				if (line.indexOf(",") == -1 && !startedReadingCurrentRoom) continue;
 				if (line.indexOf(",") == -1 && startedReadingCurrentRoom)
 				{
-					roomsDictionary.set(currentRoom, currentRoomContent);
+					leveldata.roomsDictionary.set(currentRoom, currentRoomContent);
 					finishedReadingCurrentRoom = true;
 					continue;
 				}
@@ -103,7 +116,7 @@ class LevelParser
 				if (line.indexOf(":") == -1 && !startedReadingCurrentRoomDoors) continue;
 				if (line.indexOf(":") == -1 && startedReadingCurrentRoomDoors)
 				{
-					roomDoorsDictionary.set(currentRoom, currentDoorsDictionary);
+					leveldata.roomDoorsDictionary.set(currentRoom, currentDoorsDictionary);
 					finishedReadingCurrentRoomDoors = true;
 					continue;
 				}
@@ -118,17 +131,20 @@ class LevelParser
 				continue;
 			}
 		}
-		
-		var level:Level = new Level(bg, fg);
+	}
+	
+	public function BuildLevel(bg:Sprite, fg:Sprite):Level
+	{
+		level = new Level(bg, fg);
 		
 		var roomKeyArray:Array<String> = new Array<String>();
 		var doorLocations:Dictionary<String,Dictionary<String,Array<Int>>> = new Dictionary<String,Dictionary<String,Array<Int>>>(); // roomname, doorname, x, y
 		
-		for (roomKey in roomsDictionary)
+		for (roomKey in leveldata.roomsDictionary)
 		{
 			roomKeyArray.push(roomKey);
-			var num_x_tiles:Int = roomsDictionary[roomKey][0].length;
-			var num_y_tiles:Int = roomsDictionary[roomKey].length;
+			var num_x_tiles:Int = leveldata.roomsDictionary[roomKey][0].length;
+			var num_y_tiles:Int = leveldata.roomsDictionary[roomKey].length;
 			
 			var room:LevelRoom = new LevelRoom(num_x_tiles, num_y_tiles);
 			
@@ -136,16 +152,16 @@ class LevelParser
 			{
 				for (i in 0...num_x_tiles)
 				{
-					var str_at_loc:String = roomsDictionary[roomKey][j][i];
+					var str_at_loc:String = leveldata.roomsDictionary[roomKey][j][i];
 					
-					if (entitiesDictionary.exists(str_at_loc))
+					if (leveldata.entitiesDictionary.exists(str_at_loc))
 					{
-						if (entitiesDictionary[str_at_loc] == "PlayerSpawn")
+						if (leveldata.entitiesDictionary[str_at_loc] == "PlayerSpawn")
 						{
 							room.playerSpawnX = (i * LevelTile.size) + (LevelTile.size / 2);
 							room.playerSpawnY = (j * LevelTile.size) + (LevelTile.size / 2);
 						}
-						else if (entitiesDictionary[str_at_loc] == "Enemy1")
+						else if (leveldata.entitiesDictionary[str_at_loc] == "Enemy1")
 						{
 							var enemy:Enemy = new Enemy();
 							enemy.x = (i * LevelTile.size) + (LevelTile.size / 2);
@@ -154,7 +170,7 @@ class LevelParser
 							room.ents.push(enemy);
 						}
 					}
-					else if (roomDoorsDictionary[roomKey].exists(str_at_loc))
+					else if (leveldata.roomDoorsDictionary[roomKey].exists(str_at_loc))
 					{
 						if (!doorLocations.exists(roomKey))
 						{
@@ -174,9 +190,9 @@ class LevelParser
 							trace("Error, this room already has a door with that name");
 						}
 					}
-					else if (tilesDictionary.exists(str_at_loc))
+					else if (leveldata.tilesDictionary.exists(str_at_loc))
 					{
-						var tileString:String = tilesDictionary[str_at_loc];
+						var tileString:String = leveldata.tilesDictionary[str_at_loc];
 						if (tileString == "black")
 						{
 							room.SetBlackTile(i, j);
@@ -192,13 +208,13 @@ class LevelParser
 			level.rooms.push(room);
 		}
 		
-		for (rmname in roomDoorsDictionary)
+		for (rmname in leveldata.roomDoorsDictionary)
 		{
-			for (drname in roomDoorsDictionary[rmname])
+			for (drname in leveldata.roomDoorsDictionary[rmname])
 			{
-				if (roomDoorsDictionary[rmname][drname] != null)
+				if (leveldata.roomDoorsDictionary[rmname][drname] != null)
 				{
-					var firstDoorInfo = roomDoorsDictionary[rmname][drname].split(",");
+					var firstDoorInfo = leveldata.roomDoorsDictionary[rmname][drname].split(",");
 					
 					if (firstDoorInfo.length != 4) continue;
 					
@@ -228,4 +244,25 @@ class LevelParser
 		
 		return level;
 	}
+	
+	public function OutputToString(Level:Level):String
+	{
+		var result:String = "";
+		
+		result = Json.stringify(leveldata);
+		
+		var clone:LevelData = Json.parse(result);
+		
+		result = Json.stringify(clone);
+		
+		return result;
+	}
+}
+
+typedef LevelData = 
+{
+	var tilesDictionary:Dictionary<String,String>;
+	var entitiesDictionary:Dictionary<String,String>;
+	var roomsDictionary:Dictionary<String,Array<Array<String>>>;
+	var roomDoorsDictionary:Dictionary<String,Dictionary<String,String>>;
 }

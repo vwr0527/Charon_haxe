@@ -335,7 +335,9 @@ class World extends Sprite
 	
 	private function LoadLevels() 
 	{
-		level = LevelParser.LoadLevel("levels/testlevel1.txt", backgroundLayer, foregroundLayer);
+		var levelParser:LevelParser = new LevelParser();
+		levelParser.ReadLevel("levels/testlevel1.txt");
+		level = levelParser.BuildLevel(backgroundLayer, foregroundLayer);
 		levelDictionary.set("test", level);
 		levelLayer.addChild(level);
 		level.LoadBgFg();
@@ -350,6 +352,7 @@ class World extends Sprite
 		
 		MoveWorldToCamera();
 		level.UpdateDisplay(camera);
+		trace(levelParser.OutputToString(level));
 	}
 	
 	private function SwitchRoom()

@@ -147,7 +147,7 @@ class Main extends Sprite
 	public function LostFocus(e)
 	{
 		stopped = true;
-		trace("hello");
+		trace("Paused");
 	}
 	
 	public function RegainedFocus(e)
@@ -158,7 +158,7 @@ class Main extends Sprite
 			prevFPS[i] = 1;
 		}
 		time = Lib.getTimer();
-		trace("back");
+		trace("Resuming");
 	}
 	
 	public static function ChangeFrameMode(setEnterFrameMode)

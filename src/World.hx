@@ -337,10 +337,13 @@ class World extends Sprite
 	{
 		var levelParser:LevelParser = new LevelParser();
 		levelParser.ReadLevel("levels/testlevel1.txt");
-		level = levelParser.BuildLevel(backgroundLayer, foregroundLayer);
+		//level = levelParser.BuildLevel(backgroundLayer, foregroundLayer);
+		levelParser.ConvertToJSON();
+		trace(levelParser.OutputJSON());
+		level = levelParser.BuildLevel2(backgroundLayer, foregroundLayer);
 		levelDictionary.set("test", level);
 		levelLayer.addChild(level);
-		level.LoadBgFg();
+		//level.LoadBgFg();
 		
 		player.x = level.StartRoom().playerSpawnX;
 		player.y = level.StartRoom().playerSpawnY;
@@ -352,7 +355,6 @@ class World extends Sprite
 		
 		MoveWorldToCamera();
 		level.UpdateDisplay(camera);
-		trace(levelParser.OutputToString(level));
 	}
 	
 	private function SwitchRoom()

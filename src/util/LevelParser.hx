@@ -1,7 +1,9 @@
 package util;
 import haxe.Json;
+import haxe.ds.Vector;
 import openfl.Assets;
 import openfl.display.Sprite;
+import openfl.geom.Point;
 import openfl.utils.Dictionary;
 import world.Enemy;
 import world.level.Level;
@@ -245,17 +247,200 @@ class LevelParser
 		return level;
 	}
 	
-	public function OutputToString(Level:Level):String
+	var leveldata2:LevelData2;
+	
+	public function OutputJSON()
 	{
 		var result:String = "";
 		
-		result = Json.stringify(leveldata);
-		
-		var clone:LevelData = Json.parse(result);
-		
-		result = Json.stringify(clone);
+		result = Json.stringify(leveldata2);
 		
 		return result;
+	}
+	
+	public function ConvertToJSON()
+	{
+		leveldata2 = {
+			tileDef : new Array<String>(),
+			rooms : new Array<LevelRoomData>()
+		};
+		
+		for (tiledat in leveldata.tilesDictionary)
+		{
+			leveldata2.tileDef.push(leveldata.tilesDictionary[tiledat]);
+		}
+		
+		for (room in leveldata.roomsDictionary)
+		{
+			var room2:LevelRoomData = {
+				tileMap : new Array<Array<Int>>(),
+				entities : new Array<EntityData>(),
+				doors : new Array<DoorData>()
+			};
+			
+			for (i in 0...leveldata.roomsDictionary[room].length)
+			{
+				var newrow:Array<Int> = new Array<Int>();
+				for (j in 0...leveldata.roomsDictionary[room][0].length)
+				{
+					switch leveldata.roomsDictionary[room][i][j]
+					{
+					  case " ":
+						newrow.push(0);
+					  case "p":
+						var entdata:EntityData = {
+							x : (j * LevelTile.size) + (LevelTile.size / 2),
+							y : (i * LevelTile.size) + (LevelTile.size / 2),
+							data : "PlayerSpawn"
+						};
+						newrow.push(0);
+						room2.entities.push(entdata);
+					  case "e":
+						var entdata:EntityData = {
+							x : (j * LevelTile.size) + (LevelTile.size / 2),
+							y : (i * LevelTile.size) + (LevelTile.size / 2),
+							data : "Enemy1"
+						};
+						room2.entities.push(entdata);
+						newrow.push(0);
+					  case "a":
+						newrow.push(2);
+					  case "b":
+						newrow.push(2);
+					  case "c":
+						newrow.push(2);
+					  case "d":
+						newrow.push(2);
+					  case "q":
+						newrow.push(2);
+					  default:
+						newrow.push(1 + Std.parseInt(leveldata.roomsDictionary[room][i][j]));
+					}
+				}
+				room2.tileMap.push(newrow);
+			}
+			
+			leveldata2.rooms.push(room2);
+		}
+		
+		for (room in leveldata.roomDoorsDictionary.iterator())
+		{
+			for (door in leveldata.roomDoorsDictionary[room].iterator())
+			{
+				var xtile:Int = 0;
+				var ytile:Int = 0;
+				
+				for (i in 0...leveldata.roomsDictionary[room].length)
+				{
+					for (j in 0...leveldata.roomsDictionary[room][i].length)
+					{
+						if (leveldata.roomsDictionary[room][i][j] == door)
+						{
+							xtile = j;
+							ytile = i;
+						}
+					}
+				}
+				
+				var newdoordata = "";
+				
+				var splitdoordata = leveldata.roomDoorsDictionary[room][door].split(",");
+				
+				if (splitdoordata.length == 4)
+				{
+					switch splitdoordata[1]
+					{
+						case "a": splitdoordata[1]=0 + "";
+						case "b": splitdoordata[1]=1 + "";
+						case "c": splitdoordata[1]=2 + "";
+						case "d": splitdoordata[1]=3 + "";
+						case "q": splitdoordata[1]=0 + "";
+					}
+					
+					newdoordata = splitdoordata[0]+","+splitdoordata[1]+","+splitdoordata[2]+","+splitdoordata[3];
+				}
+				
+				var newdoor:DoorData = { x : xtile, y : ytile, data : newdoordata };
+				leveldata2.rooms[Std.parseInt(room) - 1].doors.push(newdoor);
+			}
+		}
+	}
+	
+	public function BuildLevel2(bg:Sprite, fg:Sprite):Level
+	{
+		var level2:Level = new Level(bg, fg);
+		
+		for (roomdata in leveldata2.rooms)
+		{
+			var num_x_tiles:Int = roomdata.tileMap[0].length;
+			var num_y_tiles:Int = roomdata.tileMap.length;
+			var room:LevelRoom = new LevelRoom(num_x_tiles, num_y_tiles);
+			for (i in 0...room.tiles.length)
+			{
+				for (j in 0...room.tiles[0].length)
+				{
+					var tileindex = roomdata.tileMap[i][j] - 1;
+					if (tileindex >= 0)
+					{
+						var tiledata = leveldata2.tileDef[tileindex];
+						
+						if (tiledata == "Black")
+						{
+							room.SetBlackTile(i, j);
+						}
+						else
+						{
+							room.SetTile(LevelTile.CreateTile(tiledata), j, i);
+						}
+					}
+				}
+			}
+			for (entdata in roomdata.entities)
+			{
+				if (entdata.data == "PlayerSpawn")
+				{
+					room.playerSpawnX = entdata.x;
+					room.playerSpawnY = entdata.y;
+					level2.currentRoom = room;
+				}
+				if (entdata.data == "Enemy1")
+				{
+					var enemy:Enemy = new Enemy();
+					enemy.x = entdata.x;
+					enemy.y = entdata.y;
+					enemy.age = Std.int(Math.random() * 1000);
+					room.ents.push(enemy);
+				}
+			}
+			level2.rooms.push(room);
+		}
+		
+		for (roomindex in 0...leveldata2.rooms.length)
+		{
+			var roomdata = leveldata2.rooms[roomindex];
+			for (doorindex in 0...roomdata.doors.length)
+			{
+				var firstDoor = roomdata.doors[doorindex];
+				var firstDoorInfo = firstDoor.data.split(",");
+				
+				if (firstDoorInfo.length != 4) continue;
+				
+				var firstRoomIndex = roomindex;
+				var firstDoorId = doorindex;
+				var firstDoorTileX = firstDoor.x;
+				var firstDoorTileY = firstDoor.y;
+				var secondDoorId = Std.parseInt(firstDoorInfo[1]);
+				var secondRoomIndex = Std.parseInt(firstDoorInfo[0]) - 1;
+				var secondDoorTileX = leveldata2.rooms[secondRoomIndex].doors[secondDoorId].x;
+				var secondDoorTileY = leveldata2.rooms[secondRoomIndex].doors[secondDoorId].y;
+				var firstDoorOrientation = firstDoorInfo[2];
+				var doorWidth = Std.parseInt(firstDoorInfo[3]);
+				level2.CreateDoor(firstRoomIndex, firstDoorId + "", firstDoorTileX, firstDoorTileY, secondDoorId + "", secondRoomIndex, secondDoorTileX, secondDoorTileY, firstDoorOrientation, doorWidth);
+			}
+		}
+		
+		level2.addChild(level2.currentRoom);
+		return level2;
 	}
 }
 
@@ -265,4 +450,31 @@ typedef LevelData =
 	var entitiesDictionary:Dictionary<String,String>;
 	var roomsDictionary:Dictionary<String,Array<Array<String>>>;
 	var roomDoorsDictionary:Dictionary<String,Dictionary<String,String>>;
+}
+
+typedef LevelData2 =
+{
+	var tileDef:Array<String>;
+	var rooms:Array<LevelRoomData>;
+}
+
+typedef LevelRoomData =
+{
+	var tileMap:Array<Array<Int>>;
+	var entities:Array<EntityData>;
+	var doors:Array<DoorData>;
+}
+
+typedef EntityData =
+{
+	var x:Float;
+	var y:Float;
+	var data:String;
+}
+
+typedef DoorData =
+{
+	var x:Int;
+	var y:Int;
+	var data:String;
 }

@@ -7,7 +7,7 @@ import world.level.LevelTile;
  */
 class VDoorTile extends DoorTile
 {
-	public function new(id:String) 
+	public function new(id:Int) 
 	{
 		super(true, id);
 		UsePic("img/testdoor.bmp", 90);

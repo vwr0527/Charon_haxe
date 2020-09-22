@@ -28,7 +28,7 @@ class LevelRoom extends Sprite
 	
 	public var tiles:Array<Array<LevelTile>>;
 	public var triangles:Array<LevelTriangle>;
-	public var doors:Dictionary<String,DoorController>;
+	public var doors:Array<DoorController>;
 	public var ents:Array<Entity>;
 	public var bgElements:Array<BackgroundElement>;
 	public var fgElements:Array<BackgroundElement>;
@@ -48,8 +48,8 @@ class LevelRoom extends Sprite
 		ymax = num_y_tiles * tsize;
 		xtiles = num_x_tiles;
 		ytiles = num_y_tiles;
-		tiles = new Array();
-		doors = new Dictionary<String,DoorController>();
+		tiles = new Array<Array<LevelTile>>();
+		doors = new Array<DoorController>();
 		ents = new Array();
 		for (i in 0...num_y_tiles)
 		{
@@ -83,9 +83,9 @@ class LevelRoom extends Sprite
 		}
 		DebugPage.tilecount = numtiles;
 		
-		for (id in doors)
+		for (door in doors)
 		{
-			doors[id].Update();
+			door.Update();
 		}
 	}
 	
@@ -140,8 +140,8 @@ class LevelRoom extends Sprite
 	public function SetDoor(dtile:DoorTile, xi:Int, yi:Int)
 	{
 		SetTile(dtile, xi, yi);
-		var doorID:String = dtile.GetID();
-		if (!doors.exists(doorID)) doors.set(doorID, new DoorController());
+		var doorID = dtile.GetID();
+		while (doors[doorID] == null) doors.push(new DoorController());
 		doors[doorID].doorTiles.push(dtile);
 	}
 	

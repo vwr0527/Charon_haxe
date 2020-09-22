@@ -336,14 +336,12 @@ class World extends Sprite
 	private function LoadLevels() 
 	{
 		var levelParser:LevelParser = new LevelParser();
-		levelParser.ReadLevel("levels/testlevel1.txt");
-		//level = levelParser.BuildLevel(backgroundLayer, foregroundLayer);
-		levelParser.ConvertToJSON();
-		trace(levelParser.OutputJSON());
-		level = levelParser.BuildLevel2(backgroundLayer, foregroundLayer);
+		levelParser.ReadLevel("levels/testlevel1.json");
+		level = levelParser.BuildLevel(backgroundLayer, foregroundLayer);
 		levelDictionary.set("test", level);
 		levelLayer.addChild(level);
-		//level.LoadBgFg();
+		level.AddBg();
+		level.LoadBgFg();
 		
 		player.x = level.StartRoom().playerSpawnX;
 		player.y = level.StartRoom().playerSpawnY;

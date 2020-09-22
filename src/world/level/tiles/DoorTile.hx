@@ -9,9 +9,9 @@ class DoorTile extends LevelTile
 {
 	var isOpen:Bool = false;
 	var isVertical:Bool;
-	var identifier:String;
+	var identifier:Int;
 	
-	public function new(orientation:Bool, id:String) 
+	public function new(orientation:Bool, id:Int) 
 	{
 		super();
 		isVertical = orientation;
@@ -46,7 +46,7 @@ class DoorTile extends LevelTile
 		}
 	}
 	
-	public function GetID():String
+	public function GetID():Int
 	{
 		return identifier;
 	}

@@ -9,7 +9,7 @@ class DoorController
 {
 	public var doorTiles:Array<DoorTile>;
 	public var targetRoom:Int;
-	public var targetDoor:String;
+	public var targetDoor:Int;
 	public var openTime:Int;
 	public var isOpen:Bool = false;
 	public var enterDirX:Float = 0;

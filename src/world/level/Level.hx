@@ -21,7 +21,7 @@ class Level extends Sprite
 	var switchingRoom:Bool = false;
 	var switchedRoom = false;
 	
-	var targetDoor:String;
+	var targetDoor:Int;
 	var targetDoorTileIndex:Int;
 	var playerDoorOffsetX:Float;
 	var playerDoorOffsetY:Float;
@@ -215,7 +215,7 @@ class Level extends Sprite
 		return switchedRoom;
 	}
 	
-	public function CreateDoor(firstRoomIndex:Int, firstDoorId:String, firstDoorTileX:Int, firstDoorTileY:Int, secondDoorId:String, secondRoomIndex:Int, secondDoorTileX:Int, secondDoorTileY:Int, firstDoorOrientation:String, doorWidth:Int)
+	public function CreateDoor(firstRoomIndex:Int, firstDoorId:Int, firstDoorTileX:Int, firstDoorTileY:Int, secondDoorId:Int, secondRoomIndex:Int, secondDoorTileX:Int, secondDoorTileY:Int, firstDoorOrientation:String, doorWidth:Int)
 	{
 		var room1 = rooms[firstRoomIndex];
 		var room2 = rooms[secondRoomIndex];

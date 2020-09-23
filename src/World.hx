@@ -337,11 +337,10 @@ class World extends Sprite
 	{
 		var levelParser:LevelParser = new LevelParser();
 		levelParser.ReadLevel("levels/testlevel1.json");
+		trace(levelParser.OutputString());
 		level = levelParser.BuildLevel(backgroundLayer, foregroundLayer);
 		levelDictionary.set("test", level);
 		levelLayer.addChild(level);
-		level.AddBg();
-		level.LoadBgFg();
 		
 		player.x = level.StartRoom().playerSpawnX;
 		player.y = level.StartRoom().playerSpawnY;

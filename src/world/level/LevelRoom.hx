@@ -3,7 +3,6 @@ import openfl.display.Bitmap;
 import menu.DebugPage;
 import openfl.display.BitmapData;
 import openfl.display.Sprite;
-import openfl.utils.Dictionary;
 import world.Camera;
 import world.HitShape;
 import world.level.LevelTile;
@@ -201,23 +200,12 @@ class LevelRoom extends Sprite
 		blackTiles.bitmapData.setPixel32(i, j, 0xFF000000);
 	}
 	
-	/*TEMPORARY, for testing purposes only!*/
-	public function AddBgFg()
+	public function AddBg(bge)
 	{
-		var bg:BackgroundElement = new BackgroundElement();
-		bg.dist = 40;
-		bg.xpos = 0;
-		bg.ypos = 0;
-		bg.size = 2.0;
-		bg.UsePic("img/mtile00.png", 0, 2);
-		bgElements.push(bg);
-		
-		var bg2:BackgroundElement = new BackgroundElement();
-		bg2.dist = -10;
-		bg2.xpos = -550;
-		bg2.ypos = -350;
-		bg2.size = 5.0;
-		bg2.UsePic("img/mtile00.png", 45, 2);
-		fgElements.push(bg2);
+		bgElements.push(bge);
+	}
+	public function AddFg(bge)
+	{
+		fgElements.push(bge);
 	}
 }

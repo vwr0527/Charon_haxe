@@ -98,27 +98,10 @@ class Level extends Sprite
 		AdjustBlinders(currentRoom);
 	}
 	
-	/*TEMPORARY, for testing purposes only!*/
-	public function AddBg()
+	public function AddBg(bge:BackgroundElement)
 	{
-		var bg:BackgroundElement = new BackgroundElement();
-		bg.dist = 10000.0;
-		bg.xpos = 0;
-		bg.ypos = 0;
-		bg.size = 100.0;
-		bg.UsePic("img/testbg.png", 0, 2);
-		backgroundLayer.addChildAt(bg, 0);
-		gbgElements.push(bg);
-		
-		for (i in 1...20) {
-			var bg2:BackgroundElement = new BackgroundElement();
-			bg2.dist = (40.0 * (25-i)) - (Math.random() * 40.0);
-			bg2.xpos = (Math.random() * 5000) - 2500;
-			bg2.ypos = (Math.random() * 3000) - 1500;
-			bg2.UsePic("img/spacerock-1.png", Math.random() * 360, (Math.random() * 2) + 0.5);
-			backgroundLayer.addChildAt(bg2, i);
-			gbgElements.push(bg2);
-		}
+		backgroundLayer.addChildAt(bge, 0);
+		gbgElements.push(bge);
 	}
 	
 	public function BgSwitchRoom(deltaX:Float, deltaY:Float)
@@ -139,10 +122,10 @@ class Level extends Sprite
 			foregroundLayer.removeChild(bge);
 		}
 		
-		LoadBgFg();
+		LoadRoomBgFg();
 	}
 	
-	public function LoadBgFg()
+	public function LoadRoomBgFg()
 	{
 		for (bge in currentRoom.bgElements)
 		{

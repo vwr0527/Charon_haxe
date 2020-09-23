@@ -1,11 +1,11 @@
 package util;
 import haxe.Json;
+import haxe.ds.ArraySort;
 import haxe.ds.Vector;
 import openfl.Assets;
 import openfl.display.Sprite;
-import openfl.geom.Point;
-import openfl.utils.Dictionary;
 import world.Enemy;
+import world.level.BackgroundElement;
 import world.level.Level;
 import world.level.LevelRoom;
 import world.level.LevelTile;
@@ -24,7 +24,8 @@ class LevelParser
 	{
 		leveldata =  {
 			tileDef : new Array<String>(),
-			rooms : new Array<LevelRoomData>()
+			rooms : new Array<LevelRoomData>(),
+			gbg : new Array<DecorData>()//global background
 		};
 	}
 		
@@ -34,9 +35,32 @@ class LevelParser
 		leveldata = Json.parse(leveltext);
 	}
 	
+	public function OutputString():String
+	{
+		return Json.stringify(leveldata);
+	}
+	
+	public function CreateBGE(decordata:DecorData):BackgroundElement
+	{
+		var bge = new BackgroundElement();
+		bge.dist = decordata.z;
+		bge.xpos = decordata.x;
+		bge.ypos = decordata.y;
+		var splitstring = decordata.data.split(",");
+		bge.UsePic(splitstring[0], Std.parseFloat(splitstring[1]),  Std.parseFloat(splitstring[2]));
+		return bge;
+	}
+	
 	public function BuildLevel(bg:Sprite, fg:Sprite):Level
 	{
 		var level:Level = new Level(bg, fg);
+		
+		ArraySort.sort(leveldata.gbg, function(a, b):Int{return Std.int(a.z - b.z); });
+		
+		for (decordata in leveldata.gbg)
+		{
+			level.AddBg(CreateBGE(decordata));
+		}
 		
 		for (roomdata in leveldata.rooms)
 		{
@@ -80,6 +104,25 @@ class LevelParser
 					room.ents.push(enemy);
 				}
 			}
+			
+			if (roomdata.bg != null)
+			{
+				ArraySort.sort(roomdata.bg, function(a, b):Int{return Std.int(a.z - b.z); });
+				for (decordata in roomdata.bg)
+				{
+					room.AddBg(CreateBGE(decordata));
+				}
+			}
+			
+			if (roomdata.fg != null)
+			{
+				ArraySort.sort(roomdata.fg, function(a, b):Int{return Std.int(a.z - b.z); });
+				for (decordata in roomdata.fg)
+				{
+					room.AddFg(CreateBGE(decordata));
+				}
+			}
+			
 			level.rooms.push(room);
 		}
 		
@@ -108,6 +151,7 @@ class LevelParser
 		}
 		
 		level.addChild(level.currentRoom);
+		level.LoadRoomBgFg();
 		return level;
 	}
 }
@@ -116,6 +160,7 @@ typedef LevelData =
 {
 	var tileDef:Array<String>;
 	var rooms:Array<LevelRoomData>;
+	var gbg:Array<DecorData>;
 }
 
 typedef LevelRoomData =
@@ -123,6 +168,16 @@ typedef LevelRoomData =
 	var tileMap:Array<Array<Int>>;
 	var entities:Array<EntityData>;
 	var doors:Array<DoorData>;
+	var fg:Array<DecorData>;
+	var bg:Array<DecorData>;
+}
+
+typedef DecorData =
+{
+	var x:Float;
+	var y:Float;
+	var z:Float;
+	var data:String;
 }
 
 typedef EntityData =

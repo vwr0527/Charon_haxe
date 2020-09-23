@@ -44,4 +44,7 @@ Temporary Items
 
 # 
 /gimp
-/bin
+/bin/*
+!/bin/html5/
+/bin/html5/*
+!/bin/html5/bin/

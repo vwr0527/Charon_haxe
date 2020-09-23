@@ -1,0 +1,12 @@
+8
+10
+abcdefghijklmnopqrstuvwxyz1234567890+-/[]().:;,'?
+39
+0
+0
+2
+26
+0xff000000
+
+
+

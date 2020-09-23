@@ -1,0 +1,12 @@
+8
+8
+ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz.,0123456789"'?!_*#$&()+-/:;<=>[]^`   
+18
+0
+0
+2
+2
+0xff000000
+
+
+

@@ -1,9 +1,0 @@
-26
-32
- !"aao '()  ;-./          :; = ?*ABCDEFGHIJKLMNOPQRSTUVWXYZ
-10
-6
-0
-3
-0
-0xff000000

@@ -2,6 +2,7 @@ package menu;
 
 import Input;
 import openfl.system.System;
+import util.LevelEditor;
 
 /**
  * ...
@@ -55,7 +56,8 @@ class MainMenu extends MenuPage
 						case 3:
 							switchToOptions = true;
 						case 4:
-							System.exit(0);
+							LevelEditor.active = !LevelEditor.active;
+							resumeGame = true;
 					}
 				}
 			}

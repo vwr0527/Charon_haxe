@@ -73,6 +73,7 @@ class Level extends Sprite
 			bge.x = cam.x + (fakex * (1 / cam.GetZZoom()));
 			bge.y = cam.y + (fakey * (1 / cam.GetZZoom()));
 			bge.scaleX = bge.scaleY = fakesize / cam.GetZZoom();
+			bge.visible = (cam.z + bge.dist) >= 1.0;
 		}
 		
 		for (bge in currentRoom.bgElements)
@@ -83,6 +84,7 @@ class Level extends Sprite
 			bge.x = cam.x + (fakex * (1 / cam.GetZZoom()));
 			bge.y = cam.y + (fakey * (1 / cam.GetZZoom()));
 			bge.scaleX = bge.scaleY = fakesize / cam.GetZZoom();
+			bge.visible = (cam.z + bge.dist) >= 1.0;
 		}
 		
 		for (bge in currentRoom.fgElements)
@@ -93,6 +95,7 @@ class Level extends Sprite
 			bge.x = cam.x + (fakex * (1 / cam.GetZZoom()));
 			bge.y = cam.y + (fakey * (1 / cam.GetZZoom()));
 			bge.scaleX = bge.scaleY = fakesize / cam.GetZZoom();
+			bge.visible = (cam.z + bge.dist) >= 1.0;
 		}
 		
 		AdjustBlinders(currentRoom);

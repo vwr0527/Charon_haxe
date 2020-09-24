@@ -1,9 +1,9 @@
 package util;
 import haxe.Json;
 import haxe.ds.ArraySort;
-import haxe.ds.Vector;
 import openfl.Assets;
 import openfl.display.Sprite;
+import world.Camera;
 import world.Enemy;
 import world.level.BackgroundElement;
 import world.level.Level;
@@ -14,19 +14,74 @@ import world.level.LevelTile;
  * ...
  * @author 
  */
-class LevelParser 
+class LevelEditor 
 {
 	var leveltext:String;
 	var level:Level;
 	var leveldata:LevelData;
 	
+	public static var active:Bool;
+	var cam_vx = 0.0;
+	var cam_vy = 0.0;
+	var cam_vz = 0.0;
+	var camspeed = 2.0;
+	
 	public function new()
 	{
+		active = false;
+		
 		leveldata =  {
 			tileDef : new Array<String>(),
 			rooms : new Array<LevelRoomData>(),
 			gbg : new Array<DecorData>()//global background
 		};
+	}
+	
+	public function Update(cam:Camera)
+	{
+		if (Input.KeyHeld(65))
+		{
+			cam_vx -= camspeed;
+		}
+		if (Input.KeyHeld(68))
+		{
+			cam_vx += camspeed;
+		}
+		if (Input.KeyHeld(87))
+		{
+			cam_vy -= camspeed;
+		}
+		if (Input.KeyHeld(83))
+		{
+			cam_vy += camspeed;
+		}
+		if (Input.KeyHeld(90))
+		{
+			cam_vz += camspeed / 4;
+		}
+		if (Input.KeyHeld(88))
+		{
+			cam_vz -= camspeed / 4;
+		}
+		
+		cam.x += cam_vx;
+		cam.y += cam_vy;
+		cam.z += cam_vz;
+		
+		if (cam.z < 5.0)
+		{
+			cam_vz = 0;
+			cam.z = 5.0;
+		}
+		if (cam.z > 500.0)
+		{
+			cam_vz = 0;
+			cam.z = 500.0;
+		}
+		
+		cam_vx *= 0.8;
+		cam_vy *= 0.8;
+		cam_vz *= 0.8;
 	}
 		
 	public function ReadLevel(levelname:String)

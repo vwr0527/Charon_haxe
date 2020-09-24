@@ -8,7 +8,8 @@ import openfl.display.BitmapData;
 import openfl.display.Shape;
 import openfl.display.Sprite;
 import openfl.geom.Point;
-import util.LevelParser;
+import openfl.ui.Mouse;
+import util.LevelEditor;
 import world.Camera;
 import world.Enemy;
 import world.Entity;
@@ -36,6 +37,7 @@ class World extends Sprite
 	private var newEntities:Array<Entity>;
 	private var levelDictionary:Map<String, Level>;
 	private var level:Level;
+	private var levelEditor:LevelEditor;
 	
 	private var shipLayer:Sprite;
 	private var shotLayer:Sprite;
@@ -88,6 +90,7 @@ class World extends Sprite
 		
 		CreateCrosshairs();
 		
+		levelEditor = new LevelEditor();
 		levelDictionary = new Map();
 		LoadLevels();
 		
@@ -101,6 +104,14 @@ class World extends Sprite
 	public function Update()
 	{
 		if (paused) return;
+		
+		if (LevelEditor.active)
+		{
+			levelEditor.Update(camera);
+			MoveWorldToCamera();
+			level.UpdateDisplay(camera);
+			return;
+		}
 		
 		frameCounter += 1;
 		
@@ -314,6 +325,7 @@ class World extends Sprite
 		this.x = (-camera.x * camera.zoom * zzoom) + Lib.application.window.width / 2;
 		this.y = (-camera.y * camera.zoom * zzoom) + Lib.application.window.height / 2;
 		this.scaleX = this.scaleY = camera.zoom * zzoom * (Lib.application.window.height / 540);
+		levelLayer.visible = shipLayer.visible = shotLayer.visible = cross1.visible = cross2.visible = cross3.visible = (camera.z >= 1.0);
 	}
 	
 	private function MoveCamera() 
@@ -335,10 +347,9 @@ class World extends Sprite
 	
 	private function LoadLevels() 
 	{
-		var levelParser:LevelParser = new LevelParser();
-		levelParser.ReadLevel("levels/testlevel1.json");
-		trace(levelParser.OutputString());
-		level = levelParser.BuildLevel(backgroundLayer, foregroundLayer);
+		levelEditor.ReadLevel("levels/testlevel1.json");
+		trace(levelEditor.OutputString());
+		level = levelEditor.BuildLevel(backgroundLayer, foregroundLayer);
 		levelDictionary.set("test", level);
 		levelLayer.addChild(level);
 		

@@ -7,6 +7,7 @@ import openfl.events.TimerEvent;
 import openfl.utils.Timer;
 import openfl.net.SharedObject;
 import openfl.Lib;
+import util.LevelEditor;
 
 /**
  * ...
@@ -133,7 +134,7 @@ class Main extends Sprite
 		
 		if (!menu.isActive)
 		{
-			Mouse.hide();
+			if (!LevelEditor.active) Mouse.hide();
 			world.Update();
 		}
 		else

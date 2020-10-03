@@ -1,5 +1,6 @@
 package;
 
+import menu.LevelEditPage;
 import menu.MenuPage;
 import menu.OptionsMenu;
 import menu.TitlePage;
@@ -7,6 +8,7 @@ import openfl.display.Sprite;
 import menu.MainMenu;
 import menu.DebugPage;
 import menu.HudPage;
+import openfl.utils.Dictionary;
 
 /**
  * ...
@@ -14,10 +16,11 @@ import menu.HudPage;
  */
 class Menu extends Sprite 
 {
-	private var menuPages:Array<MenuPage>;
+	private var menuPages:Dictionary<String, MenuPage>;
 	private var titlePage:TitlePage;
 	private var mainPage:MainMenu;
 	private var optionsPage:OptionsMenu;
+	private var levelEditPage:LevelEditPage;
 	private var pressEsc:TitlePage;
 	private var debugPage:DebugPage;
 	private var hudPage:HudPage;
@@ -29,7 +32,7 @@ class Menu extends Sprite
 	{
 		super();
 		
-		menuPages = new Array<MenuPage>();
+		menuPages = new Dictionary<String, MenuPage>();
 		
 		hudPage = new HudPage();
 		addChild(hudPage);
@@ -39,16 +42,16 @@ class Menu extends Sprite
 		
 		mainPage = new MainMenu();
 		addChild(mainPage);
-		menuPages.push(mainPage);
-		mainPage.visible = false;
+		menuPages.set("mainPage", mainPage);
 		
 		optionsPage = new OptionsMenu();
-		addChild(optionsPage);
-		menuPages.push(optionsPage);
-		optionsPage.visible = false;
+		menuPages.set("optionsPage", optionsPage);
 		
 		debugPage = new DebugPage();
 		addChild(debugPage);
+		
+		levelEditPage = new LevelEditPage();
+		menuPages.set("levelEditPage", levelEditPage);
 		
 		currentPage = mainPage;
 	}
@@ -62,17 +65,24 @@ class Menu extends Sprite
 		{
 			titlePage.SetVisible(true);
 			if (mainPage.ResumeGame()) isActive = false;
-			if (mainPage.SwitchToOptions()) currentPage = optionsPage;
-			if (optionsPage.ReturnToMainMenu()) currentPage = mainPage;
+			currentPage.visible = true;
 			
-			for (page in menuPages)
+			if (currentPage.ChangePage())
 			{
-				page.visible = false;
-				if (page == currentPage)
+				removeChild(currentPage);
+				currentPage = menuPages[currentPage.NextPage()];
+				addChild(currentPage);
+				
+				if (currentPage == levelEditPage)
 				{
-					page.visible = true;
+					titlePage.ShowLevelEditTip(true);
+				}
+				else
+				{
+					titlePage.ShowLevelEditTip(false);
 				}
 			}
+			
 			currentPage.Update();
 			if (Input.KeyDown(27) && currentPage == mainPage) isActive = false;
 		}

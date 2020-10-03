@@ -12,7 +12,6 @@ class MainMenu extends MenuPage
 {
 	var info:MenuElement;
 	var resumeGame:Bool = false;
-	var switchToOptions:Bool = false;
 	
 	public function new() 
 	{
@@ -22,7 +21,7 @@ class MainMenu extends MenuPage
 		addSelection("new game", 0.5);
 		addSelection("load game", 0.6);
 		addSelection("options", 0.7);
-		addSelection("edit level", 0.8);
+		addSelection("level editor", 0.8);
 		
 		super.Update();
 	}
@@ -54,9 +53,12 @@ class MainMenu extends MenuPage
 						case 0:
 							resumeGame = true;
 						case 3:
-							switchToOptions = true;
+							nextPage = "optionsPage";
+							changePage = true;
 						case 4:
 							LevelEditor.active = !LevelEditor.active;
+							changePage = true;
+							nextPage = "levelEditPage";
 							resumeGame = true;
 					}
 				}
@@ -66,16 +68,6 @@ class MainMenu extends MenuPage
 				elem.alpha = 1.0;
 			}
 		}
-	}
-	
-	public function SwitchToOptions():Bool
-	{
-		if (switchToOptions)
-		{
-			switchToOptions = false;
-			return true;
-		}
-		return false;
 	}
 	
 	public function ResumeGame():Bool

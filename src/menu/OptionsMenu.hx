@@ -11,7 +11,6 @@ class OptionsMenu extends MenuPage
 {
 	var title:MenuElement;
 	var info:MenuElement;
-	var returnToMainMenu:Bool = false;
 	
 	public function new() 
 	{
@@ -38,7 +37,11 @@ class OptionsMenu extends MenuPage
 	{
 		super.Update();
 		
-		if (Input.KeyDown(27)) returnToMainMenu = true;
+		if (Input.KeyDown(27))
+		{
+			changePage = true;
+			nextPage = "mainPage";
+		}
 		
 		for (i in 0...(elements.length))
 		{
@@ -53,7 +56,8 @@ class OptionsMenu extends MenuPage
 					switch (i) 
 					{
 						case 4:
-							returnToMainMenu = true;
+							changePage = true;
+							nextPage = "mainPage";
 					}
 				}
 			}
@@ -62,15 +66,5 @@ class OptionsMenu extends MenuPage
 				elem.alpha = 1.0;
 			}
 		}
-	}
-	
-	public function ReturnToMainMenu():Bool
-	{
-		if (returnToMainMenu)
-		{
-			returnToMainMenu = false;
-			return true;
-		}
-		return false;
 	}
 }

@@ -131,7 +131,7 @@ class LevelEditor
 					{
 						var tiledata = leveldata.tileDef[tileindex];
 						
-						if (tiledata == "Black")
+						if (tiledata == "black")
 						{
 							room.SetBlackTile(j, i);
 						}

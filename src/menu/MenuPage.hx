@@ -9,11 +9,14 @@ import openfl.display.Sprite;
 class MenuPage extends Sprite 
 {
 	private var elements:Array<MenuElement>;
+	private var changePage:Bool;
+	private var nextPage:String;
 	
 	public function new() 
 	{
 		super();
-		
+		changePage = false;
+		nextPage = "";
 		elements = new Array();
 	}
 	
@@ -29,5 +32,16 @@ class MenuPage extends Sprite
 	{
 		elements.push(elem);
 		addChild(elem);
+	}
+	
+	public function ChangePage():Bool
+	{
+		return changePage;
+	}
+	
+	public function NextPage():String
+	{
+		changePage = false;
+		return nextPage;
 	}
 }

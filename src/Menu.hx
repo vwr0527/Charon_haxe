@@ -61,26 +61,17 @@ class Menu extends Sprite
 		hudPage.Update();
 		debugPage.Update();
 		
+		if (currentPage.ChangePage())
+		{
+			removeChild(currentPage);
+			currentPage = menuPages[currentPage.NextPage()];
+			addChild(currentPage);
+		}
+		
 		if (active)
 		{
 			titlePage.SetVisible(true);
 			currentPage.SetVisible(true);
-			
-			if (currentPage.ChangePage())
-			{
-				removeChild(currentPage);
-				currentPage = menuPages[currentPage.NextPage()];
-				addChild(currentPage);
-				
-				if (currentPage == levelEditPage)
-				{
-					titlePage.ShowLevelEditTip(true);
-				}
-				else
-				{
-					titlePage.ShowLevelEditTip(false);
-				}
-			}
 			
 			currentPage.Update();
 			if (Input.KeyDown(27) && currentPage == mainPage) active = false;
@@ -91,5 +82,7 @@ class Menu extends Sprite
 			currentPage.SetVisible(false);
 			if (Input.KeyDown(27)) active = true;
 		}
+		
+		titlePage.ShowLevelEditTip(currentPage == levelEditPage);
 	}
 }

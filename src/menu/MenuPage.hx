@@ -34,6 +34,11 @@ class MenuPage extends Sprite
 		addChild(elem);
 	}
 	
+	public function SetVisible(vis:Bool)
+	{
+		this.visible = vis;
+	}
+	
 	public function ChangePage():Bool
 	{
 		return changePage;

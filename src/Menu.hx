@@ -16,6 +16,8 @@ import openfl.utils.Dictionary;
  */
 class Menu extends Sprite 
 {
+	public static var active = false;
+	
 	private var menuPages:Dictionary<String, MenuPage>;
 	private var titlePage:TitlePage;
 	private var mainPage:MainMenu;
@@ -24,8 +26,6 @@ class Menu extends Sprite
 	private var pressEsc:TitlePage;
 	private var debugPage:DebugPage;
 	private var hudPage:HudPage;
-	
-	public var isActive = false;
 	private var currentPage:MenuPage;
 	
 	public function new()
@@ -61,11 +61,10 @@ class Menu extends Sprite
 		hudPage.Update();
 		debugPage.Update();
 		
-		if (isActive)
+		if (active)
 		{
 			titlePage.SetVisible(true);
-			if (mainPage.ResumeGame()) isActive = false;
-			currentPage.visible = true;
+			currentPage.SetVisible(true);
 			
 			if (currentPage.ChangePage())
 			{
@@ -84,13 +83,13 @@ class Menu extends Sprite
 			}
 			
 			currentPage.Update();
-			if (Input.KeyDown(27) && currentPage == mainPage) isActive = false;
+			if (Input.KeyDown(27) && currentPage == mainPage) active = false;
 		}
 		else
 		{
 			titlePage.SetVisible(false);
-			currentPage.visible = false;
-			if (Input.KeyDown(27)) isActive = true;
+			currentPage.SetVisible(false);
+			if (Input.KeyDown(27)) active = true;
 		}
 	}
 }

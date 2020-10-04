@@ -34,7 +34,7 @@ class TitlePage extends MenuPage
 		super.Update();
 	}
 	
-	public function SetVisible(titleVisible:Bool)
+	public override function SetVisible(titleVisible:Bool)
 	{
 		title.visible = titleVisible;
 		info.visible = !title.visible;

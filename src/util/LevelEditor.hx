@@ -16,11 +16,10 @@ import world.level.LevelTile;
  */
 class LevelEditor 
 {
+	public static var active:Bool;
 	var leveltext:String;
 	var level:Level;
 	var leveldata:LevelData;
-	
-	public static var active:Bool;
 	var cam_vx = 0.0;
 	var cam_vy = 0.0;
 	var cam_vz = 0.0;

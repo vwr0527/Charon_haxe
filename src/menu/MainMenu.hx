@@ -10,7 +10,6 @@ import util.LevelEditor;
  */
 class MainMenu extends MenuPage 
 {
-	var info:MenuElement;
 	var resumeGame:Bool = false;
 	
 	public function new() 
@@ -51,7 +50,7 @@ class MainMenu extends MenuPage
 					switch (i) 
 					{
 						case 0:
-							resumeGame = true;
+							Menu.active = false;
 						case 3:
 							nextPage = "optionsPage";
 							changePage = true;
@@ -59,7 +58,7 @@ class MainMenu extends MenuPage
 							LevelEditor.active = !LevelEditor.active;
 							changePage = true;
 							nextPage = "levelEditPage";
-							resumeGame = true;
+							Menu.active = false;
 					}
 				}
 			}
@@ -68,15 +67,5 @@ class MainMenu extends MenuPage
 				elem.alpha = 1.0;
 			}
 		}
-	}
-	
-	public function ResumeGame():Bool
-	{
-		if (resumeGame)
-		{
-			resumeGame = false;
-			return true;
-		}
-		return false;
 	}
 }

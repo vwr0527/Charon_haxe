@@ -132,7 +132,7 @@ class Main extends Sprite
 			FrameModeChange = false;
 		}
 		
-		if (!menu.isActive)
+		if (!Menu.active)
 		{
 			if (!LevelEditor.active) Mouse.hide();
 			world.Update();

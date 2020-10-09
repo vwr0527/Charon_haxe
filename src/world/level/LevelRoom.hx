@@ -86,6 +86,16 @@ class LevelRoom extends Sprite
 		{
 			door.Update();
 		}
+		
+		for (bge in bgElements)
+		{
+			bge.Update();
+		}
+		
+		for (fge in fgElements)
+		{
+			fge.Update();
+		}
 	}
 	
 	public function AddTriangle(x1:Float, y1:Float, x2:Float, y2:Float, x3:Float, y3:Float)

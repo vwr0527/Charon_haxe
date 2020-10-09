@@ -35,9 +35,17 @@ class LevelEditor
 			gbg : new Array<DecorData>()//global background
 		};
 	}
+		
+	public function ReadLevel(levelname:String)
+	{
+		leveltext = Assets.getText(levelname);
+		leveldata = Json.parse(leveltext);
+	}
 	
 	public function Update(cam:Camera)
 	{
+		var t = Math.max(Math.min(60 / Main.getFPS(), 2), 0.25);
+		
 		if (Input.KeyHeld(65))
 		{
 			cam_vx -= camspeed;
@@ -63,9 +71,9 @@ class LevelEditor
 			cam_vz -= camspeed / 4;
 		}
 		
-		cam.x += cam_vx;
-		cam.y += cam_vy;
-		cam.z += cam_vz;
+		cam.x += cam_vx * t;
+		cam.y += cam_vy * t;
+		cam.z += cam_vz * t;
 		
 		if (cam.z < 5.0)
 		{
@@ -78,20 +86,9 @@ class LevelEditor
 			cam.z = 500.0;
 		}
 		
-		cam_vx *= 0.8;
-		cam_vy *= 0.8;
-		cam_vz *= 0.8;
-	}
-		
-	public function ReadLevel(levelname:String)
-	{
-		leveltext = Assets.getText(levelname);
-		leveldata = Json.parse(leveltext);
-	}
-	
-	public function OutputString():String
-	{
-		return Json.stringify(leveldata);
+		cam_vx *= 1 / Math.pow(10, 0.1 * t);
+		cam_vy *= 1 / Math.pow(10, 0.1 * t);
+		cam_vz *= 1 / Math.pow(10, 0.1 * t);
 	}
 	
 	public function CreateBGE(decordata:DecorData):BackgroundElement
@@ -107,7 +104,7 @@ class LevelEditor
 	
 	public function BuildLevel(bg:Sprite, fg:Sprite):Level
 	{
-		var level:Level = new Level(bg, fg);
+		level = new Level(bg, fg);
 		
 		ArraySort.sort(leveldata.gbg, function(a, b):Int{return Std.int(a.z - b.z); });
 		
@@ -207,6 +204,33 @@ class LevelEditor
 		level.addChild(level.currentRoom);
 		level.LoadRoomBgFg();
 		return level;
+	}
+	
+	public function OutputString():String
+	{
+		return Json.stringify(leveldata);
+	}
+	
+	//test
+	public function MakeBgePulse(index:Int)
+	{
+		for (bge in level.gbgElements)
+		{
+			if (bge.dist == 10000)
+			{
+				continue;
+			}
+			bge.ShowOutline();
+		}
+	}
+	
+	//test
+	public function StopBgePulse(index:Int)
+	{
+		for (bge in level.gbgElements)
+		{
+			bge.HideOutline();
+		}
 	}
 }
 

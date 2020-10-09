@@ -101,6 +101,11 @@ class World extends Sprite
 		level.UpdateDisplay(camera);
 	}
 	
+	public function GetLevelEditor():LevelEditor
+	{
+		return levelEditor;
+	}
+	
 	public function Update()
 	{
 		if (paused) return;

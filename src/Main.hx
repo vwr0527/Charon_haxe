@@ -60,6 +60,8 @@ class Main extends Sprite
 		addChild(menu);
 		addChild(input);
 		
+		menu.SetLevelEditor(world.GetLevelEditor());
+		
 		if (EnterFrameMode) addEventListener(Event.ENTER_FRAME, Update);
 		addEventListener(Event.DEACTIVATE, LostFocus);
 		addEventListener(Event.ACTIVATE, RegainedFocus);

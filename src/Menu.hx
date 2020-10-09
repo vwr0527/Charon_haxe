@@ -9,6 +9,7 @@ import menu.MainMenu;
 import menu.DebugPage;
 import menu.HudPage;
 import openfl.utils.Dictionary;
+import util.LevelEditor;
 
 /**
  * ...
@@ -50,10 +51,13 @@ class Menu extends Sprite
 		debugPage = new DebugPage();
 		addChild(debugPage);
 		
-		levelEditPage = new LevelEditPage();
-		menuPages.set("levelEditPage", levelEditPage);
-		
 		currentPage = mainPage;
+	}
+	
+	public function SetLevelEditor(leveledit:LevelEditor)
+	{
+		levelEditPage = new LevelEditPage(leveledit);
+		menuPages.set("levelEditPage", levelEditPage);
 	}
 	
 	public function Update()
@@ -74,12 +78,14 @@ class Menu extends Sprite
 			currentPage.SetVisible(true);
 			
 			currentPage.Update();
-			if (Input.KeyDown(27) && currentPage == mainPage) active = false;
+			if (Input.KeyDown(27) && (currentPage == mainPage || currentPage == levelEditPage)) active = false;
 		}
 		else
 		{
 			titlePage.SetVisible(false);
 			currentPage.SetVisible(false);
+			
+			if (currentPage == levelEditPage) levelEditPage.Update();
 			if (Input.KeyDown(27)) active = true;
 		}
 		

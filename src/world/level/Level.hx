@@ -17,6 +17,8 @@ class Level extends Sprite
 	public var currentRoom:LevelRoom;
 	public var previousRoom:LevelRoom;
 	
+	public var gbgElements:Array<BackgroundElement>; //global background
+	
 	var switchRoomIndex:Int = 0;
 	var switchingRoom:Bool = false;
 	var switchedRoom = false;
@@ -26,13 +28,10 @@ class Level extends Sprite
 	var playerDoorOffsetX:Float;
 	var playerDoorOffsetY:Float;
 	
-	var gbgElements:Array<BackgroundElement>; //global background
-	
 	var blinder_left:Sprite;
 	var blinder_right:Sprite;
 	var blinder_up:Sprite;
 	var blinder_down:Sprite;
-	
 	
 	var backgroundLayer:Sprite;
 	var foregroundLayer:Sprite;
@@ -58,6 +57,11 @@ class Level extends Sprite
 			currentRoom = rooms[switchRoomIndex];
 			addChild(currentRoom);
 			switchedRoom = true;
+		}
+		
+		for (bge in gbgElements)
+		{
+			bge.Update();
 		}
 	}
 	

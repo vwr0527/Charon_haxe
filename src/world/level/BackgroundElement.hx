@@ -82,5 +82,16 @@ class BackgroundElement extends Sprite
 	
 	public function Update()
 	{
+		//test
+		/*
+		if (Math.abs(mouseX) < sprite.width / 2 && Math.abs(mouseY) < sprite.height / 2)
+		{
+			ShowOutline();
+		}
+		else
+		{
+			HideOutline();
+		}
+		*/
 	}
 }

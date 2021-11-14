@@ -45,10 +45,9 @@ class World extends Sprite
 	private var backgroundLayer:Sprite;
 	private var foregroundLayer:Sprite;
 	
-	private var cross1:Crosshair;
-	private var cross2:Crosshair;
-	private var cross3:Crosshair;
-	private var crossi:Crosshair;
+	private var cross:Crosshair;
+	private var follow_x:Float;
+	private var follow_y:Float;
 	private var blinder_left:Sprite;
 	private var blinder_right:Sprite;
 	private var blinder_up:Sprite;
@@ -330,18 +329,18 @@ class World extends Sprite
 		this.x = (-camera.x * camera.zoom * zzoom) + Lib.application.window.width / 2;
 		this.y = (-camera.y * camera.zoom * zzoom) + Lib.application.window.height / 2;
 		this.scaleX = this.scaleY = camera.zoom * zzoom * (Lib.application.window.height / 540);
-		levelLayer.visible = shipLayer.visible = shotLayer.visible = cross1.visible = cross2.visible = cross3.visible = (camera.z >= 1.0);
+		levelLayer.visible = shipLayer.visible = shotLayer.visible = cross.visible = (camera.z >= 1.0);
 	}
 	
 	private function MoveCamera() 
 	{
-		camera.x = (crossi.x + player.x) / 2;
-		camera.y = (crossi.y + player.y) / 2;
+		camera.x = (follow_x + player.x) / 2;
+		camera.y = (follow_y + player.y) / 2;
 		
-		camera.z = 100 + (100 * (1 - Math.max(1 - Math.max(0, (Math.sqrt( Math.pow(crossi.x - player.x, 2) + Math.pow((crossi.y - player.y) * 1.778, 2)) / 2000) - 0.075), 0.75)));
+		camera.z = 100 + (100 * (1 - Math.max(1 - Math.max(0, (Math.sqrt( Math.pow(follow_x - player.x, 2) + Math.pow((follow_y - player.y) * 1.778, 2)) / 2000) - 0.075), 0.75)));
 		
 		if (camera.z < 1) camera.z = 1;
-		camera.zoom = Math.max(1 - Math.max(0, ((Math.sqrt( Math.pow(crossi.x - player.x, 2) + Math.pow((crossi.y - player.y) * 1.778, 2)) / 4000)) - 0.075), 0.75);
+		camera.zoom = Math.max(1 - Math.max(0, ((Math.sqrt( Math.pow(follow_x - player.x, 2) + Math.pow((follow_y - player.y) * 1.778, 2)) / 4000)) - 0.075), 0.75);
 		camera.x += (Math.random() * shake) - (shake / 2);
 		camera.y += (Math.random() * shake) - (shake / 2);
 		
@@ -363,8 +362,8 @@ class World extends Sprite
 		
 		camera.x = player.x;
 		camera.y = player.y;
-		crossi.x = player.x;
-		crossi.y = player.y;
+		follow_x = player.x;
+		follow_y = player.y;
 		
 		MoveWorldToCamera();
 		level.UpdateDisplay(camera);
@@ -378,8 +377,8 @@ class World extends Sprite
 		player.y = level.SwitchRoomPlayerPosY();
 		playerDeltaX -= player.x;
 		playerDeltaY -= player.y;
-		crossi.x -= playerDeltaX;
-		crossi.y -= playerDeltaY;
+		follow_x -= playerDeltaX;
+		follow_y -= playerDeltaY;
 		
 		level.BgSwitchRoom(playerDeltaX, playerDeltaY);
 		
@@ -390,33 +389,15 @@ class World extends Sprite
 	
 	private function CreateCrosshairs()
 	{
-		cross1 = new Crosshair();
-		cross1.CreatePrimaryCrosshair();
-		addChild(cross1);
-		
-		cross2 = new Crosshair();
-		cross2.CreateSecondaryCrosshair();
-		addChild(cross2);
-		
-		cross3 = new Crosshair();
-		cross3.CreateTertiaryCrosshair();
-		addChild(cross3);
-		
-		crossi = new Crosshair();
+		cross = new Crosshair();
+		addChild(cross);
 	}
 	
 	private function UpdateCrosshairs() 
 	{
-		cross1.x = mouseX;
-		cross1.y = mouseY;
-		cross2.x = (mouseX + player.x) / 2;
-		cross2.y = (mouseY + player.y) / 2;
-		cross3.x = (mouseX + player.x) / 2;
-		cross3.y = (mouseY + player.y) / 2;
-		cross3.scaleY = Math.sqrt( Math.pow(mouseX - player.x, 2) + Math.pow(mouseY - player.y, 2)) / 40;
-		cross3.rotation = ((180 * Math.atan2(mouseY - player.y, mouseX - player.x)) / Math.PI) + 90;
-		cross1.rotation = cross3.rotation + 45;
-		crossi.x += (((mouseX + player.x) / 2) - crossi.x) / 20;
-		crossi.y += (((mouseY + player.y) / 2) - crossi.y) / 20;
+		cross.UpdateCrosshair(player.x, player.y, mouseX, mouseY);
+		
+		follow_x += (((mouseX + player.x) / 2) - follow_x) / 20;
+		follow_y += (((mouseY + player.y) / 2) - follow_y) / 20;
 	}
 }

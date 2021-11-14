@@ -28,9 +28,9 @@ class LevelEditPage extends MenuPage
 		super.Update();
 		
 		bgeSelector = new MenuElement();
-		bgeSelector.AddBitmapText("bgeSelector", "fonts/fcubef2.png");
+		bgeSelector.AddBitmapText("bgeselector", "fonts/fcubef2.png");
 		bgeSelector.xpos = 0.1;
-		bgeSelector.ypos = 0.1;
+		bgeSelector.ypos = 0.2;
 		AddHudElem(bgeSelector);
 		
 		levelEditor = leveledit;
@@ -101,7 +101,6 @@ class LevelEditPage extends MenuPage
 			{
 				elem.visible = false;
 			}
-			
 			//test
 			if (bgeSelector.hitTestPoint(mouseX, mouseY))
 			{

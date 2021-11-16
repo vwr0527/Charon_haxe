@@ -14,6 +14,7 @@ class LevelEditPage extends MenuPage
 	var levelEditor:LevelEditor;
 	
 	var bgeSelector:MenuElement;
+	var bgeSelectorMode:Bool = false;
 	
 	public function new(leveledit:LevelEditor) 
 	{
@@ -55,11 +56,11 @@ class LevelEditPage extends MenuPage
 	{
 		if (menuMode)
 		{
-			levelEditor.StopBgePulse(1); //test
+			levelEditor.DeselectAllBGE(); //test
 			
-			for (hudelem in hudElems)
+			for (hudElem in hudElems)
 			{
-				hudelem.visible = false;
+				hudElem.visible = false;
 			}
 			for (i in 0...(menuElems.length))
 			{
@@ -92,29 +93,35 @@ class LevelEditPage extends MenuPage
 		}
 		else
 		{
-			for (hudelem in hudElems)
+			for (hudElem in hudElems)
 			{
-				hudelem.Update();
-				hudelem.visible = true;
+				hudElem.Update();
+				hudElem.visible = true;
 			}
 			for (elem in menuElems)
 			{
 				elem.visible = false;
 			}
+			
 			//test
-			if (bgeSelector.hitTestPoint(mouseX, mouseY))
+			if (bgeSelector.hitTestPoint(mouseX, mouseY) && Input.MouseUp())
 			{
-				levelEditor.MakeBgePulse(1); //test
-			}
-			else
-			{
-				levelEditor.StopBgePulse(1); //test
+				bgeSelectorMode = !bgeSelectorMode;
 			}
 		}
 			
 		if (Input.KeyDown(27))
 		{
 			menuMode = !menuMode;
+		}
+		
+		if (bgeSelectorMode)
+		{
+			bgeSelector.ShowOutline();
+			levelEditor.BGESelector(mouseX, mouseY);
+		} else {
+			bgeSelector.HideOutline();
+			levelEditor.DeselectAllBGE();
 		}
 	}
 	

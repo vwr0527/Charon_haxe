@@ -25,6 +25,9 @@ class LevelEditor
 	var cam_vz = 0.0;
 	var camspeed = 2.0;
 	
+	var currentlySelectedBGE:BackgroundElement;
+	var selectedOneBGE:Bool;
+	
 	public function new()
 	{
 		active = false;
@@ -89,6 +92,11 @@ class LevelEditor
 		cam_vx *= 1 / Math.pow(10, 0.1 * t);
 		cam_vy *= 1 / Math.pow(10, 0.1 * t);
 		cam_vz *= 1 / Math.pow(10, 0.1 * t);
+		
+		if (currentlySelectedBGE != null)
+		{
+			currentlySelectedBGE.ShowOutline();
+		}
 	}
 	
 	public function CreateBGE(decordata:DecorData):BackgroundElement
@@ -211,26 +219,68 @@ class LevelEditor
 		return Json.stringify(leveldata);
 	}
 	
-	//test
-	public function MakeBgePulse(index:Int)
+	public function BGESelector(xpos:Float, ypos:Float)
 	{
+		selectedOneBGE = false;
 		for (bge in level.gbgElements)
 		{
 			if (bge.dist == 10000)
 			{
 				continue;
 			}
-			bge.ShowOutline();
+			SelectOneBGE(bge, xpos, ypos);
+		}
+		for (bge in level.currentRoom.bgElements)
+		{
+			SelectOneBGE(bge, xpos, ypos);
+		}
+		for (bge in level.currentRoom.fgElements)
+		{
+			SelectOneBGE(bge, xpos, ypos);
+		}
+		if (Input.MouseUp() && !selectedOneBGE)
+		{
+			currentlySelectedBGE = null;
 		}
 	}
 	
-	//test
-	public function StopBgePulse(index:Int)
+	function SelectOneBGE(bge:BackgroundElement, xpos:Float, ypos:Float) //helper function
+	{
+		if (bge.hitTestPoint(xpos, ypos))
+		{
+			if (bge != currentlySelectedBGE)
+			{
+				bge.ShowOutline();
+			}
+			if (Input.MouseUp())
+			{
+				currentlySelectedBGE = bge;
+				trace(currentlySelectedBGE.dist);
+				selectedOneBGE = true;
+			}
+		} else {
+			if (bge != currentlySelectedBGE)
+			{
+				bge.HideOutline();
+			}
+		}
+	}
+	
+	public function DeselectAllBGE()
 	{
 		for (bge in level.gbgElements)
 		{
 			bge.HideOutline();
 		}
+		for (bge in level.currentRoom.bgElements)
+		{
+			bge.HideOutline();
+		}
+		for (bge in level.currentRoom.fgElements)
+		{
+			bge.HideOutline();
+		}
+		currentlySelectedBGE = null;
 	}
 }
 

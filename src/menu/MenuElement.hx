@@ -1,6 +1,7 @@
 package menu;
 
 import openfl.display.Sprite;
+import openfl.display.Shape;
 import openfl.text.Font;
 import openfl.text.TextField;
 import openfl.text.TextFormat;
@@ -21,6 +22,8 @@ class MenuElement extends Sprite
 	public var textField:TextField;
 	public var textFormat:TextFormat;
 	public var bitmapFont:BitmapFont;
+	
+	var outline:Shape;
 
 	public function new() 
 	{
@@ -47,6 +50,14 @@ class MenuElement extends Sprite
 		textField.autoSize = align;
 		textField.text = str;
 		
+		outline = new Shape();
+		outline.graphics.beginFill(0xffffff);
+		outline.graphics.drawRect(0, 0, textField.width, textField.height);
+		outline.x -= textField.width / 2;
+		outline.y -= textField.height / 2;
+		outline.visible = false;
+		addChild(outline);
+		
 		addChild(textField);
 	}
 	
@@ -56,11 +67,34 @@ class MenuElement extends Sprite
 		bitmapFont.setTextProperties(str, true, characterSpacing, lineSpacing, lineAlignment, true);
 		bitmapFont.x = -bitmapFont.width / 2;
 		bitmapFont.y = -bitmapFont.height / 2;
+		
+		outline = new Shape();
+		outline.graphics.beginFill(0xffffff);
+		outline.graphics.drawRect(0, 0, bitmapFont.width, bitmapFont.height);
+		outline.x -= bitmapFont.width / 2;
+		outline.y -= bitmapFont.height / 2;
+		outline.visible = false;
+		addChild(outline);
+		
 		addChild(bitmapFont);
 	}
 	
 	public function Smooth(smoothing:Bool)
 	{
 		if (bitmapFont != null) bitmapFont.setSmoothing(smoothing);
+	}
+	
+	var pulseTime = 0.0;
+	
+	public function ShowOutline()
+	{
+		outline.visible = true;
+		outline.alpha = (Math.sin(pulseTime) + 2) / 8;
+		pulseTime += 0.1;
+	}
+	
+	public function HideOutline()
+	{
+		outline.visible = false;
 	}
 }

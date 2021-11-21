@@ -1,4 +1,5 @@
 package menu;
+import haxe.Constraints.Function;
 import util.LevelEditor;
 
 /**
@@ -13,13 +14,16 @@ class LevelEditPage extends MenuPage
 	
 	var levelEditor:LevelEditor;
 	
-	var bgeSelector:MenuElement;
-	var bgeSelectorMode:Bool = false;
+	var optionMouseOver:Bool = false;
+	var currentWidget:String = "";
+	var widgets:Map<String, Widget>;
 	
 	public function new(leveledit:LevelEditor) 
 	{
 		menuElems = new Array<MenuElement>();
 		hudElems = new Array<MenuElement>();
+		widgets = new Map<String, Widget>();
+		levelEditor = leveledit;
 		
 		super();
 		AddMenuSelection("resume editing", 0.4);
@@ -28,13 +32,9 @@ class LevelEditPage extends MenuPage
 		AddMenuSelection("end level editor", 0.8);
 		super.Update();
 		
-		bgeSelector = new MenuElement();
-		bgeSelector.AddBitmapText("bgeselector", "fonts/fcubef2.png");
-		bgeSelector.xpos = 0.1;
-		bgeSelector.ypos = 0.2;
-		AddHudElem(bgeSelector);
-		
-		levelEditor = leveledit;
+		AddWidget("bgeselector", 0.2, levelEditor.BGESelector, levelEditor.DeselectAllBGE);
+		AddWidget("trianglecreator", 0.25, levelEditor.TriangleCreator, levelEditor.CancelTriangleCreator);
+		AddWidget("tileselector", 0.3, levelEditor.DoNothing, levelEditor.DoNothing);
 	}
 	
 	private function AddMenuSelection(name:String, ypos:Float)
@@ -50,6 +50,24 @@ class LevelEditPage extends MenuPage
 	{
 		addChild(elem);
 		hudElems.push(elem);
+	}
+	
+	private function AddWidget(myName:String, ypos:Float, doFunc:Function, cancelFunc:Function)
+	{
+		var newMenuElement = new MenuElement();
+		newMenuElement.AddBitmapText(myName, "fonts/fcubef2.png", "left");
+		newMenuElement.xpos = 0.01;
+		newMenuElement.ypos = ypos;
+		var newWidget:Widget;
+		newWidget = {
+			name : myName,
+			menuElement : newMenuElement,
+			modeActive : false,
+			doFunction : doFunc,
+			doCancel: cancelFunc
+		};
+		AddHudElem(newMenuElement);
+		widgets.set(myName, newWidget);
 	}
 	
 	public override function Update()
@@ -103,25 +121,60 @@ class LevelEditPage extends MenuPage
 				elem.visible = false;
 			}
 			
-			//test
-			if (bgeSelector.hitTestPoint(mouseX, mouseY) && Input.MouseUp())
-			{
-				bgeSelectorMode = !bgeSelectorMode;
-			}
+			UpdateWidgets();
 		}
 			
 		if (Input.KeyDown(27))
 		{
 			menuMode = !menuMode;
 		}
+	}
+	
+	private function UpdateWidgets()
+	{
+		optionMouseOver = false;
 		
-		if (bgeSelectorMode)
-		{
-			bgeSelector.ShowOutline();
-			levelEditor.BGESelector(mouseX, mouseY);
-		} else {
-			bgeSelector.HideOutline();
-			levelEditor.DeselectAllBGE();
+		//show outline of moused over option, and activate the clicked on option
+		for (widget in widgets) {
+			if (widget.menuElement.hitTestPoint(mouseX, mouseY))
+			{
+				optionMouseOver = true;
+				widget.menuElement.ShowOutline();
+				if (Input.MouseUp())
+				{
+					widget.modeActive = !widget.modeActive;
+					currentWidget = widget.name;
+				}
+			}
+			else
+			{
+				widget.menuElement.HideOutline();
+			}
+		}
+		
+		//if clicked one of the options, deselect the others
+		for (widget in widgets) {
+			if (widget.name != currentWidget) {
+				if (Input.MouseUp() && optionMouseOver)
+				{
+					widget.modeActive = false;
+				}
+			}
+		}
+		
+		//if an option is active, and not selecting any option, then do its edit level function
+		//any deselected option does its deselect function
+		for (widget in widgets) {
+			if (widget.modeActive)
+			{
+				widget.menuElement.ShowOutline();
+				if (!optionMouseOver)
+				{
+					widget.doFunction(mouseX, mouseY);
+				}
+			} else {
+				widget.doCancel();
+			}
 		}
 	}
 	
@@ -129,4 +182,13 @@ class LevelEditPage extends MenuPage
 	{
 		menuMode = vis;
 	}
+}
+
+typedef Widget =
+{
+	var name:String;
+	var menuElement:MenuElement;
+	var modeActive:Bool;
+	var doFunction:Function;
+	var doCancel:Function;
 }

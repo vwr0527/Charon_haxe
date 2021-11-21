@@ -61,17 +61,24 @@ class MenuElement extends Sprite
 		addChild(textField);
 	}
 	
-	public function AddBitmapText(str:String, bitmapName:String, lineAlignment:String = "left", characterSpacing:UInt = 0, lineSpacing:UInt = 0)
+	public function AddBitmapText(str:String, bitmapName:String, lineAlignment:String = "center", characterSpacing:UInt = 0, lineSpacing:UInt = 0)
 	{
 		bitmapFont = BitmapFont.Load(bitmapName);
 		bitmapFont.setTextProperties(str, true, characterSpacing, lineSpacing, lineAlignment, true);
-		bitmapFont.x = -bitmapFont.width / 2;
+		
+		if (lineAlignment == "center")
+		{
+			bitmapFont.x = -bitmapFont.width / 2;
+		}
 		bitmapFont.y = -bitmapFont.height / 2;
 		
 		outline = new Shape();
 		outline.graphics.beginFill(0xffffff);
 		outline.graphics.drawRect(0, 0, bitmapFont.width, bitmapFont.height);
-		outline.x -= bitmapFont.width / 2;
+		if (lineAlignment == "center")
+		{
+			outline.x -= bitmapFont.width / 2;
+		}
 		outline.y -= bitmapFont.height / 2;
 		outline.visible = false;
 		addChild(outline);

@@ -283,8 +283,10 @@ class LevelEditor
 		currentlySelectedBGE = null;
 	}
 	
-	public function TriangleCreator(xpos:Float, ypos:Float)
+	public function TriangleCreator()
 	{
+		var xpos = level.mouseX;
+		var ypos = level.mouseY;
 		if (Input.MouseUp())
 		{
 			level.currentRoom.AddTriangle(xpos - 10, ypos - 10, xpos, ypos - 10, xpos + 10, ypos + 10);
@@ -296,7 +298,7 @@ class LevelEditor
 		
 	}
 	
-	public function DoNothing(xpos:Float, ypos:Float)
+	public function DoNothing()
 	{
 		
 	}

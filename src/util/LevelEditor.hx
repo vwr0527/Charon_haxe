@@ -2,9 +2,12 @@ package util;
 import haxe.Json;
 import haxe.ds.ArraySort;
 import openfl.Assets;
+import openfl.display.Shape;
 import openfl.display.Sprite;
+import openfl.geom.Point;
 import world.Camera;
 import world.Enemy;
+import world.HitShape;
 import world.level.BackgroundElement;
 import world.level.Level;
 import world.level.LevelRoom;
@@ -27,6 +30,13 @@ class LevelEditor
 	
 	var currentlySelectedBGE:BackgroundElement;
 	var selectedOneBGE:Bool;
+	var currentPoint:Int = 0;
+	var currentlyCreating:HitShape;
+	var tileHighlighted:Shape;
+	var currentTile:Shape;
+	var tileSelected:Bool;
+	var selectedTileX:Int;
+	var selectedTileY:Int;
 	
 	public function new()
 	{
@@ -37,6 +47,23 @@ class LevelEditor
 			rooms : new Array<LevelRoomData>(),
 			gbg : new Array<DecorData>()//global background
 		};
+		
+		currentlyCreating = new HitShape();
+		currentlyCreating.AddPoint(0, 0);
+		currentlyCreating.AddPoint(0, 0);
+		currentlyCreating.AddPoint(0, 0);
+		
+		tileHighlighted = new Shape();
+		tileHighlighted.graphics.beginFill (0xFFFFFF, 0.25);
+		tileHighlighted.graphics.drawRect( -10, -10, 20, 20);
+		tileHighlighted.graphics.endFill();
+		
+		currentTile = new Shape();
+		currentTile.graphics.beginFill (0xFFFFFF, 0.25);
+		currentTile.graphics.drawRect( -10, -10, 20, 20);
+		currentTile.graphics.endFill();
+		
+		tileSelected = false;
 	}
 		
 	public function ReadLevel(levelname:String)
@@ -92,11 +119,6 @@ class LevelEditor
 		cam_vx *= 1 / Math.pow(10, 0.1 * t);
 		cam_vy *= 1 / Math.pow(10, 0.1 * t);
 		cam_vz *= 1 / Math.pow(10, 0.1 * t);
-		
-		if (currentlySelectedBGE != null)
-		{
-			currentlySelectedBGE.ShowOutline();
-		}
 	}
 	
 	public function CreateBGE(decordata:DecorData):BackgroundElement
@@ -211,6 +233,10 @@ class LevelEditor
 		
 		level.addChild(level.currentRoom);
 		level.LoadRoomBgFg();
+		level.addChild(currentlyCreating.graphic);
+		level.addChild(currentTile);
+		level.addChild(tileHighlighted);
+		
 		return level;
 	}
 	
@@ -219,8 +245,11 @@ class LevelEditor
 		return Json.stringify(leveldata);
 	}
 	
-	public function BGESelector(xpos:Float, ypos:Float)
+	public function BGESelector()
 	{
+		var xpos = level.root.mouseX;
+		var ypos = level.root.mouseY;
+		
 		selectedOneBGE = false;
 		for (bge in level.gbgElements)
 		{
@@ -241,6 +270,10 @@ class LevelEditor
 		if (Input.MouseUp() && !selectedOneBGE)
 		{
 			currentlySelectedBGE = null;
+		}
+		if (currentlySelectedBGE != null)
+		{
+			currentlySelectedBGE.ShowOutline();
 		}
 	}
 	
@@ -287,20 +320,94 @@ class LevelEditor
 	{
 		var xpos = level.mouseX;
 		var ypos = level.mouseY;
+		
+		if (Input.MouseDown())
+		{
+			if (currentPoint == 0)
+			{
+				currentlyCreating.SetPoint(1, xpos - 2, ypos + 2);
+				currentlyCreating.SetPoint(2, xpos + 2, ypos + 2);
+			}
+			currentlyCreating.SetPoint(currentPoint, xpos, ypos);
+		}
+		if (Input.MouseHeld())
+		{
+			if (currentPoint == 0)
+			{
+				currentlyCreating.SetPoint(1, xpos - 2, ypos + 2);
+				currentlyCreating.SetPoint(2, xpos + 2, ypos + 2);
+			}
+			currentlyCreating.SetPoint(currentPoint, xpos, ypos);
+		}
 		if (Input.MouseUp())
 		{
-			level.currentRoom.AddTriangle(xpos - 10, ypos - 10, xpos, ypos - 10, xpos + 10, ypos + 10);
+			if (currentPoint == 2)
+			{
+				level.currentRoom.AddTriangle(currentlyCreating.GetX(0), currentlyCreating.GetY(0), currentlyCreating.GetX(1), currentlyCreating.GetY(1), currentlyCreating.GetX(2), currentlyCreating.GetY(2));
+			}
+			currentPoint += 1;
+			if (currentPoint >= 3) currentPoint = 0;
+		}
+		
+		if (currentPoint != 0)
+		{
+			currentlyCreating.graphic.visible = true;
 		}
 	}
 	
 	public function CancelTriangleCreator()
 	{
-		
+		currentPoint = 0;
+		currentlyCreating.graphic.visible = false;
 	}
 	
-	public function DoNothing()
+	public function TileSelector()
 	{
+		if (level == null || level.currentRoom == null) return;
 		
+		var tileWidth = LevelTile.size;
+		var tileHeight = LevelTile.size;
+		
+		var highlightedTileX = level.currentRoom.GetIndexAtX(level.mouseX);
+		var highlightedTileY = level.currentRoom.GetIndexAtY(level.mouseY);
+		
+		tileHighlighted.x = 1.0 * ((highlightedTileX * tileWidth) + (tileWidth / 2));
+		tileHighlighted.y = 1.0 * ((highlightedTileY * tileHeight) + (tileHeight / 2));
+		tileHighlighted.width = tileWidth;
+		tileHighlighted.height = tileHeight;
+		tileHighlighted.visible = true;
+		
+		if (Input.MouseDown() || Input.MouseHeld() || Input.MouseUp())
+		{
+			currentTile.visible = true;
+			currentTile.x = tileHighlighted.x;
+			currentTile.y = tileHighlighted.y;
+			currentTile.width = tileHighlighted.width;
+			currentTile.height = tileHighlighted.height;
+			
+			if (Input.MouseUp())
+			{
+				if (tileSelected && selectedTileX == highlightedTileX && selectedTileY == highlightedTileY)
+				{
+					tileSelected = false;
+				}
+				else
+				{
+					tileSelected = true;
+					selectedTileX = highlightedTileX;
+					selectedTileY = highlightedTileY;
+				}
+			}
+		}
+		
+		currentTile.visible = tileSelected;
+	}
+	
+	public function CancelTileSelect()
+	{
+		tileSelected = false;
+		tileHighlighted.visible = false;
+		currentTile.visible = false;
 	}
 }
 

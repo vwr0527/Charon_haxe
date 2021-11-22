@@ -34,7 +34,7 @@ class LevelEditPage extends MenuPage
 		
 		AddWidget("bgeselector", 0.2, levelEditor.BGESelector, levelEditor.DeselectAllBGE);
 		AddWidget("trianglecreator", 0.25, levelEditor.TriangleCreator, levelEditor.CancelTriangleCreator);
-		AddWidget("tileselector", 0.3, levelEditor.DoNothing, levelEditor.DoNothing);
+		AddWidget("tileselector", 0.3, levelEditor.TileSelector, levelEditor.CancelTileSelect);
 	}
 	
 	private function AddMenuSelection(name:String, ypos:Float)
@@ -74,7 +74,10 @@ class LevelEditPage extends MenuPage
 	{
 		if (menuMode)
 		{
-			levelEditor.DeselectAllBGE(); //test
+			for (widget in widgets)
+			{
+				widget.doCancel();
+			}
 			
 			for (hudElem in hudElems)
 			{
@@ -170,7 +173,7 @@ class LevelEditPage extends MenuPage
 				widget.menuElement.ShowOutline();
 				if (!optionMouseOver)
 				{
-					widget.doFunction(mouseX, mouseY);
+					widget.doFunction();
 				}
 			} else {
 				widget.doCancel();
